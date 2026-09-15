@@ -1,11 +1,15 @@
 param(
-    [string]$ToolRoot = 'D:\DevTools\MiniLinux'
+    [string]$ToolRoot = 'D:\DevTools\MiniLinux',
+    [string]$IsoPath = '',
+    [int]$TimeoutSeconds = 20
 )
 
 $ErrorActionPreference = 'Stop'
 $project = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
 $qemu = Join-Path $ToolRoot 'qemu-20260811\qemu-system-x86_64.exe'
-$iso = Join-Path $ToolRoot 'images\minilinux-m0.iso'
+$iso = if ($IsoPath) { $IsoPath } else {
+    Join-Path $ToolRoot 'images\minilinux-m0.iso'
+}
 $log = Join-Path $project 'build\serial.log'
 if (Test-Path -LiteralPath $log) { Clear-Content -LiteralPath $log }
 
@@ -15,7 +19,7 @@ $args = @('-machine', 'pc', '-m', '256M', '-smp', '1', '-accel', 'tcg',
 $guest = Start-Process -FilePath $qemu -ArgumentList $args `
     -WorkingDirectory $project -WindowStyle Hidden -PassThru
 try {
-    $deadline = (Get-Date).AddSeconds(20)
+    $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
     do {
         Start-Sleep -Milliseconds 250
         $output = if (Test-Path -LiteralPath $log) {
