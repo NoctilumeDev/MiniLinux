@@ -1,0 +1,14 @@
+0x000000000000fff0 in ?? ()
+Breakpoint 1 at 0xffffffff80001004: file C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-m0-remote-45b160f-20260916\kernel\main.c, line 62.
+
+Breakpoint 1, kernel_main () at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-m0-remote-45b160f-20260916\kernel\main.c:62
+62	    serial_init();
+rip            0xffffffff80001004  0xffffffff80001004 <kernel_main+4>
+cs             0x28                40
+Breakpoint 2 at 0xffffffff800010bc: file C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-m0-remote-45b160f-20260916\kernel\main.c, line 52.
+
+Breakpoint 2, panic (message=0xffffffff8000205d "M0 reached its intentional stop") at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-m0-remote-45b160f-20260916\kernel\main.c:52
+52	    serial_write("MiniLinux PANIC: ");
+#0  panic (message=0xffffffff8000205d "M0 reached its intentional stop") at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-m0-remote-45b160f-20260916\kernel\main.c:52
+#1  0xffffffff8000103a in kernel_main () at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-m0-remote-45b160f-20260916\kernel\main.c:67
+[Inferior 1 (process 1) detached]

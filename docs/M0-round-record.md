@@ -31,7 +31,7 @@
 
 本轮源码坐标是本地 `main` 的 `b2046caebfce58c0776ce9d9ac830fa1485d1fbe`。干净克隆的本地诊断输出已抄存为[串口记录](evidence/m0-b2046ca-local/serial.log)和[GDB 记录](evidence/m0-b2046ca-local/gdb-trace.log)。原始文件在克隆目录的 SHA256 分别为 `6e71658b68e0a9f909cb7d1eee686d53c6d1701a61d79f642ee116f4f2362aad` 和 `b7858cf25bf3482f81ac504aeb43077e476ca3485473903b7f33876ed4238304`；克隆 ELF 是 `8c7cfc0106e418ffc484d3e8eb1908d452476706e3220c59f6e146082161d705`。当次 ISO 的本地 SHA256 是 `d545edda54a53f8519b6e1846bda4af8b7908e0b464b75decf25db7f34b13524`。归档文本经 Git 统一为 LF，GDB 记录还删掉了结尾空白行；因此原始文件 SHA256 不能当作归档副本哈希。归档 Git blob 分别是 `413f33227351f5b991f1ab380e7dfbafee160ed1`（串口）与 `4593772e89b731eccb8a9177b5fb0693eede0b28`（GDB）。这些坐标标识本地诊断与归档内容，不能冒充公开 CI 或远端发布证据。
 
-当前没有 GitHub 远端、PR、CI run、远端 exact-main 或 Release 坐标；它们的状态是 **NOT YET AVAILABLE**。源码提交和本地克隆证明同机可复现，证据上限仍是本地 BIOS/QEMU 路径。
+此轮记录时还没有 GitHub 远端、PR、CI run、远端 exact-main 或 Release 坐标；它们当时的状态是 **NOT YET AVAILABLE**。源码提交和本地克隆证明同机可复现，这一轮的证据上限仍是本地 BIOS/QEMU 路径。后续远端读回及克隆复验另见 [M0 远端轮次记录](M0-remote-round-record.md)。
 
 ## 落点与下一轮边界
 
