@@ -10,6 +10,8 @@
 
 ## 起点和固定输入
 
+首次阻断不是 M0 镜像：公开仓库地址返回 404，GitHub CLI 的 keyring 凭据也报告认证失效；浏览器建仓页没有稳定加载。随后用 `GCM_INTERACTIVE=never` 检查 Git 凭据管理器，确认它另有 `NoctilumeDev` 的有效凭据；经本机 `127.0.0.1:7897` 代理访问 GitHub `/user` 返回 200，登录名与仓库目标一致。建仓和后续 Git 推送只使用这条已验证的认证路径，没有把失效的 `gh` 登录态误判成 GitHub 账号无权限，也没有修改 Git 全局代理。
+
 2026-09-16，使用已经认证为 `NoctilumeDev` 的 Git 凭据，在此前不存在的地址建立公开空仓库 [NoctilumeDev/MiniLinux](https://github.com/NoctilumeDev/MiniLinux)，API 返回 `201 Created`。仓库没有由 GitHub 自动生成的初始提交；本地 `main` 推送后，`refs/heads/main` 的读回 SHA 是 [`45b160f4ff92e5577c6bc55abaff0b8c3d408f62`](https://github.com/NoctilumeDev/MiniLinux/commit/45b160f4ff92e5577c6bc55abaff0b8c3d408f62)。仓库、该提交和该 SHA 下的 `kernel/main.c` 页面都返回 HTTP 200。
 
 该提交相对于已做故障复审的 `6ffde0dd9893884c322c653ae0e507a145bfde5b`，在 `kernel/`、`tools/`、`include/`、`boot/` 和 `linker.ld` 上没有差异；新增内容是本地复审文档及诊断归档。工具路径与二进制哈希仍由 `tools/verify-tools.ps1` 固定，D 盘 ISO 是本轮输出，不是 Git 提交内容。
