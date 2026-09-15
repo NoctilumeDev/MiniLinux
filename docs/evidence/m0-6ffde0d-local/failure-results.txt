@@ -1,0 +1,5 @@
+HEAD 6ffde0dd9893884c322c653ae0e507a145bfde5b
+serial invalid ISO: M0 serial evidence is missing. Check the image and bootloader.
+GDB invalid ISO: GDB exceeded the 5-second observation limit.
+M0 QEMU after failures: 0
+M0 GDB after failures: 0

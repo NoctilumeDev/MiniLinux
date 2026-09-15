@@ -20,6 +20,6 @@ Breakpoint 1, kernel_main (...)
 Breakpoint 2, panic (...)
 ```
 
-依赖的版本、安装路径、镜像制作、实际观察结果和已发现的坑记录在 [M0 实验记录](docs/M0.md)。首次失败、复验、精确提交和本地证据身份记录在 [M0 轮次记录](docs/M0-round-record.md)。内核入口和串口实现见 `kernel/main.c`。Limine 协议头文件是来自其独立协议仓库的固定版本，原有 0BSD 许可保留在 `include/limine.h`。
+依赖的版本、安装路径、镜像制作、实际观察结果和已发现的坑记录在 [M0 实验记录](docs/M0.md)。首次失败、复验、精确提交和本地证据身份记录在 [M0 轮次记录](docs/M0-round-record.md)；故障路径的纠正与裁决范围记录在 [M0 复审](docs/M0-re-audit.md)。内核入口和串口实现见 `kernel/main.c`。Limine 协议头文件是来自其独立协议仓库的固定版本，原有 0BSD 许可保留在 `include/limine.h`。
 
 代码原则：能直写就直写；教学问题之外尽量复用工具，教学问题之内亲手实现机制。这里唯一的内联汇编用于 x86 的端口 I/O 和停机指令。
