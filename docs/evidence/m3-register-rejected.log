@@ -1,0 +1,35 @@
+0x000000000000fff0 in ?? ()
+Breakpoint 1 at 0xffffffff800011b4: file C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\main.c, line 107.
+
+Breakpoint 1, kernel_main () at C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\main.c:107
+107	    serial_init();
+rip            0xffffffff800011b4  0xffffffff800011b4 <kernel_main+4>
+cs             0x28                40
+Breakpoint 2 at 0xffffffff800032b8: file C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\cpu.c, line 37.
+
+Breakpoint 2, cpu_init () at C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\cpu.c:37
+37	    __asm__ volatile ("cli" : : : "memory");
+Breakpoint 3 at 0xffffffff80003728: file C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\task.c, line 28.
+
+Breakpoint 3, task_start () at C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\task.c:28
+28	    for (unsigned i = 0; i < 2; i++) {
+Breakpoint 4 at 0xffffffff800038ac: file C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\task.c, line 45.
+
+Breakpoint 4, task_tick (frame=0xffffffff80008030 <tasks+7984>) at C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\task.c:45
+45	    tasks[current].frame = frame;
+$1 = {r15 = 0, r14 = 0, r13 = 0, r12 = 3405643776, r11 = 0, r10 = 0, r9 = 0, r8 = 0, rdi = 0, rsi = 0, rbp = 18446744071562100992, rdx = 0, rcx = 50606, rbx = 0, rax = 18446744071562092800, vector = 32, error = 0, rip = 18446744071562082451, cs = 8, rflags = 66118, rsp = 18446744071562100960, ss = 16}
+Breakpoint 5 at 0xffffffff8000117c: file C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\main.c, line 96.
+
+Breakpoint 5, panic (message=0xffffffff80004825 "M3 register guard changed") at C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\main.c:96
+96	    __asm__ volatile ("cli" : : : "memory");
+#0  panic (message=0xffffffff80004825 "M3 register guard changed") at C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\main.c:96
+#1  0xffffffff8000387b in count_forever () at C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\task.c:22
+#2  0x0000000000000000 in ?? ()
+[Inferior 1 (process 1) detached]
+
+MiniLinux M3: entered kernel_main
+M3 timer switch 0 -> 1; counters 0 / 0
+M3 timer switch 1 -> 0; counters 0 / 42447
+M3 timer switch 0 -> 1; counters 50606 / 42447
+M3 timer switch 1 -> 0; counters 50606 / 2039365
+MiniLinux PANIC: M3 register guard changed

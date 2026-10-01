@@ -1,0 +1,94 @@
+M0 tool digests and pycdlib version match the baseline.
+ELF Header:
+  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00
+  Class:                             ELF64
+  Data:                              2's complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              EXEC (Executable file)
+  Machine:                           Advanced Micro Devices X86-64
+  Version:                           0x1
+  Entry point address:               0xffffffff800011b0
+  Start of program headers:          64 (bytes into file)
+  Start of section headers:          56192 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               64 (bytes)
+  Size of program headers:           56 (bytes)
+  Number of program headers:         4
+  Size of section headers:           64 (bytes)
+  Number of section headers:         18
+  Section header string table index: 16
+Built C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\build\kernel.elf
+D:\DevTools\MiniLinux\images\minilinux-m3.iso
+Created D:\DevTools\MiniLinux\images\minilinux-m3.iso
+ISO kernel, Limine config, and BIOS file match this build.
+MiniLinux M3: entered kernel_main
+M3 timer switch 0 -> 1; counters 0 / 0
+M3 timer switch 1 -> 0; counters 0 / 2598980
+M3 timer switch 0 -> 1; counters 2456340 / 2598980
+M3 timer switch 1 -> 0; counters 2456340 / 5165265
+M3 timer switch 0 -> 1; counters 4667924 / 5165265
+M3 timer switch 1 -> 0; counters 4667924 / 7814239
+M3 timer switch 0 -> 1; counters 6937956 / 7814239
+M3 timer switch 1 -> 0; counters 6937956 / 10014166
+MiniLinux M3: timer preemption checks passed
+MiniLinux PANIC: M3 reached its intentional stop
+
+M3 boot and serial evidence passed (64 MiB guest).
+MiniLinux M3: entered kernel_main
+M3 timer switch 0 -> 1; counters 0 / 0
+M3 timer switch 1 -> 0; counters 0 / 2660142
+M3 timer switch 0 -> 1; counters 2446670 / 2660142
+M3 timer switch 1 -> 0; counters 2446670 / 4930122
+M3 timer switch 0 -> 1; counters 4727824 / 4930122
+M3 timer switch 1 -> 0; counters 4727824 / 7463527
+M3 timer switch 0 -> 1; counters 7214585 / 7463527
+M3 timer switch 1 -> 0; counters 7214585 / 9894832
+MiniLinux M3: timer preemption checks passed
+MiniLinux PANIC: M3 reached its intentional stop
+
+M3 boot and serial evidence passed (256 MiB guest).
+0x000000000000fff0 in ?? ()
+Breakpoint 1 at 0xffffffff800011b4: file C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\main.c, line 107.
+
+Breakpoint 1, kernel_main () at C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\main.c:107
+107	    serial_init();
+rip            0xffffffff800011b4  0xffffffff800011b4 <kernel_main+4>
+cs             0x28                40
+Breakpoint 2 at 0xffffffff800032b8: file C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\cpu.c, line 37.
+
+Breakpoint 2, cpu_init () at C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\cpu.c:37
+37	    __asm__ volatile ("cli" : : : "memory");
+Breakpoint 3 at 0xffffffff80003728: file C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\task.c, line 28.
+
+Breakpoint 3, task_start () at C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\task.c:28
+28	    for (unsigned i = 0; i < 2; i++) {
+Breakpoint 4 at 0xffffffff800038ac: file C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\task.c, line 45.
+
+Breakpoint 4, task_tick (frame=0xffffffff80008050 <tasks+8016>) at C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\task.c:45
+45	    tasks[current].frame = frame;
+$1 = {r15 = 0, r14 = 0, r13 = 0, r12 = 0, r11 = 0, r10 = 0, r9 = 0, r8 = 0, rdi = 0, rsi = 0, rbp = 0, rdx = 0, rcx = 0, rbx = 0, rax = 0, vector = 32, error = 0, rip = 18446744071562082352, cs = 8, rflags = 66050, rsp = 18446744071562101000, ss = 16}
+Breakpoint 5 at 0xffffffff8000117c: file C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\main.c, line 96.
+
+Breakpoint 5, panic (message=0xffffffff8000495f "M3 reached its intentional stop") at C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\main.c:96
+96	    __asm__ volatile ("cli" : : : "memory");
+#0  panic (message=0xffffffff8000495f "M3 reached its intentional stop") at C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\main.c:96
+#1  0xffffffff800039ae in task_tick (frame=0xffffffff8000a050 <tasks+16208>) at C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\task.c:56
+#2  0xffffffff8000363c in interrupt_dispatch (frame=0xffffffff8000a050 <tasks+16208>) at C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\interrupt.c:8
+#3  0xffffffff80003b03 in interrupt_common () at C:\\Users\\lenovo\\Desktop\\GitHubProjects\\MiniLinux\\kernel\\entry.S:84
+#4  0x0000000000000000 in ?? ()
+[Inferior 1 (process 1) detached]
+
+MiniLinux M3: entered kernel_main
+M3 timer switch 0 -> 1; counters 0 / 0
+M3 timer switch 1 -> 0; counters 0 / 2431214
+M3 timer switch 0 -> 1; counters 2190009 / 2431214
+M3 timer switch 1 -> 0; counters 2190009 / 4722882
+M3 timer switch 0 -> 1; counters 3838822 / 4722882
+M3 timer switch 1 -> 0; counters 3838822 / 6981887
+M3 timer switch 0 -> 1; counters 5182287 / 6981887
+M3 timer switch 1 -> 0; counters 5182287 / 8995980
+MiniLinux M3: timer preemption checks passed
+MiniLinux PANIC: M3 reached its intentional stop
+M3 mechanism checks passed.

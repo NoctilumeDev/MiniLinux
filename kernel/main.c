@@ -7,6 +7,10 @@
 #if MINILINUX_LEVEL >= 2
 #include "vm.h"
 #endif
+#if MINILINUX_LEVEL >= 3
+#include "cpu.h"
+#include "task.h"
+#endif
 
 /* Limine looks for these values in the loaded ELF. */
 __attribute__((used, section(".limine_requests_start")))
@@ -109,6 +113,8 @@ void kernel_main(void) {
     serial_write("MiniLinux M1: entered kernel_main\n");
 #elif MINILINUX_LEVEL == 2
     serial_write("MiniLinux M2: entered kernel_main\n");
+#elif MINILINUX_LEVEL == 3
+    serial_write("MiniLinux M3: entered kernel_main\n");
 #endif
     if (memory_map_request.response == 0 || hhdm_request.response == 0) {
         panic("Limine memory map or HHDM response is unavailable");
@@ -123,6 +129,10 @@ void kernel_main(void) {
     vm_init(hhdm_request.response->offset);
     vm_selftest();
     panic("M2 reached its intentional stop");
+#elif MINILINUX_LEVEL == 3
+    vm_init(hhdm_request.response->offset);
+    cpu_init();
+    task_start();
 #endif
 #else
     serial_write("MiniLinux M0: entered kernel_main\n");

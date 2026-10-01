@@ -2,7 +2,7 @@ param(
     [string]$ToolRoot = 'D:\DevTools\MiniLinux',
     [string]$IsoPath = '',
     [int]$TimeoutSeconds = 20,
-    [ValidateSet('M0', 'M1', 'M2')][string]$Milestone = 'M0',
+    [ValidateSet('M0', 'M1', 'M2', 'M3')][string]$Milestone = 'M0',
     [ValidateRange(64, 256)][int]$MemoryMiB = 256
 )
 
@@ -47,5 +47,8 @@ if ($Milestone -eq 'M1' -and -not $output.Contains('MiniLinux M1: physical page 
 }
 if ($Milestone -eq 'M2' -and -not $output.Contains('MiniLinux M2: address mapping checks passed')) {
     throw 'M2 address mapping checks did not finish.'
+}
+if ($Milestone -eq 'M3' -and -not $output.Contains('MiniLinux M3: timer preemption checks passed')) {
+    throw 'M3 timer preemption checks did not finish.'
 }
 Write-Host "$Milestone boot and serial evidence passed ($MemoryMiB MiB guest)."

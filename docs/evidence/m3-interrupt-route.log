@@ -1,0 +1,73 @@
+0x000000000000fff0 in ?? ()
+Breakpoint 1 at 0xffffffff80003b13: file C:\\Users\\lenovo\\Desktop\\GitHubProjects\\MiniLinux\\kernel\\entry.S, line 109.
+
+Breakpoint 1, cpu_enter_frame () at C:\\Users\\lenovo\\Desktop\\GitHubProjects\\MiniLinux\\kernel\\entry.S:109
+109	    mov %rdi, %rsp
+rdi            0xffffffff80008058  -2147450792
+rsp            0xffff80000ffb4fc8  0xffff80000ffb4fc8
+eflags         0x86                [ IOPL=0 SF PF ]
+0xffffffff80008058 <tasks+8024>:	0x0000000000000000	0x0000000000000000
+0xffffffff80008068 <tasks+8040>:	0x0000000000000000	0x0000000000000000
+0xffffffff80008078 <tasks+8056>:	0x0000000000000000	0x0000000000000000
+0xffffffff80008088 <tasks+8072>:	0x0000000000000000	0x0000000000000000
+0xffffffff80008098 <tasks+8088>:	0x0000000000000000	0x0000000000000000
+0xffffffff800080a8 <tasks+8104>:	0x0000000000000000	0x0000000000000000
+0xffffffff800080b8 <tasks+8120>:	0x0000000000000000	0x0000000000000000
+0xffffffff800080c8 <tasks+8136>:	0x0000000000000000	0x0000000000000000
+0xffffffff800080d8 <tasks+8152>:	0x0000000000000000	0xffffffff80003810
+0xffffffff800080e8 <tasks+8168>:	0x0000000000000008	0x0000000000000202
+0xffffffff800080f8 <tasks+8184>:	0xffffffff80008108	0x0000000000000010
+count_forever () at C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\task.c:14
+14	static void count_forever(void) {
+rip            0xffffffff80003810  0xffffffff80003810 <count_forever>
+rsp            0xffffffff80008108  0xffffffff80008108 <tasks+8200>
+cs             0x8                 8
+ss             0x10                16
+eflags         0x202               [ IOPL=0 IF ]
+[Inferior 1 (process 1) detached]
+ioapic0: ver=0x20 id=0x00 sel=0x3e (redir[23])
+  pin 0  0x0000000000010000 dest=0 vec=0   active-hi edge  masked fixed  physical
+  pin 1  0x0000000000010000 dest=0 vec=0   active-hi edge  masked fixed  physical
+  pin 2  0x0000000000010000 dest=0 vec=0   active-hi edge  masked fixed  physical
+  pin 3  0x0000000000010000 dest=0 vec=0   active-hi edge  masked fixed  physical
+  pin 4  0x0000000000010000 dest=0 vec=0   active-hi edge  masked fixed  physical
+  pin 5  0x0000000000010000 dest=0 vec=0   active-hi edge  masked fixed  physical
+  pin 6  0x0000000000010000 dest=0 vec=0   active-hi edge  masked fixed  physical
+  pin 7  0x0000000000010000 dest=0 vec=0   active-hi edge  masked fixed  physical
+  pin 8  0x0000000000010000 dest=0 vec=0   active-hi edge  masked fixed  physical
+  pin 9  0x0000000000010000 dest=0 vec=0   active-hi edge  masked fixed  physical
+  pin 10 0x0000000000010000 dest=0 vec=0   active-hi edge  masked fixed  physical
+  pin 11 0x0000000000010000 dest=0 vec=0   active-hi edge  masked fixed  physical
+  pin 12 0x0000000000010000 dest=0 vec=0   active-hi edge  masked fixed  physical
+  pin 13 0x0000000000010000 dest=0 vec=0   active-hi edge  masked fixed  physical
+  pin 14 0x0000000000010000 dest=0 vec=0   active-hi edge  masked fixed  physical
+  pin 15 0x0000000000010000 dest=0 vec=0   active-hi edge  masked fixed  physical
+  pin 16 0x0000000000010000 dest=0 vec=0   active-hi edge  masked fixed  physical
+  pin 17 0x0000000000010000 dest=0 vec=0   active-hi edge  masked fixed  physical
+  pin 18 0x0000000000010000 dest=0 vec=0   active-hi edge  masked fixed  physical
+  pin 19 0x0000000000010000 dest=0 vec=0   active-hi edge  masked fixed  physical
+  pin 20 0x0000000000010000 dest=0 vec=0   active-hi edge  masked fixed  physical
+  pin 21 0x0000000000010000 dest=0 vec=0   active-hi edge  masked fixed  physical
+  pin 22 0x0000000000010000 dest=0 vec=0   active-hi edge  masked fixed  physical
+  pin 23 0x0000000000010000 dest=0 vec=0   active-hi edge  masked fixed  physical
+  IRR      (none)
+  Remote IRR (none)
+pic1: irr=00 imr=ff isr=00 hprio=0 irq_base=28 rr_sel=0 elcr=0c fnm=0
+pic0: irr=01 imr=fe isr=00 hprio=0 irq_base=20 rr_sel=0 elcr=00 fnm=0
+dumping local APIC state for CPU 0 
+
+LVT0	 0x00018700 active-hi level masked                      ExtINT (vec 0)
+LVT1	 0x00010400 active-hi edge  masked                      NMI   
+LVTPC	 0x00010000 active-hi edge  masked                      Fixed  (vec 0)
+LVTERR	 0x00010000 active-hi edge  masked                      Fixed  (vec 0)
+LVTTHMR	 0x00010000 active-hi edge  masked                      Fixed  (vec 0)
+LVTT	 0x00010000 active-hi edge  masked         one-shot     Fixed  (vec 0)
+Timer	 DCR=0x0 (divide by 2) initial_count = 0 current_count = 0
+SPIV	 0x000001ff APIC enabled, focus=off, spurious vec 255
+ICR	 0x000c4610 physical edge assert all
+ICR2	 0x00000000
+ESR	 0x00000000
+ISR	 (none)
+IRR	 (none)
+
+APR 0x00 TPR 0x00 DFR 0x0f LDR 0x00 PPR 0x00

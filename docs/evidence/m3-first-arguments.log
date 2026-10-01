@@ -1,0 +1,9 @@
+clang: error: -E or -x required when input is from standard input
+clang: error: no such file or directory: 's'
+clang: error: no such file or directory: 't'
+clang: error: no such file or directory: 'd'
+clang: error: no such file or directory: '='
+clang: error: no such file or directory: 'c'
+clang: error: no such file or directory: '1'
+clang: error: no such file or directory: '1'
+clang: error: cannot specify -o when generating multiple output files

@@ -1,6 +1,6 @@
 param(
     [string]$ToolRoot = 'D:\DevTools\MiniLinux',
-    [ValidateSet('M0', 'M1', 'M2')][string]$Milestone = 'M0'
+    [ValidateSet('M0', 'M1', 'M2', 'M3')][string]$Milestone = 'M0'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -21,6 +21,9 @@ if ($level -ge 1) {
 if ($level -ge 2) {
     $sources += @('kernel\bytes.c', 'kernel\memory\vm.c', 'kernel\memory\vm_test.c')
 }
+if ($level -ge 3) {
+    $sources += @('kernel\cpu.c', 'kernel\interrupt.c', 'kernel\task.c', 'kernel\entry.S')
+}
 $objects = @()
 $kernel = Join-Path $build 'kernel.elf'
 $script = Join-Path $project 'linker.ld'
@@ -29,7 +32,8 @@ $includes = Join-Path $project 'include'
 foreach ($relative in $sources) {
     $source = Join-Path $project $relative
     $object = Join-Path $build ([IO.Path]::GetFileNameWithoutExtension($relative) + '.o')
-    & $clang --target=x86_64-unknown-none-elf -std=c11 -Wall -Wextra -Werror `
+    $language = @(if ($relative.EndsWith('.c')) { '-std=c11' })
+    & $clang --target=x86_64-unknown-none-elf @language -Wall -Wextra -Werror `
         -ffreestanding -fno-builtin -fno-stack-protector -fno-pic -fno-pie `
         -fno-omit-frame-pointer -mno-red-zone -mno-sse -mno-mmx -mno-80387 `
         -mcmodel=kernel -O0 -g -I $includes @defines -c $source -o $object

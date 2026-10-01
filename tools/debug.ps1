@@ -3,10 +3,12 @@ param(
     [string]$Gdb = 'D:\GCC\mingw64\bin\gdb.exe',
     [string]$IsoPath = '',
     [int]$TimeoutSeconds = 20,
-    [ValidateSet('M0', 'M1')][string]$Milestone = 'M0'
+    [ValidateSet('M0', 'M1', 'M2', 'M3')][string]$Milestone = 'M0',
+    [switch]$CorruptRegister
 )
 
 $ErrorActionPreference = 'Stop'
+if ($CorruptRegister -and $Milestone -ne 'M3') { throw 'Register injection belongs to M3 only.' }
 $project = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
 $qemu = Join-Path $ToolRoot 'qemu-20260811\qemu-system-x86_64.exe'
 $iso = if ($IsoPath) { $IsoPath } else {
@@ -29,6 +31,20 @@ if ($Milestone -eq 'M1') {
     $commands += @('break page_alloc', 'continue', 'p pages.frame_count',
                    'p pages.free_count', 'p/x pages.metadata_base', 'disable 2')
     $panicBreakpoint = 3
+}
+if ($Milestone -eq 'M2') {
+    $commands += @('break vm_switch', 'continue', 'p/x root', 'disable 2')
+    $panicBreakpoint = 3
+}
+if ($Milestone -eq 'M3') {
+    $commands += @('break cpu_init', 'continue', 'disable 2',
+                   'break task_start', 'continue', 'disable 3',
+                   'break task_tick')
+    if ($CorruptRegister) { $commands += 'ignore 4 2' }
+    $commands += @('continue', 'p *frame')
+    if ($CorruptRegister) { $commands += 'set frame->r12 = frame->r12 ^ 1' }
+    $commands += 'disable 4'
+    $panicBreakpoint = 5
 }
 $commands += @('break panic', 'continue', 'bt', 'detach')
 Set-Content -LiteralPath $commandsPath -Value $commands
@@ -77,8 +93,10 @@ try {
     if (-not $guest.HasExited) { Stop-Process -Id $guest.Id }
 }
 Get-Content -LiteralPath $log
+$serial = [string](Get-Content -LiteralPath $log -Raw)
+$expectedStop = if ($CorruptRegister) { 'M3 register guard changed' } else { "$Milestone reached its intentional stop" }
+if (-not $serial.Contains("MiniLinux PANIC: $expectedStop")) { throw 'Debugger observed an unexpected stop.' }
 if ($Milestone -eq 'M1') {
-    $serial = [string](Get-Content -LiteralPath $log -Raw)
     if (-not $serial.Contains('MiniLinux M1: physical page checks passed') -or
         -not $serial.Contains('MiniLinux PANIC: M1 reached its intentional stop')) {
         throw 'GDB did not observe completed M1 page checks and the intentional stop.'
