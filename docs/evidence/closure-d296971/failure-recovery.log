@@ -1,0 +1,7 @@
+Recovery checks on remote clone d296971d2b7be381d94c7a3cad544f3b296964f3
+Expected rejection: stale M0 payload; ISO payload differs from this build: kernel.elf; 0.12 seconds
+Expected rejection: bad ISO serial; M6 serial evidence is missing. Check the image and bootloader.; 3.29 seconds
+Expected rejection: bad ISO GDB; GDB exceeded the 3-second observation limit.; 6.05 seconds
+Expected rejection: owned port 1234 conflict, before guest launch.
+After failures: 0 QEMU/GDB processes, 0 port 1234 listeners.
+Normal M6 run passed after the failures.

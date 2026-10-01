@@ -1,0 +1,40 @@
+0x000000000000fff0 in ?? ()
+Breakpoint 1 at 0xffffffff80001224: file C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-closed-d296971-20261002\kernel\main.c, line 114.
+
+Breakpoint 1, kernel_main () at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-closed-d296971-20261002\kernel\main.c:114
+114	    serial_init();
+rip            0xffffffff80001224  0xffffffff80001224 <kernel_main+4>
+cs             0x28                40
+Breakpoint 2 at 0xffffffff80003d13: file C:\\Users\\lenovo\\Desktop\\GitHubProjects\\tmp\\minilinux-closed-d296971-20261002\\kernel\\entry.S, line 109.
+
+Breakpoint 2, cpu_enter_frame () at C:\\Users\\lenovo\\Desktop\\GitHubProjects\\tmp\\minilinux-closed-d296971-20261002\\kernel\\entry.S:109
+109	    mov %rdi, %rsp
+The current OS ABI is "auto" (currently "Windows").
+The default OS ABI is "Windows".
+$1 = 0x8000000000094007
+$2 = 0x8000000000089007
+$3 = 0x89000
+$4 = 0x94000
+Breakpoint 3 at 0xffffffff800011ec: file C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-closed-d296971-20261002\kernel\main.c, line 103.
+
+Breakpoint 3, panic (message=0xffffffff80005b52 "user address space marker changed") at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-closed-d296971-20261002\kernel\main.c:103
+103	    __asm__ volatile ("cli" : : : "memory");
+#0  panic (message=0xffffffff80005b52 "user address space marker changed") at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-closed-d296971-20261002\kernel\main.c:103
+#1  0xffffffff80003b23 in task_exit (frame=0xffffffff8000c0d0 <tasks+16336>, status=2) at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-closed-d296971-20261002\kernel\task.c:92
+#2  0xffffffff8000479f in syscall_dispatch (frame=0xffffffff8000c0d0 <tasks+16336>) at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-closed-d296971-20261002\kernel\syscall.c:36
+#3  0xffffffff800036b3 in interrupt_dispatch (frame=0xffffffff8000c0d0 <tasks+16336>) at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-closed-d296971-20261002\kernel\interrupt.c:10
+#4  0xffffffff80003cf3 in interrupt_common () at C:\\Users\\lenovo\\Desktop\\GitHubProjects\\tmp\\minilinux-closed-d296971-20261002\\kernel\\entry.S:84
+#5  0x0000000000000000 in ?? ()
+[Inferior 1 (process 1) detached]
+
+MiniLinux M6: entered kernel_main
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+syscall from task 1 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+syscall from task 0 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+MiniLinux PANIC: user address space marker changed
