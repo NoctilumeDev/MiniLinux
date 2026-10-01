@@ -3,7 +3,7 @@ param(
     [string]$Gdb = 'D:\GCC\mingw64\bin\gdb.exe',
     [string]$IsoPath = '',
     [int]$TimeoutSeconds = 20,
-    [ValidateSet('M0', 'M1', 'M2', 'M3', 'M4')][string]$Milestone = 'M0',
+    [ValidateSet('M0', 'M1', 'M2', 'M3', 'M4', 'M5')][string]$Milestone = 'M0',
     [switch]$CorruptRegister
 )
 
@@ -46,7 +46,7 @@ if ($Milestone -eq 'M3') {
     $commands += 'disable 4'
     $panicBreakpoint = 5
 }
-if ($Milestone -eq 'M4') {
+if ([int]$Milestone.Substring(1) -ge 4) {
     $commands += @('break task_start', 'continue', 'disable 2',
                    'break *0x400000', 'continue', 'info registers rip cs ss rsp cr3', 'disable 3',
                    'break syscall_dispatch', 'continue', 'p *frame', 'disable 4',

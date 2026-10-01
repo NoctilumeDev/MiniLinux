@@ -2,6 +2,7 @@
 #define MINILINUX_TASK_H
 #include "cpu.h"
 #include "vm.h"
+#include "ramfs.h"
 struct task {
     struct interrupt_frame *frame;
     uint8_t stack[8192] __attribute__((aligned(16)));
@@ -10,6 +11,8 @@ struct task {
     struct address_space *space;
     unsigned id, rejected_pointers, rejected_calls;
     bool alive, reported, fault_seen, user_seen;
+    struct open_file files[OPEN_LIMIT];
+    unsigned files_opened, bytes_read, eof_reads, file_errors;
 };
 struct task *task_current(void);
 struct task *task_get(unsigned index);

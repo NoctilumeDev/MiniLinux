@@ -1,6 +1,6 @@
 param(
     [string]$ToolRoot = 'D:\DevTools\MiniLinux',
-    [ValidateSet('M0', 'M1', 'M2', 'M3', 'M4')][string]$Milestone = 'M0'
+    [ValidateSet('M0', 'M1', 'M2', 'M3', 'M4', 'M5')][string]$Milestone = 'M0'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -43,7 +43,10 @@ if ($level -ge 4) {
     $values = ($bytes | ForEach-Object { '0x{0:x2}' -f $_ }) -join ','
     $embedded = Join-Path $build 'user-image.c'
     Set-Content -LiteralPath $embedded -Value @('#include <stdint.h>', "const unsigned char user_image[] = {$values};", "const uint64_t user_image_size = $($bytes.Length);")
-    $sources += @('kernel\user.c', 'build\user-image.c')
+    $sources += @('kernel\user.c', 'kernel\syscall.c', 'build\user-image.c')
+}
+if ($level -ge 5) {
+    $sources += 'kernel\ramfs.c'
 }
 $objects = @()
 $kernel = Join-Path $build 'kernel.elf'

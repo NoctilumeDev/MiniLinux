@@ -70,43 +70,6 @@ bool user_range(const struct task *task, uint64_t address, size_t length, bool w
     return true;
 }
 
-struct interrupt_frame *syscall_dispatch(struct interrupt_frame *frame) {
-    struct task *task = task_current();
-    if (frame->cs != 0x23) { panic("syscall did not come from CPL3"); }
-    if (!task->user_seen) {
-        serial_write("syscall from task "); serial_write_number(task->id);
-        serial_write(" CS="); serial_write_hex(frame->cs);
-        serial_write(" user RSP="); serial_write_hex(frame->rsp); serial_write("\n");
-        task->user_seen = true;
-    }
-    switch (frame->rax) {
-    case SYS_TASK_ID: frame->rax = task->id; break;
-    case SYS_TICKS: frame->rax = task_ticks(); break;
-    case SYS_WRITE:
-        if (!user_range(task, frame->rdi, frame->rsi, false)) {
-            task->rejected_pointers++;
-            frame->rax = (uint64_t)-2;
-            break;
-        }
-        serial_write_bytes((const char *)(uintptr_t)frame->rdi, frame->rsi);
-        frame->rax = frame->rsi;
-        break;
-    case SYS_REPORT:
-        if (frame->rdi != 0x4d4 || task->reported) { panic("user report differs"); }
-        if (task->id == 1 && !task_get(0)->fault_seen) { panic("survivor has not run after fault"); }
-        task->reported = true;
-        serial_write("user report accepted: "); serial_write_number(task->id); serial_write("\n");
-        frame->rax = 0;
-        break;
-    case SYS_EXIT: return task_exit(frame, frame->rdi);
-    default:
-        task->rejected_calls++;
-        frame->rax = (uint64_t)-1;
-        break;
-    }
-    return frame;
-}
-
 struct interrupt_frame *user_fault(struct interrupt_frame *frame, uint64_t address) {
     struct task *task = task_current();
     serial_write("user page fault: task="); serial_write_number(task->id);
@@ -126,6 +89,12 @@ __attribute__((noreturn)) void user_complete(void) {
             task->rejected_pointers < 3 || task->rejected_calls < 1) {
             panic("user boundary observations are incomplete");
         }
+#if MINILINUX_LEVEL >= 5
+        if (task->files_opened != 3 || task->bytes_read != 18 || task->eof_reads < 2 ||
+            task->file_errors < 4 || task->files[0].used || task->files[1].used) {
+            panic("file observations are incomplete");
+        }
+#endif
     }
     if (!task_get(0)->fault_seen || task_get(1)->fault_seen) { panic("fault isolation differs"); }
     vm_switch(boot_root);
@@ -136,6 +105,11 @@ __attribute__((noreturn)) void user_complete(void) {
     struct page_info info;
     page_get_info(&info);
     if (info.free_count != initial_free) { panic("user experiment leaked pages"); }
+#if MINILINUX_LEVEL == 4
     serial_write("MiniLinux M4: user boundary checks passed\n");
     panic("M4 reached its intentional stop");
+#else
+    serial_write("MiniLinux M5: file byte checks passed\n");
+    panic("M5 reached its intentional stop");
+#endif
 }
