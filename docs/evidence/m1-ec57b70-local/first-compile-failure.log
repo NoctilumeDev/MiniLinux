@@ -1,0 +1,15 @@
+M0 tool digests and pycdlib version match the baseline.
+C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\memory\page_test.c:69:13: error: variable 'second' is used uninitialized whenever '&&' condition is false [-Werror,-Wsometimes-uninitialized]
+   69 |     require(page_alloc(&first) && page_alloc(&second), "initial page allocation failed");
+      |             ^~~~~~~~~~~~~~~~~~
+C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\memory\page_test.c:70:22: note: uninitialized use occurs here
+   70 |     require(first != second && first % PAGE_SIZE == 0 && second % PAGE_SIZE == 0,
+      |                      ^~~~~~
+C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\memory\page_test.c:69:13: note: remove the '&&' if its condition is always true
+   69 |     require(page_alloc(&first) && page_alloc(&second), "initial page allocation failed");
+      |             ^~~~~~~~~~~~~~~~~~~~~
+C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\memory\page_test.c:68:27: note: initialize the variable 'second' to silence this warning
+   68 |     uint64_t first, second;
+      |                           ^
+      |                            = 0
+1 error generated.
