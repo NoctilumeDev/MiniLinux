@@ -1,8 +1,11 @@
 #include <stdint.h>
 #include "console.h"
 #include "limine.h"
-#ifdef MINILINUX_M1
+#if MINILINUX_LEVEL >= 1
 #include "page.h"
+#endif
+#if MINILINUX_LEVEL >= 2
+#include "vm.h"
 #endif
 
 /* Limine looks for these values in the loaded ELF. */
@@ -12,7 +15,7 @@ static volatile uint64_t requests_start[] = LIMINE_REQUESTS_START_MARKER;
 __attribute__((used, section(".limine_requests")))
 static volatile uint64_t base_revision[] = LIMINE_BASE_REVISION(6);
 
-#ifdef MINILINUX_M1
+#if MINILINUX_LEVEL >= 1
 __attribute__((used, section(".limine_requests")))
 static volatile struct limine_memmap_request memory_map_request = {
     .id = LIMINE_MEMMAP_REQUEST_ID,
@@ -86,6 +89,7 @@ void serial_write_number(uint64_t value) {
 
 __attribute__((noreturn))
 void panic(const char *message) {
+    __asm__ volatile ("cli" : : : "memory");
     serial_write("MiniLinux PANIC: ");
     serial_write(message);
     serial_write("\n");
@@ -100,16 +104,26 @@ void kernel_main(void) {
     if (!LIMINE_BASE_REVISION_SUPPORTED(base_revision)) {
         panic("Limine base revision 6 is unavailable");
     }
-#ifdef MINILINUX_M1
+#if MINILINUX_LEVEL >= 1
+#if MINILINUX_LEVEL == 1
     serial_write("MiniLinux M1: entered kernel_main\n");
+#elif MINILINUX_LEVEL == 2
+    serial_write("MiniLinux M2: entered kernel_main\n");
+#endif
     if (memory_map_request.response == 0 || hhdm_request.response == 0) {
         panic("Limine memory map or HHDM response is unavailable");
     }
     if (!page_init(memory_map_request.response, hhdm_request.response->offset)) {
         panic("physical page initialization failed");
     }
+#if MINILINUX_LEVEL == 1
     page_selftest(memory_map_request.response, hhdm_request.response->offset);
     panic("M1 reached its intentional stop");
+#elif MINILINUX_LEVEL == 2
+    vm_init(hhdm_request.response->offset);
+    vm_selftest();
+    panic("M2 reached its intentional stop");
+#endif
 #else
     serial_write("MiniLinux M0: entered kernel_main\n");
     panic("M0 reached its intentional stop");

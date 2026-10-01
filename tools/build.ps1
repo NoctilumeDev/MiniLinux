@@ -1,6 +1,6 @@
 param(
     [string]$ToolRoot = 'D:\DevTools\MiniLinux',
-    [ValidateSet('M0', 'M1')][string]$Milestone = 'M0'
+    [ValidateSet('M0', 'M1', 'M2')][string]$Milestone = 'M0'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -13,10 +13,13 @@ $build = Join-Path $project 'build'
 New-Item -ItemType Directory -Force -Path $build | Out-Null
 
 $sources = @('kernel\main.c')
-$defines = @()
-if ($Milestone -eq 'M1') {
+$level = [int]$Milestone.Substring(1)
+$defines = @("-DMINILINUX_LEVEL=$level")
+if ($level -ge 1) {
     $sources += @('kernel\memory\page.c', 'kernel\memory\page_test.c')
-    $defines = @('-DMINILINUX_M1')
+}
+if ($level -ge 2) {
+    $sources += @('kernel\bytes.c', 'kernel\memory\vm.c', 'kernel\memory\vm_test.c')
 }
 $objects = @()
 $kernel = Join-Path $build 'kernel.elf'
