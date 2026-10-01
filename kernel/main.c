@@ -72,6 +72,13 @@ void serial_write(const char *message) {
     }
 }
 
+void serial_write_bytes(const char *bytes, size_t length) {
+    for (size_t i = 0; i < length; i++) {
+        if (bytes[i] == '\n') { serial_putc('\r'); }
+        serial_putc(bytes[i]);
+    }
+}
+
 void serial_write_hex(uint64_t value) {
     static const char digits[] = "0123456789abcdef";
     serial_write("0x");
@@ -109,13 +116,8 @@ void kernel_main(void) {
         panic("Limine base revision 6 is unavailable");
     }
 #if MINILINUX_LEVEL >= 1
-#if MINILINUX_LEVEL == 1
-    serial_write("MiniLinux M1: entered kernel_main\n");
-#elif MINILINUX_LEVEL == 2
-    serial_write("MiniLinux M2: entered kernel_main\n");
-#elif MINILINUX_LEVEL == 3
-    serial_write("MiniLinux M3: entered kernel_main\n");
-#endif
+    serial_write("MiniLinux M"); serial_write_number(MINILINUX_LEVEL);
+    serial_write(": entered kernel_main\n");
     if (memory_map_request.response == 0 || hhdm_request.response == 0) {
         panic("Limine memory map or HHDM response is unavailable");
     }
@@ -129,7 +131,7 @@ void kernel_main(void) {
     vm_init(hhdm_request.response->offset);
     vm_selftest();
     panic("M2 reached its intentional stop");
-#elif MINILINUX_LEVEL == 3
+#elif MINILINUX_LEVEL >= 3
     vm_init(hhdm_request.response->offset);
     cpu_init();
     task_start();

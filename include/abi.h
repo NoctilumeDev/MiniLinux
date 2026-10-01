@@ -1,0 +1,10 @@
+#ifndef MINILINUX_ABI_H
+#define MINILINUX_ABI_H
+#include <stdint.h>
+enum { SYS_TASK_ID, SYS_WRITE, SYS_TICKS, SYS_REPORT, SYS_EXIT };
+#define USER_CODE UINT64_C(0x400000)
+#define USER_DATA UINT64_C(0x600000)
+#define USER_STACK UINT64_C(0x800000)
+#define KERNEL_PROBE UINT64_C(0xffffffff80000000)
+enum { COPY_LIMIT = 256 };
+#endif

@@ -54,10 +54,10 @@ ioapic0: ver=0x20 id=0x00 sel=0x3e (redir[23])
   Remote IRR (none)
 pic1: irr=00 imr=ff isr=00 hprio=0 irq_base=28 rr_sel=0 elcr=0c fnm=0
 pic0: irr=01 imr=fe isr=00 hprio=0 irq_base=20 rr_sel=0 elcr=00 fnm=0
-dumping local APIC state for CPU 0 
+dumping local APIC state for CPU 0
 
 LVT0	 0x00018700 active-hi level masked                      ExtINT (vec 0)
-LVT1	 0x00010400 active-hi edge  masked                      NMI   
+LVT1	 0x00010400 active-hi edge  masked                      NMI
 LVTPC	 0x00010000 active-hi edge  masked                      Fixed  (vec 0)
 LVTERR	 0x00010000 active-hi edge  masked                      Fixed  (vec 0)
 LVTTHMR	 0x00010000 active-hi edge  masked                      Fixed  (vec 0)

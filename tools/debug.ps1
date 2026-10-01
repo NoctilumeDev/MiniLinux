@@ -3,7 +3,7 @@ param(
     [string]$Gdb = 'D:\GCC\mingw64\bin\gdb.exe',
     [string]$IsoPath = '',
     [int]$TimeoutSeconds = 20,
-    [ValidateSet('M0', 'M1', 'M2', 'M3')][string]$Milestone = 'M0',
+    [ValidateSet('M0', 'M1', 'M2', 'M3', 'M4')][string]$Milestone = 'M0',
     [switch]$CorruptRegister
 )
 
@@ -45,6 +45,13 @@ if ($Milestone -eq 'M3') {
     if ($CorruptRegister) { $commands += 'set frame->r12 = frame->r12 ^ 1' }
     $commands += 'disable 4'
     $panicBreakpoint = 5
+}
+if ($Milestone -eq 'M4') {
+    $commands += @('break task_start', 'continue', 'disable 2',
+                   'break *0x400000', 'continue', 'info registers rip cs ss rsp cr3', 'disable 3',
+                   'break syscall_dispatch', 'continue', 'p *frame', 'disable 4',
+                   'break user_fault', 'continue', 'p *frame', 'p/x address', 'disable 5')
+    $panicBreakpoint = 6
 }
 $commands += @('break panic', 'continue', 'bt', 'detach')
 Set-Content -LiteralPath $commandsPath -Value $commands

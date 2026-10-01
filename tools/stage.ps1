@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('M2', 'M3')][string]$Milestone = 'M3',
+    [ValidateSet('M2', 'M3', 'M4')][string]$Milestone = 'M4',
     [string]$ToolRoot = 'D:\DevTools\MiniLinux'
 )
 $ErrorActionPreference = 'Stop'
