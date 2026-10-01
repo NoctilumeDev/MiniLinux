@@ -89,6 +89,7 @@ struct interrupt_frame *task_tick(struct interrupt_frame *frame) {
 
 #if MINILINUX_LEVEL >= 4
 struct interrupt_frame *task_exit(struct interrupt_frame *frame, uint64_t status) {
+    if (status == 2) { panic("user address space marker changed"); }
     if (status != 0) { panic("user program reported failure"); }
     tasks[current].frame = frame;
     tasks[current].alive = false;

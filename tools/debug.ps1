@@ -3,12 +3,14 @@ param(
     [string]$Gdb = 'D:\GCC\mingw64\bin\gdb.exe',
     [string]$IsoPath = '',
     [int]$TimeoutSeconds = 20,
-    [ValidateSet('M0', 'M1', 'M2', 'M3', 'M4', 'M5')][string]$Milestone = 'M0',
-    [switch]$CorruptRegister
+    [ValidateSet('M0', 'M1', 'M2', 'M3', 'M4', 'M5', 'M6')][string]$Milestone = 'M0',
+    [switch]$CorruptRegister,
+    [switch]$AliasUserData
 )
 
 $ErrorActionPreference = 'Stop'
 if ($CorruptRegister -and $Milestone -ne 'M3') { throw 'Register injection belongs to M3 only.' }
+if ($AliasUserData -and $Milestone -ne 'M6') { throw 'Data alias injection belongs to M6 only.' }
 $project = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
 $qemu = Join-Path $ToolRoot 'qemu-20260811\qemu-system-x86_64.exe'
 $iso = if ($IsoPath) { $IsoPath } else {
@@ -46,12 +48,26 @@ if ($Milestone -eq 'M3') {
     $commands += 'disable 4'
     $panicBreakpoint = 5
 }
-if ([int]$Milestone.Substring(1) -ge 4) {
+if ([int]$Milestone.Substring(1) -ge 4 -and -not $AliasUserData) {
     $commands += @('break task_start', 'continue', 'disable 2',
                    'break *0x400000', 'continue', 'info registers rip cs ss rsp cr3', 'disable 3',
                    'break syscall_dispatch', 'continue', 'p *frame', 'disable 4',
                    'break user_fault', 'continue', 'p *frame', 'p/x address', 'disable 5')
     $panicBreakpoint = 6
+}
+if ($AliasUserData) {
+    $commands += @('break cpu_enter_frame', 'continue', 'disable 2',
+                   'show osabi',
+                   'set $table = (uint64_t *)(direct_offset + spaces[1].root)',
+                   'set $table = (uint64_t *)(direct_offset + ($table[0] & 0x000ffffffffff000))',
+                   'set $table = (uint64_t *)(direct_offset + ($table[0] & 0x000ffffffffff000))',
+                   'set $table = (uint64_t *)(direct_offset + ($table[3] & 0x000ffffffffff000))',
+                   'p/x $table[0]',
+                   'set $table[0] = ($table[0] & ~0x000ffffffffff000) | tasks[0].data_page',
+                   'p/x $table[0]', 'p/x tasks[0].data_page', 'p/x tasks[1].data_page',
+                   'if ($table[0] & 0x000ffffffffff000) != tasks[0].data_page',
+                   'quit 1', 'end')
+    $panicBreakpoint = 3
 }
 $commands += @('break panic', 'continue', 'bt', 'detach')
 Set-Content -LiteralPath $commandsPath -Value $commands
@@ -101,7 +117,7 @@ try {
 }
 Get-Content -LiteralPath $log
 $serial = [string](Get-Content -LiteralPath $log -Raw)
-$expectedStop = if ($CorruptRegister) { 'M3 register guard changed' } else { "$Milestone reached its intentional stop" }
+$expectedStop = if ($CorruptRegister) { 'M3 register guard changed' } elseif ($AliasUserData) { 'user address space marker changed' } else { "$Milestone reached its intentional stop" }
 if (-not $serial.Contains("MiniLinux PANIC: $expectedStop")) { throw 'Debugger observed an unexpected stop.' }
 if ($Milestone -eq 'M1') {
     if (-not $serial.Contains('MiniLinux M1: physical page checks passed') -or

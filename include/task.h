@@ -9,6 +9,7 @@ struct task {
     volatile uint64_t counter;
     unsigned slices;
     struct address_space *space;
+    uint64_t data_page;
     unsigned id, rejected_pointers, rejected_calls;
     bool alive, reported, fault_seen, user_seen;
     struct open_file files[OPEN_LIMIT];

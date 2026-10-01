@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('M2', 'M3', 'M4', 'M5')][string]$Milestone = 'M5',
+    [ValidateSet('M2', 'M3', 'M4', 'M5', 'M6')][string]$Milestone = 'M6',
     [string]$ToolRoot = 'D:\DevTools\MiniLinux'
 )
 $ErrorActionPreference = 'Stop'
@@ -13,4 +13,16 @@ foreach ($memory in @(64, 256)) {
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot '..\build\serial.log') -Destination (Join-Path $PSScriptRoot "..\build\$Milestone-serial-${memory}m.log")
 }
 & (Join-Path $PSScriptRoot 'debug.ps1') -ToolRoot $ToolRoot -Milestone $Milestone
+if ($Milestone -eq 'M6') {
+    foreach ($probe in @(2, 3, 4)) {
+        & (Join-Path $PSScriptRoot 'build.ps1') -ToolRoot $ToolRoot -Milestone M6 -FaultCase $probe
+        & (Join-Path $PSScriptRoot 'image.ps1') -ToolRoot $ToolRoot -Milestone M6
+        & (Join-Path $PSScriptRoot 'verify-image.ps1') -ToolRoot $ToolRoot -IsoPath $iso
+        & (Join-Path $PSScriptRoot 'run.ps1') -ToolRoot $ToolRoot -Milestone M6
+        Copy-Item -LiteralPath (Join-Path $PSScriptRoot '..\build\serial.log') -Destination (Join-Path $PSScriptRoot "..\build\M6-probe-$probe.log")
+    }
+    & (Join-Path $PSScriptRoot 'build.ps1') -ToolRoot $ToolRoot -Milestone M6
+    & (Join-Path $PSScriptRoot 'image.ps1') -ToolRoot $ToolRoot -Milestone M6
+    & (Join-Path $PSScriptRoot 'verify-image.ps1') -ToolRoot $ToolRoot -IsoPath $iso
+}
 Write-Host "$Milestone mechanism checks passed."

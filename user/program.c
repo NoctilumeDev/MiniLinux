@@ -68,16 +68,37 @@ __attribute__((section(".text.entry"), noreturn)) void user_main(void) {
 #endif
 
     volatile uint64_t *data = (volatile uint64_t *)(uintptr_t)USER_DATA;
+#if MINILINUX_LEVEL >= 6
+    data[0] = UINT64_C(0xa110) + id;
+    unsigned counter_slot = 1;
+#else
+    unsigned counter_slot = 2 + (unsigned)id;
+#endif
     uint64_t start = (uint64_t)call(SYS_TICKS, 0, 0, 0);
     uint64_t duration = id == 0 ? 12 : 24;
     while ((uint64_t)call(SYS_TICKS, 0, 0, 0) - start < duration) {
-        for (unsigned i = 0; i < 10000; i++) { data[2 + id]++; }
+#if MINILINUX_LEVEL >= 6
+        if (data[0] != UINT64_C(0xa110) + id) {
+            call(SYS_EXIT, 2, 0, 0);
+            fail();
+        }
+#endif
+        for (unsigned i = 0; i < 10000; i++) { data[counter_slot]++; }
     }
     if (call(SYS_REPORT, 0x4d0 + MINILINUX_LEVEL, file_length, 0) != 0) { fail(); }
     if (id == 0) {
         /* A real user load, not a kernel check pretending to be a fault. */
+#if MINILINUX_LEVEL >= 6 && MINILINUX_PROBE == 2
+        *(volatile uint8_t *)(uintptr_t)USER_CODE = 0x90;
+#elif MINILINUX_LEVEL >= 6 && MINILINUX_PROBE == 3
+        ((void (*)(void))(uintptr_t)USER_DATA)();
+#elif MINILINUX_LEVEL >= 6 && MINILINUX_PROBE == 4
+        volatile uint8_t denied = *(volatile uint8_t *)(uintptr_t)0x900000;
+        (void)denied;
+#else
         volatile uint8_t denied = *(volatile uint8_t *)(uintptr_t)KERNEL_PROBE;
         (void)denied;
+#endif
         fail();
     }
     call(SYS_EXIT, 0, 0, 0);

@@ -1,7 +1,7 @@
 param(
     [string]$ToolRoot = 'D:\DevTools\MiniLinux',
     [string]$Python = 'D:\python-3.10.6\python.exe',
-    [ValidateSet('M0', 'M1', 'M2', 'M3', 'M4', 'M5')][string]$Milestone = 'M0'
+    [ValidateSet('M0', 'M1', 'M2', 'M3', 'M4', 'M5', 'M6')][string]$Milestone = 'M0'
 )
 
 $ErrorActionPreference = 'Stop'

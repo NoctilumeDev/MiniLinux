@@ -2,7 +2,7 @@ param(
     [string]$ToolRoot = 'D:\DevTools\MiniLinux',
     [string]$IsoPath = '',
     [int]$TimeoutSeconds = 20,
-    [ValidateSet('M0', 'M1', 'M2', 'M3', 'M4', 'M5')][string]$Milestone = 'M0',
+    [ValidateSet('M0', 'M1', 'M2', 'M3', 'M4', 'M5', 'M6')][string]$Milestone = 'M0',
     [ValidateRange(64, 256)][int]$MemoryMiB = 256
 )
 
@@ -56,5 +56,8 @@ if ($Milestone -eq 'M4' -and -not $output.Contains('MiniLinux M4: user boundary 
 }
 if ($Milestone -eq 'M5' -and -not $output.Contains('MiniLinux M5: file byte checks passed')) {
     throw 'M5 file byte checks did not finish.'
+}
+if ($Milestone -eq 'M6' -and -not $output.Contains('MiniLinux M6: process isolation checks passed')) {
+    throw 'M6 process isolation checks did not finish.'
 }
 Write-Host "$Milestone boot and serial evidence passed ($MemoryMiB MiB guest)."

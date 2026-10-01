@@ -1,45 +1,62 @@
 # MiniLinux
 
-MiniLinux 是一个以 C 为主实现的教学操作系统。它用真实的用户态执行链解释：一个程序如何获得内存和 CPU 时间，以及如何通过内核入口读取文件中的字节。名字中的 Linux 表示学习对象和风格；本项目没有使用 Linux 内核源码，也不是 Linux 发行版或兼容实现。
+MiniLinux 是一个以 C 为主实现的教学操作系统，回答一个问题：**一个用户程序怎样获得内存和 CPU 时间，又怎样经内核入口读到文件里的字节？** 名字中的 Linux 表示学习对象与风格；本项目没有使用 Linux 内核源码，不是 Linux 发行版、fork 或兼容实现。
 
-当前已实现 **M0 实验台与 M1 物理页候选**：Windows 原生构建 x86_64 ELF，Limine 从光盘镜像启动，QEMU 进入 `kernel_main`，串口和 GDB 观察；M1 在真实内存图上分配、释放 4 KiB 物理页，并验证保留区排除、耗尽和复用。M1 已从本机精确提交干净克隆复验，尚未合入主线；自己的页表、中断、调度、系统调用和文件系统仍未实现。
+当前候选已经在这台 Windows 机器上跑通 M0–M6：两个真正的用户态程序实例被时钟抢占，使用各自地址空间，经 syscall 读出 RamFS 字节，核对后输出；故障只停止指定实例，另一个继续完成。本机完整回归已通过，精确提交干净克隆正在收尾，尚未合入 GitHub 主线。公开状态以 [闭环记录](docs/CLOSURE.md) 为准。
 
-M0 的证明顺序是：固定源提交和工具基线 → 构建 ELF → 制作 ISO 并独立核对其中的内核载荷 → QEMU、串口与 GDB 观察 → 用坏镜像和端口冲突验证失败可接管 → 从 GitHub 精确提交克隆并重跑。任一门失败，就停在 M0 重判。
+```text
+Limine → kernel_main → 物理页 → 四级页表 → PIT/中断 → 数组轮转
+                                                 ↓
+                       CPL3 用户程序 ← iretq / TSS 内核栈
+                              ↓ int 0x80
+                       open / read / close → RamFS 字节
+                              ↓ 返回 RAX 与输出区
+                       用户逐字节核对 → 串口输出
+```
 
-## 路线图
+这是固定内嵌程序的两个实例，还没有任意 ELF 加载器或 shell。实验完成后的 intentional stop 是明确的停机点。网络、磁盘恢复、SMP、GUI、完整 POSIX、动态链接和生产 hardening 都不在目标内。
 
-每个里程碑只回答一个机制问题，状态由实际运行和可回查的证据决定。编号表示依赖顺序，不承诺日期；下一项能讨论，不等于已经获准跳过本项的反证或开始写后续模块。
+## 里程碑
 
-| 里程碑 | 要回答的问题 | 过门事实 | 状态 |
+| 里程碑 | 教学问题 | 实际证明 | 候选状态 |
 | --- | --- | --- | --- |
-| M0 实验台 | 这台机器能否从精确提交进入 C 内核，并在失败后重新接管？ | 远端干净克隆通过 ELF、ISO 载荷、串口与 GDB；坏镜像有界拒绝。受测源码固定在 [`m0-windows-bios-qemu`](https://github.com/NoctilumeDev/MiniLinux/tree/m0-windows-bios-qemu)，事实见 [远端轮次记录](docs/M0-remote-round-record.md)。 | ✅ 本机 BIOS/QEMU 已验证 |
-| M1 物理页 | 内核凭什么认定一页物理内存可用？ | 根据内存图取得不同的可用页；分配、释放与保留区域排除都能实际核对。 | 本机干净克隆通过；尚未合入主线，见 [M1 记录](docs/M1.md) |
-| M2 地址映射 | 一个虚拟地址怎样落到指定的物理页？ | 自己建立并检查页表映射；通过虚拟地址写入，再从对应物理页读回同一字节。 | 未开始 |
-| M3 CPU 时间 | 两个 task 为什么看起来都在运行？ | 不靠主动让出 CPU，时钟中断实际打断当前 task、保存上下文并切换；两者的执行轨迹可观察。此时仍称 task。 | 未开始 |
-| M4 用户边界 | 用户代码怎样获得执行上下文，又如何受控进入内核？ | 一个程序由调度器进入真正的用户态；GDB 可见特权级，syscall 进入内核并返回，直接访问内核专属页被拒绝。 | 未开始 |
-| M5 文件字节 | 用户程序怎样读取 RamFS 中的字节？ | 同一用户程序经 syscall 请求读取，内核取出字节并返回用户态，程序把结果输出；主教学问题形成真实闭环。 | 未开始 |
-| M6 进程声明 | 两个用户程序能否各自获得内存与 CPU 时间而不互相改写？ | 时钟驱动两者切换；两套地址空间在相同虚拟地址保存不同数据且互不改写。到此才把它们称为 process。 | 未开始 |
+| M0 实验台 | 怎样从精确源码进入 C，失败后重新接管？ | ELF/ISO 载荷、串口、GDB 与有界失败；历史基线固定在 [m0-windows-bios-qemu](https://github.com/NoctilumeDev/MiniLinux/tree/m0-windows-bios-qemu)。 | 已验证；[历史记录](docs/M0-remote-round-record.md) |
+| M1 物理页 | 内核凭什么认定一页内存可用？ | USABLE 分配、保留区拒绝、耗尽与复用，整页读写和计数恢复。 | 本机通过；[记录](docs/M1.md) |
+| M2 地址映射 | 虚拟地址怎样落到物理页？ | 实际更换 CR3，别名写入与物理读回，取消/重映射和回收。 | 本机通过；[记录](docs/M2.md) |
+| M3 CPU 时间 | 两个 task 为什么都能运行？ | PIT 打断不 yield 的计算，保存/恢复上下文；故意改坏 R12 被拒绝。 | 本机通过；[记录](docs/M3.md) |
+| M4 用户边界 | 用户怎样受控进入内核？ | 真正 CPL3、syscall 返回、非法指针拒绝，内核页保护异常后另一 task 继续。 | 本机通过；[记录](docs/M4.md) |
+| M5 文件字节 | 文件内容怎样回到用户程序？ | 5+12 字节读取与用户核对，独立偏移、EOF、描述符和跨页拒绝。 | 本机通过；[记录](docs/M5.md) |
+| M6 进程声明 | 相同虚拟地址能否存不同数据？ | 两个根与物理页、用户标记和物理读回，四种保护异常、故意别名拒绝。 | 本机候选通过，待干净克隆；[记录](docs/M6.md) |
 
-M5 关闭“一个用户程序获得内存和 CPU 时间、经内核入口读取文件字节”的主链；M6 验证并发与进程隔离的额外声明。Shell 可以作为展示入口，但不承担验收。到这条机制链成立就停，不把网络、真磁盘恢复、SMP、GUI、完整 POSIX 或生产 hardening 纳入路线图。每轮开工前再固定该轮输入与反证条件，通过后记录精确提交和观察结果；未开始的行只是证明目标，不是假装已经冻结实现方案。
+M5 关闭主教学问题，M6 证明并发与地址隔离后才升级 process 声明。每轮先写证明条件，再实现和验证；首败不被后来通过覆盖。没有照着 Linux/xv6 的模块清单扩张，也不把不同阶段的绿色输出混成一次资格。
 
-公开源码位于 [NoctilumeDev/MiniLinux](https://github.com/NoctilumeDev/MiniLinux)。本机已验证的工作树位于 `C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux`，工具安装在 `D:\DevTools\MiniLinux`。在这台机器的 PowerShell 中运行：
+## 运行
+
+源码位于 [NoctilumeDev/MiniLinux](https://github.com/NoctilumeDev/MiniLinux)。本机工作区在 `C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux`，固定工具和镜像在 `D:\DevTools\MiniLinux`。PowerShell 中运行完整闭环：
 
 ```powershell
 cd C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux
-.\tools\m0.ps1
+.\tools\closed-loop.ps1
 ```
 
-M1 的本机验证命令为 `./tools/m1.ps1`：依次使用 64 MiB、256 MiB 的单核 QEMU，之后用 GDB 观察页分配。两份镜像分别放在 D 盘，构建与验证串行运行。M1 只借用 Limine 的 HHDM 访问物理页；这不证明 M2 的自建页表。
+只看最终机制可以用 `./tools/stage.ps1 -Milestone M6`。逐轮可以用 `tools/m0.ps1`、`tools/m1.ps1` 或 `tools/stage.ps1 -Milestone M2` 至 `M6`。构建和客体串行运行，单核 QEMU 使用 64/256 MiB；宿主工具额外预留约 1 GiB，Codex 与其他应用另计。
 
-成功时会看到：
+每轮重建 `build/kernel.elf`，生成 D 盘对应 ISO 并核对载荷；不要拿另一轮或另一目录的旧 ISO 配当前 ELF。构建默认参数仍为 M0，以保留原实验入口。最终输出包含：
 
 ```text
-MiniLinux M0: entered kernel_main
-MiniLinux PANIC: M0 reached its intentional stop
-Breakpoint 1, kernel_main (...)
-Breakpoint 2, panic (...)
+hello from ramfs
+user page fault: task=0 vector=14 error=0x0000000000000005 ...
+task stopped: 0
+user report accepted: 1
+M6 isolated VA 0x0000000000600000 ... marker=0x000000000000a110 ...
+M6 isolated VA 0x0000000000600000 ... marker=0x000000000000a111 ...
+MiniLinux M6: process isolation checks passed
 ```
 
-依赖的版本、安装路径、镜像制作、实际观察结果和已发现的坑记录在 [M0 实验记录](docs/M0.md)。首次失败、复验、精确提交和本地证据身份记录在 [M0 轮次记录](docs/M0-round-record.md)；故障路径的纠正与裁决范围记录在 [M0 复审](docs/M0-re-audit.md)；从 GitHub 精确提交克隆并重跑的事实见 [M0 远端轮次记录](docs/M0-remote-round-record.md)。内核入口和串口实现见 `kernel/main.c`。Limine 协议头文件是来自其独立协议仓库的固定版本，原有 0BSD 许可保留在 `include/limine.h`。
+## 写法与依赖
 
-代码原则：能直写就直写；教学问题之外尽量复用工具，教学问题之内亲手实现机制。页状态用普通字节数组和循环表达，保留、空闲、已分配分开；内联汇编仍只用于 x86 的端口 I/O 和停机指令。
+**能直写就直写，教学之外复用工具，教学之内亲手实现机制。** 普通字节状态数组、固定 task/文件槽数组、循环和 switch 就够了。页表位与 CPU 入口按硬件规则表达；少量汇编负责端口、控制寄存器、中断现场和 `iretq`，不把调度或文件规则藏在技巧里。
+
+内核与用户程序没有 libc、第三方运行库或外部内核组件依赖。`memset`/`memcpy` 是自己的逐字节实现；链接使用 `-nostdlib -static`，完整验证拒绝未解析符号和动态运行库段。整个实验工具链仍依赖 Clang/LLD、Limine、QEMU/GDB、Python/pycdlib；不能把这些启动与宿主依赖说成不存在。
+
+建议先读 [顺着程序读代码](docs/WALKTHROUGH.md)，再看每轮记录与 [闭环坐标](docs/CLOSURE.md)。工具版本和安装路径见 [M0 环境](docs/M0.md)；首败和接管的历史见 [M0 轮次](docs/M0-round-record.md)、[复审](docs/M0-re-audit.md)。Limine 协议头文件保留原有 0BSD 许可，外部源码用于核对机制和学习错题，没有复制外部内核实现。
