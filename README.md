@@ -1,100 +1,70 @@
 # MiniLinux
 
-MiniLinux 是一个以 C 为主实现的教学操作系统，回答一个问题：**一个用户程序怎样获得内存和 CPU 时间，又怎样经内核入口读到文件里的字节？** 名字中的 Linux 表示学习对象与风格；本项目没有使用 Linux 内核源码，不是 Linux 发行版、fork 或兼容实现。
+一个以 C 为主实现的教学操作系统，回答：**一个用户程序怎样获得内存和 CPU 时间，又怎样通过内核入口读到文件里的字节？**
 
-当前候选已完成 M0–M6 教学闭环：两个真正的用户态程序实例被时钟抢占，使用各自地址空间，经 syscall 读出 RamFS 字节，核对后输出；故障只停止指定实例，另一个继续完成。本机完整回归与 GitHub 精确提交干净克隆都已通过，候选位于 [PR #1](https://github.com/NoctilumeDev/MiniLinux/pull/1)，尚未合入主线。坐标和范围见 [闭环记录](docs/CLOSURE.md)。
+Linux-inspired, independently implemented. 本项目没有使用 Linux 内核源码，不是 Linux 发行版、fork 或兼容实现。核心机制自己写，教学之外复用工具；代码以普通循环、数组和 switch 为主，少量汇编处理 CPU 入口。
 
-随后从 xv6、SerenityOS、Linux 的修复和入口机制学习错题，新增反例发现并修补了上层页表权限遗漏、非页错误用户异常停止整个实验这两类裂缝。修补提交 `ae93e86` 的 M0–M6 与新增反例已从 GitHub 干净克隆重跑通过，首败和夹具错误分别保留在 [错题本](docs/COUNTEREXAMPLES.md)。
+**[在线实录交互回放](https://noctilumedev.github.io/MiniLinux/)** · **[下载 Windows 实时 LAB ZIP](https://github.com/NoctilumeDev/MiniLinux/releases/download/lab-preview-20261002.2/MiniLinux-LAB-Windows-x64.zip)** · **[顺着程序读代码](https://github.com/NoctilumeDev/MiniLinux/blob/feat/userland-console/docs/WALKTHROUGH.md)**
+
+![Windows LAB：故障被隔离，日志与详情分别滚动](https://raw.githubusercontent.com/NoctilumeDev/MiniLinux/feat/userland-console/docs/evidence/download-playtest/revision-2/fault-right-scrolled-left-stable.jpg)
+
+## 先玩一次
+
+在线页面是明确标注 **REPLAY** 的实录交互回放，选择命令就打开对应真实运行片段。终端、进程、地址映射和事件来自同一次 QEMU 录制，网页不运行新内核。
+
+1. 点 `cat hello.txt`，看到 RamFS 字节返回终端，点击 syscall 查看参数。
+2. 点 `run counter-a counter-b`，暂停回放或查看最近 counter 快照，选择两个 PID：相同虚拟地址 `0x600000` 对应不同物理页。
+3. 点 `run fault`，选择日志里的 fault，查看地址、RIP、错误码与 CPL；只有指定程序退出。
+4. 点击 `resume replay` 继续，或 `reset replay` 回到启动记录。
+
+想输入命令、实时运行客体，就下载 Windows 包（[版本说明](https://github.com/NoctilumeDev/MiniLinux/releases/tag/lab-preview-20261002.2)）。Windows 10/11 x64 下解压整个 ZIP，打开 `Start.cmd`；首次联网下载约 220 MB 的官方 Python/QEMU 档案，只解包到包内 `runtime`，后续使用缓存。无需编译器、GDB、WSL 或预装 Python/QEMU。启动窗口保持打开，Ctrl+C 关闭桥接和它自己的 QEMU。中文开始、代理与重试说明见包内 `READ-ME.txt`。不想自动打开默认浏览器时，运行 `Start.cmd --no-browser`，手动打开它打印的网址。
+
+counter 结束后可以查看最近的双实例快照：观察窗固定同一帧，客体与日志继续运行。日志的滚动条在左，详情的滚动条在右，中间竖线分区，各自滚动。stop 保留末次记录；断连时提示重开 LAB 并使用新网址，避免把旧记录看作当前状态。
+
+这是固定程序、固定 RamFS 文件的教学体验；没有任意 ELF 加载器。浏览器是宿主观察工具，客体本身仍是串口系统。
+
+## 已经证明什么
 
 ```text
-Limine → kernel_main → 物理页 → 四级页表 → PIT/中断 → 数组轮转
-                                                 ↓
-                       CPL3 用户程序 ← iretq / TSS 内核栈
-                              ↓ int 0x80
-                       open / read / close → RamFS 字节
-                              ↓ 返回 RAX 与输出区
-                       用户逐字节核对 → 串口输出
+Limine → kernel_main → 物理页 → 四级页表 → PIT / 中断 → 轮转
+                                                           ↓
+                            CPL3 init / shell → 用户程序
+                                                           ↓ int 0x80
+                                   syscall → RamFS → 用户核对 / 输出
+                                                           ↓ exit / wait
+                                   回收私有页 → shell 继续接受输入
 ```
 
-M0–M6 保留固定内嵌程序的两个实例和实验完成后的 intentional stop。其上新增独立 `LAB` 模式：真正的用户态 init/shell 创建、等待演示程序，再用浏览器连接同一台 QEMU 的输入输出与机制记录。没有任意 ELF 加载器。网络、磁盘恢复、SMP、客体 GUI、完整 POSIX、动态链接和生产 hardening 都不在目标内。
+| 里程碑 | 教学问题 | 实际证明 |
+| --- | --- | --- |
+| M0 实验台 | 怎样从精确源码进入 C，失败后重新接管？ | ELF/ISO 载荷、串口、GDB、有界失败及远端干净克隆。历史基线 [m0-windows-bios-qemu](https://github.com/NoctilumeDev/MiniLinux/tree/m0-windows-bios-qemu)。 |
+| M1 物理页 | 哪些页可用？ | USABLE 分配、保留区拒绝、整页读写、耗尽与复用。 |
+| M2 地址映射 | 虚拟地址怎样落到物理页？ | 实际更换 CR3、别名写入、物理读回、取消及重映射。 |
+| M3 CPU 时间 | 两个 task 为什么都能运行？ | 时钟打断不 yield 的计算，保存/恢复上下文；坏寄存器反例被拒绝。 |
+| M4 用户边界 | 用户怎样受控进入内核？ | 真正 CPL3、syscall 返回、指针拒绝，用户保护异常后另一 task 继续。 |
+| M5 文件字节 | 文件怎样回到用户程序？ | 用户核对分段读取、独立偏移、EOF 与描述符/跨页边界。 |
+| M6 进程声明 | 相同虚拟地址能否存不同数据？ | 不同页表根与物理页、独立标记、七种保护/异常探针、坏别名拒绝。 |
+| LAB 薄上层 | 人怎样操作这条机制链？ | 用户态 init/shell、spawn/wait、hello/reader/counter/fault，故障接管与页回收。 |
 
-![Windows LAB：故障被隔离，日志与详情分别滚动](docs/evidence/download-playtest/revision-2/fault-right-scrolled-left-stable.jpg)
+M0–M6 和 LAB 候选已从精确提交干净工作区重跑完整验证。本轮另有独立智能体执行反例、64/256 MiB 回归、前端 11 段回放和产品评审，修补日志顺序、重启增量、焦点/连接恢复与中文路径启动问题；首败保留。再从公开下载重新试玩，发现并修补启动模块环境、命令名称、counter 观察与停止/断连标注。最终 `.2` 原始 ZIP 在本机全新中文加空格目录用包内 `Start.cmd --no-browser` 冷启动，另一位智能体实际操作浏览器；两栏独立滚动、所有命令、三态快照、stop/restart 与退出清理通过，下载哈希相符。范围与限制见 [体验与独立复验](https://github.com/NoctilumeDev/MiniLinux/blob/feat/userland-console/docs/EXPERIENCE.md)。
 
-## 操作这个系统
+**主线与候选分开：**`main` 保留 M0 源码；M0–M6 在 [PR #1](https://github.com/NoctilumeDev/MiniLinux/pull/1)，LAB/页面/下载工具在 [PR #2](https://github.com/NoctilumeDev/MiniLinux/pull/2)，尚未合入。下载标签 `lab-preview-20261002.2` 固定在 `6964b15`，不会随候选分支移动；旧版本与首败保留。当前首页更新只涉及 README。
 
-已经准备好 M0 固定工具的 Windows PowerShell 中运行：
+## 从源码运行
+
+完整候选需要检出对应分支：
 
 ```powershell
+git clone --branch feat/userland-console https://github.com/NoctilumeDev/MiniLinux.git
+cd MiniLinux
+# 先按下面的 M0 环境记录准备固定工具
 .\tools\lab.ps1
 ```
 
-打开 <http://127.0.0.1:8080/>。先输入 `help`，再试 `cat hello.txt`、`run reader`、`run counter-a counter-b`、`run fault`。前端发送实际串口输入；命令在 CPL3 shell 执行。右侧的 PID、CR3、地址映射、时钟切换和 syscall 来自 COM2，不是 JavaScript 模拟。
+在 <http://127.0.0.1:8080/> 操作真实 CPL3 shell。已有实验台上，`./tools/closed-loop.ps1` 验证 M0–M6，`./tools/counterexamples.ps1` 运行迁移来的错题，`./tools/check-lab.ps1` 验证上层及桥接。先停止预览，构建和客体串行运行。
 
-```text
-PID 1 / init → PID 2 / shell → spawn → 用户程序
-                                       ↓ timer / syscall
-                           私有地址空间、CPU 时间、RamFS
-                                       ↓ exit / wait
-                           回收用户页 → shell 继续接受输入
-```
+内核和用户程序没有 libc 或第三方运行库；页面使用原生 HTML/CSS/JavaScript，桥接只用 Python 标准库。构建/启动工具仍依赖 Clang/LLD、Limine、QEMU/GDB、Python/pycdlib；“零运行库依赖”不等于这些工具不存在。
 
-黑白页面以终端、观察窗、日志和手册为主体。桌面上方黑白宽度为 38.2:61.8，下方反转为 61.8:38.2；四个外框、输入和页脚共同适应一个浏览器视口，整页不需要上下滚动。长记录与手册在各自框内滚动，保留可读字号；窄窗口改为上下排列的长页面。浏览器是宿主观察工具，MiniLinux 客体仍是串口系统。
+[M0 环境](docs/M0.md) · [M0 远端记录](docs/M0-remote-round-record.md) · [闭环坐标](https://github.com/NoctilumeDev/MiniLinux/blob/feat/userland-console/docs/CLOSURE.md) · [错题本](https://github.com/NoctilumeDev/MiniLinux/blob/feat/userland-console/docs/COUNTEREXAMPLES.md) · [薄用户态](https://github.com/NoctilumeDev/MiniLinux/blob/feat/userland-console/docs/USERLAND.md) · [网页验证](https://github.com/NoctilumeDev/MiniLinux/blob/feat/userland-console/design-qa.md)
 
-日志左侧是时间线，右侧显示选中记录的字段：调度的 PID/CR3/CPL、故障的地址/RIP/错误码等。日志的滚动条在最左，详情的滚动条在最右，中间竖线分区，两个区域各自滚动。点击记录可保持这次观察，点击 `latest` 恢复跟随；这是一条已记录事件的详情，不是当前 CPU 的即时状态。
-
-**[在线实录交互回放](https://noctilumedev.github.io/MiniLinux/)**。无需准备本机工具；先点 `cat hello.txt`，再试 `run counter-a counter-b` 与 `run fault`。页面标注 `REPLAY`，输入选择已有片段；可暂停后查看 PID、页映射和原始事件，网页不运行新客体。页面右上角提供运行真实客体的 Windows 下载入口。
-
-**[下载 Windows LAB 预览包 ZIP](https://github.com/NoctilumeDev/MiniLinux/releases/download/lab-preview-20261002.2/MiniLinux-LAB-Windows-x64.zip)**（[版本说明](https://github.com/NoctilumeDev/MiniLinux/releases/tag/lab-preview-20261002.2)）。解压后打开 `Start.cmd`，运行真实 64 MiB QEMU 客体；首次联网下载约 220 MB 的官方 Python/QEMU 档案，只解包到包内目录，以后可用缓存。无需编译器、GDB、WSL 或预装 Python/QEMU。包内有中文快速开始与代理说明；遇到下载失败可重试。counter 结束后点“查看最近 counter 快照”比较两个 PID：只固定观察窗，不暂停客体。录制来源、原始首败与各版本复验分别记录在 [体验记录](docs/EXPERIENCE.md)。
-
-新版公开 ZIP 已由独立智能体重新下载，在本机全新中文加空格目录用原始 `Start.cmd --no-browser` 冷启动，另一位智能体实际操作页面；命令、快照、两栏滚动、停止/重启/断连与退出清理均通过。静默参数只打印网址，方便手动打开浏览器；默认双击会打开一次浏览器。
-
-`LAB` 上层和宿主桥接的自动验证入口是 `./tools/check-lab.ps1`。请先停止当前预览再验证，以免同时改写同一构建目录、镜像和记录。本轮受测源码 `ac3e5cb` 已从 GitHub 干净克隆重跑所有入口，候选位于 [PR #2](https://github.com/NoctilumeDev/MiniLinux/pull/2)，基于尚未合入的 PR #1。薄用户态的证明、首败与限制见 [USERLAND](docs/USERLAND.md)，视觉和浏览器验证见 [design-qa](design-qa.md)。
-
-## 里程碑
-
-| 里程碑 | 教学问题 | 实际证明 | 候选状态 |
-| --- | --- | --- | --- |
-| M0 实验台 | 怎样从精确源码进入 C，失败后重新接管？ | ELF/ISO 载荷、串口、GDB 与有界失败；历史基线固定在 [m0-windows-bios-qemu](https://github.com/NoctilumeDev/MiniLinux/tree/m0-windows-bios-qemu)。 | 已验证；[历史记录](docs/M0-remote-round-record.md) |
-| M1 物理页 | 内核凭什么认定一页内存可用？ | USABLE 分配、保留区拒绝、耗尽与复用，整页读写和计数恢复。 | 本机通过；[记录](docs/M1.md) |
-| M2 地址映射 | 虚拟地址怎样落到物理页？ | 实际更换 CR3，别名写入与物理读回，取消/重映射和回收。 | 本机通过；[记录](docs/M2.md) |
-| M3 CPU 时间 | 两个 task 为什么都能运行？ | PIT 打断不 yield 的计算，保存/恢复上下文；故意改坏 R12 被拒绝。 | 本机通过；[记录](docs/M3.md) |
-| M4 用户边界 | 用户怎样受控进入内核？ | 真正 CPL3、syscall 返回、非法指针拒绝，内核页保护异常后另一 task 继续。 | 本机通过；[记录](docs/M4.md) |
-| M5 文件字节 | 文件内容怎样回到用户程序？ | 5+12 字节读取与用户核对，独立偏移、EOF、描述符和跨页拒绝。 | 本机通过；[记录](docs/M5.md) |
-| M6 进程声明 | 相同虚拟地址能否存不同数据？ | 两个根与物理页、用户标记和物理读回，七种保护/异常探针、故意别名拒绝。 | 本轮补充及完整回归远端干净克隆通过；[记录](docs/M6.md) |
-
-M5 关闭主教学问题，M6 证明并发与地址隔离后才升级 process 声明。每轮先写证明条件，再实现和验证；首败不被后来通过覆盖。没有照着 Linux/xv6 的模块清单扩张，也不把不同阶段的绿色输出混成一次资格。
-
-当前候选的全部里程碑都已从同机 GitHub 干净克隆重跑，表中的“本机通过”不是另一台机器的资格。主线合入状态与运行资格分别记录，M0 历史标签保持原坐标。
-
-## 运行
-
-源码位于 [NoctilumeDev/MiniLinux](https://github.com/NoctilumeDev/MiniLinux)。本机工作区在 `C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux`，固定工具和镜像在 `D:\DevTools\MiniLinux`。PowerShell 中运行完整闭环：
-
-```powershell
-cd C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux
-.\tools\closed-loop.ps1
-```
-
-只看最终机制可以用 `./tools/stage.ps1 -Milestone M6`。逐轮可以用 `tools/m0.ps1`、`tools/m1.ps1` 或 `tools/stage.ps1 -Milestone M2` 至 `M6`。构建和客体串行运行，单核 QEMU 使用 64/256 MiB。`LAB` 默认客体 64 MiB，另固定 32 MiB TCG 翻译缓存；宿主开销与客体内存分别记录，Codex、浏览器和其他应用另计，见 [运行范围](docs/USERLAND.md#运行范围)。
-
-从外部错题迁移回来的攻击实验使用 `./tools/counterexamples.ps1`，包含耗尽、权限、指针、异常和入口现场；首败保留，不与夹具设置失败混算。
-
-每轮重建 `build/kernel.elf`，生成 D 盘对应 ISO 并核对载荷；不要拿另一轮或另一目录的旧 ISO 配当前 ELF。构建默认参数仍为 M0，以保留原实验入口。最终输出包含：
-
-```text
-hello from ramfs
-user page fault: task=0 vector=14 error=0x0000000000000005 ...
-task stopped: 0
-user report accepted: 1
-M6 isolated VA 0x0000000000600000 ... marker=0x000000000000a110 ...
-M6 isolated VA 0x0000000000600000 ... marker=0x000000000000a111 ...
-MiniLinux M6: process isolation checks passed
-```
-
-## 写法与依赖
-
-**能直写就直写，教学之外复用工具，教学之内亲手实现机制。** 普通字节状态数组、固定 task/文件槽数组、循环和 switch 就够了。页表位与 CPU 入口按硬件规则表达；少量汇编负责端口、控制寄存器、中断现场和 `iretq`，不把调度或文件规则藏在技巧里。
-
-内核与用户程序没有 libc、第三方运行库或外部内核组件依赖。`memset`/`memcpy` 是自己的逐字节实现；链接使用 `-nostdlib -static`，完整验证拒绝未解析符号和动态运行库段。浏览器页面使用原生 HTML/CSS/JavaScript，宿主桥接只用 Python 标准库，无新增 npm/Python 包。整个实验工具链仍依赖 Clang/LLD、Limine、QEMU/GDB、Python/pycdlib；不能把这些启动与宿主依赖说成不存在。
-
-建议先读 [顺着程序读代码](docs/WALKTHROUGH.md)，再看每轮记录与 [闭环坐标](docs/CLOSURE.md)。工具版本和安装路径见 [M0 环境](docs/M0.md)；首败和接管的历史见 [M0 轮次](docs/M0-round-record.md)、[复审](docs/M0-re-audit.md)。Limine 协议头文件保留原有 0BSD 许可，外部源码用于核对机制和学习错题，没有复制外部内核实现。
+M5 关闭主教学问题，M6 实证隔离后才升级 process 声明。网络、磁盘恢复、SMP、客体 GUI、完整 POSIX、动态链接与生产 hardening 不在目标内。学习 Linux/xv6 的机制与修复经验，没有复制外部内核实现。
