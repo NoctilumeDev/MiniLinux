@@ -105,6 +105,7 @@ struct interrupt_frame *user_fault(struct interrupt_frame *frame, uint64_t addre
     case 2: expected_address = USER_CODE; expected_error = 7; break;
     case 3: expected_address = USER_DATA; expected_error = 21; break;
     case 4: expected_address = 0x900000; expected_error = 4; break;
+    case 5: case 6: case 7: break; /* Fixture only: dispatch has not been expanded yet. */
     }
 #endif
     if (task->id != 0 || !task->reported || frame->cs != 0x23 ||
