@@ -158,6 +158,69 @@ static void boundary_check(void) {
     print(okay ? "check: process capacity and reclamation passed\n" : "check: capacity FAILED\n");
 }
 
+/* Independent supplemental fixture; production kernel and ABI stay unchanged. */
+static void supplemental_check(void) {
+    volatile unsigned char *edge = (volatile unsigned char *)(uintptr_t)(USER_DATA + 4096 - 8);
+    uint64_t cross = USER_STACK + 4096 - 8;
+    uint64_t self = (uint64_t)call(SYS_TASK_ID, 0, 0, 0);
+    struct memory_info before = {0}, after = {0};
+    bool okay = true;
+    int64_t rc;
+    call(SYS_MEMORY, pointer(&before), 0, 0);
+    for (unsigned i = 0; i < 8; i++) { edge[i] = (unsigned char)(0xa0 + i); }
+    rc = call(SYS_PROCESS, 1, pointer((const void *)edge), 0);
+    if (rc != -2) { okay = false; }
+    for (unsigned i = 0; i < 8; i++) { if (edge[i] != 0xa0 + i) { okay = false; } }
+    print(rc == -2 && okay ? "PROBE PROCESS cross-page rejected intact\n" : "PROBE PROCESS FAILED\n");
+    for (unsigned i = 0; i < 8; i++) { edge[i] = (unsigned char)(0xb0 + i); }
+    rc = call(SYS_FILE, 0, pointer((const void *)edge), 0);
+    bool file_ok = rc == -2;
+    for (unsigned i = 0; i < 8; i++) { if (edge[i] != 0xb0 + i) { file_ok = false; } }
+    if (!file_ok) { okay = false; }
+    print(file_ok ? "PROBE FILE cross-page rejected intact\n" : "PROBE FILE FAILED\n");
+    for (unsigned i = 0; i < 8; i++) { edge[i] = (unsigned char)(0xc0 + i); }
+    rc = call(SYS_MEMORY, pointer((const void *)edge), 0, 0);
+    bool memory_ok = rc == -2;
+    for (unsigned i = 0; i < 8; i++) { if (edge[i] != 0xc0 + i) { memory_ok = false; } }
+    if (!memory_ok) { okay = false; }
+    print(memory_ok ? "PROBE MEMORY cross-page rejected intact\n" : "PROBE MEMORY FAILED\n");
+
+    bool valid = call(SYS_PROCESS, 1, cross, 0) == 1;
+    valid = valid && ((struct process_info *)(uintptr_t)cross)->pid == self;
+    rc = call(SYS_FILE, 0, cross, 0);
+    valid = valid && rc == 1 && ((struct file_info *)(uintptr_t)cross)->size == 17;
+    rc = call(SYS_MEMORY, cross, 0, 0);
+    valid = valid && rc == 0 && ((struct memory_info *)(uintptr_t)cross)->free == before.free;
+    if (!valid) { okay = false; }
+    print(valid ? "PROBE mapped cross-page outputs passed\n" : "PROBE mapped outputs FAILED\n");
+
+    int64_t non_child = call(SYS_WAIT, 1, 0, 0);
+    int64_t own = call(SYS_WAIT, self, 0, 0);
+    int64_t child = call(SYS_SPAWN, PROGRAM_HELLO, 0, 0);
+    int64_t first_wait = child > 0 ? call(SYS_WAIT, (uint64_t)child, 0, 0) : -99;
+    int64_t reaped_wait = child > 0 ? call(SYS_WAIT, (uint64_t)child, 0, 0) : -99;
+    bool waits = non_child == -3 && own == -3 && child > 0 && first_wait == 0 && reaped_wait == -3;
+    if (!waits) { okay = false; }
+    print(waits ? "PROBE wait non-child self reaped rejected -3\n" : "PROBE wait FAILED\n");
+    call(SYS_MEMORY, pointer(&after), 0, 0);
+    if (before.free != after.free) { okay = false; }
+    print(okay ? "SUPPLEMENTAL PROBE PASSED; pages restored\n" : "SUPPLEMENTAL PROBE FAILED\n");
+}
+
+static void supplemental_input(void) {
+    print("PROBE INPUT READY: send Z\n");
+    uint64_t until = (uint64_t)call(SYS_TICKS, 0, 0, 0) + 100;
+    while ((uint64_t)call(SYS_TICKS, 0, 0, 0) < until) { }
+    int64_t rejected = call(SYS_INPUT, USER_CODE, 0, 0);
+    char c = 0;
+    int64_t read;
+    until = (uint64_t)call(SYS_TICKS, 0, 0, 0) + 200;
+    do { read = call(SYS_INPUT, pointer(&c), 0, 0); }
+    while (read == -6 && (uint64_t)call(SYS_TICKS, 0, 0, 0) < until);
+    print(rejected == -2 && read == 1 && c == 'Z' ?
+          "PROBE INPUT bad pointer preserved queued Z\n" : "PROBE INPUT FAILED\n");
+}
+
 static void command(char *line) {
     char *words[4]; unsigned count = 0; bool inside = false;
     for (size_t i = 0; line[i]; i++) {
@@ -177,6 +240,8 @@ static void command(char *line) {
     else if (equal(words[0], "ps") && count == 1) { processes(); }
     else if (equal(words[0], "run") && (count == 2 || count == 3)) { run(words[1], count == 3 ? words[2] : 0); }
     else if (equal(words[0], "mem") && count == 1) { memory(); }
+    else if (equal(words[0], "probe") && count == 1) { supplemental_check(); }
+    else if (equal(words[0], "probe-input") && count == 1) { supplemental_input(); }
     else if (equal(words[0], "check") && count == 1) { boundary_check(); }
     else { print("shell: unknown command or arguments; type help\n"); }
 }
