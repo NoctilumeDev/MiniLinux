@@ -48,7 +48,11 @@
 - 浏览器验证了 cat 到 open/read/close 的记录关联、选择 PID 和 syscall 参数、暂停/恢复、清空、停止/重启、键盘回忆命令与故障观察。页面显示最近记录的 CPL3 入口，不声称显示 CPU 此刻的特权级。
 - M0–M6 完整回归、坏寄存器/数据别名拒绝和原有错题本都通过。共享 `user_range` 只抽取原有实现，仍检查各级页表权限；旧实验入口、ABI 编号及其停机点保留。
 
-本机结果与截图保存在 [evidence/userland-console](evidence/userland-console)。源码提交后还要从 GitHub 精确坐标干净克隆复验；远端受测坐标在完成后追加，不能用本机通过代替。
+本机结果与截图保存在 [evidence/userland-console](evidence/userland-console)。受测源码固定在 `ac3e5cb52ee78b68d13f722cd883ead34d628a24`，已从 GitHub 候选分支干净克隆到 `C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-userland-ac3e5cb-20261002` 并 detached checkout；开跑前工作树干净、没有 build，没有复用原目录的生成源码或 ELF。
+
+克隆中依次运行完整 `closed-loop.ps1`、`counterexamples.ps1` 和 `check-lab.ps1`，所有入口通过。远端的 64/256 MiB 用户态结果、三份汇总和最后的工作树/客体/调试端口读回分别保留为 `remote-*`。[最后读回](evidence/userland-console/remote-receipt.txt)确认工作树干净，无 QEMU/GDB 和 1234 监听。最外层命令末尾的只读 `Get-Process` 因没有匹配进程而返回非零；另一次显式断言和读回成功，未把这个格式问题算作内核反例，也未仅凭输出最后一句升级通过。
+
+本轮候选在 [PR #2](https://github.com/NoctilumeDev/MiniLinux/pull/2)，基于尚未合入的 [PR #1](https://github.com/NoctilumeDev/MiniLinux/pull/1)。之后只补坐标和复验记录；用 `git diff ac3e5cb -- kernel include user tools boot linker.ld web` 核对实现没有变化。桌面预览重新构建自己的 LAB ELF/ISO 并验证载荷，再从该工作区运行。M0 历史标签与公开 main 不因候选通过而自动变化。
 
 ## 首败与修补
 

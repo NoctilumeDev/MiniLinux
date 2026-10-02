@@ -40,7 +40,7 @@ PID 1 / init → PID 2 / shell → spawn → 用户程序
 
 黑白页面以终端、观察窗、日志和手册为主体。桌面上方黑白宽度为 38.2:61.8，下方反转为 61.8:38.2；窄窗口改为上下排列。长记录滚动查看，手册随内容展开。浏览器是宿主观察工具，MiniLinux 客体仍是串口系统。
 
-`LAB` 上层和宿主桥接的自动验证入口是 `./tools/check-lab.ps1`。请先停止当前预览再验证，以免同时改写同一构建目录、镜像和记录。薄用户态的证明、首败与限制见 [USERLAND](docs/USERLAND.md)，视觉和浏览器验证见 [design-qa](design-qa.md)。
+`LAB` 上层和宿主桥接的自动验证入口是 `./tools/check-lab.ps1`。请先停止当前预览再验证，以免同时改写同一构建目录、镜像和记录。本轮受测源码 `ac3e5cb` 已从 GitHub 干净克隆重跑所有入口，候选位于 [PR #2](https://github.com/NoctilumeDev/MiniLinux/pull/2)，基于尚未合入的 PR #1。薄用户态的证明、首败与限制见 [USERLAND](docs/USERLAND.md)，视觉和浏览器验证见 [design-qa](design-qa.md)。
 
 ## 里程碑
 
