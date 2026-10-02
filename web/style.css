@@ -88,10 +88,10 @@ tbody tr.selected button { text-decoration: underline; text-underline-offset: 3p
 .bottom-row { display: grid; grid-template-columns: minmax(0, .618fr) minmax(380px, .382fr); gap: 8px; margin-top: 8px; }
 .log-panel { display: flex; flex-direction: column; background: var(--ink); color: var(--paper); }
 .event-log { flex: 1; min-height: 0; contain: size; overflow: auto; padding: 10px 12px; font-size: 13px; line-height: 1.65; }
-.event-row { display: grid; grid-template-columns: 65px minmax(0, 1fr) auto; gap: 12px; }
+.event-row { display: grid; grid-template-columns: 65px fit-content(34ch) minmax(0, 1fr); gap: 12px; }
 .event-row > span { overflow-wrap: anywhere; }
 .event-row > span:first-child { color: #aaa99f; white-space: pre; }
-.event-detail { text-align: right; }
+.event-detail { text-align: left; }
 .manual-content { padding: 12px; min-height: 160px; font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; }
 .manual-content h3 { font-size: 12px; margin-bottom: 5px; }
 .manual-content p { margin-bottom: 12px; white-space: pre-wrap; }

@@ -2,6 +2,12 @@
 
 final result: passed
 
+## 日志间距复查（2026-10-02）
+
+用户实际截图暴露日志的附加信息被推到最右端，中间留下过宽空白（P2）。此前的全页截图保留为外框验证；最新日志局部见 [log-compact.jpg](docs/evidence/userland-console/log-compact.jpg)，829×157，截取自 1366×768 的真实页面。用户提供的 [局部原图](docs/evidence/userland-console/log-spacing-reference.png) 为 1572×327，与新截图放在同一次图像输入中比较；像素尺寸和显示倍率不同，不作逐像素匹配。
+
+只修改日志两条 CSS：事件列按内容收紧，附加信息左对齐，相邻字段间距 12 px。外框比例、终端/表格布局、13 px 日志字号、行高、颜色和资产均未改变，实际记录与完整地址仍保留。1920×1080、1366×768 仍无整页溢出；390×844 的日志和整页均无横向溢出。长故障记录正常换行，FAULT/TRACE 切换可用，浏览器 warn/error 为空。中间过宽间距已消除，日志右侧保留自然留白。
+
 ## 当前对照与证据
 
 - 原稿：[reference.png](docs/evidence/userland-console/reference.png)，1448×1086；上方约 74 px 为浏览器外壳。黑白终端、观察窗、日志、手册的结构保留，尺寸按用户后来选定的比例和“一窗完整外框”要求调整。
