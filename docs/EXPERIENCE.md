@@ -28,4 +28,6 @@ Windows v1 原始 ZIP 的首次官方网络下载成功，但解包到中文加�
 
 公开 [GitHub Pages](https://noctilumedev.github.io/MiniLinux/) 在 `gh-pages` 提交 `dc3399740b7e9fe78596852107733e2a3c944ae5` 部署成功。匿名下载 app/replay/recording 哈希与最终受测文件匹配；实际浏览器 cat 输出、选中 fault #1235 的六个字段均正确，1280×720 整页尺寸等于视口，warn/error 为空。[公开页面截图](evidence/replay/published-demo.jpg) 保留真实发布结果。
 
+桌面验证的完整 HTTP 快照在 `desktop/03-desktop-http-results.json.gz`，无损压缩并逐字节解压核对，原文件仍在独立证据目录。产品评审剩余 P3 为移动端 PID 点击范围与控件间距，可作为后续体验微调；没有因此增添机制或扩大兼容范围。
+
 尚未验证 spawn 中途 OOM 的所有分配深度、全部异常向量或所有 GPR 的独立 sentinel。init/shell 的异常仍明确 panic。没有把现有通过扩大成完整异常恢复、任意 ELF、POSIX 或其他宿主的资格；绝对 free 数值是每次客体观测，判据是同一次运行前后恢复。
