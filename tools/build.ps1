@@ -1,11 +1,13 @@
 param(
     [string]$ToolRoot = 'D:\DevTools\MiniLinux',
     [ValidateSet('M0', 'M1', 'M2', 'M3', 'M4', 'M5', 'M6')][string]$Milestone = 'M0',
-    [ValidateRange(1, 4)][int]$FaultCase = 1
+    [ValidateRange(1, 7)][int]$FaultCase = 1,
+    [ValidateRange(0, 5)][int]$AttackCase = 0
 )
 
 $ErrorActionPreference = 'Stop'
 if ($Milestone -ne 'M6' -and $FaultCase -ne 1) { throw 'Additional protection probes belong to M6.' }
+if ($Milestone -ne 'M6' -and $AttackCase -ne 0) { throw 'Counterexamples belong to M6.' }
 $project = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
 $llvmBin = Join-Path $ToolRoot 'llvm-23.1.1\clang+llvm-23.1.1-x86_64-pc-windows-msvc\bin'
 $clang = Join-Path $llvmBin 'clang.exe'
@@ -16,7 +18,8 @@ New-Item -ItemType Directory -Force -Path $build | Out-Null
 
 $sources = @('kernel\main.c')
 $level = [int]$Milestone.Substring(1)
-$defines = @("-DMINILINUX_LEVEL=$level", "-DMINILINUX_PROBE=$FaultCase")
+$defines = @("-DMINILINUX_LEVEL=$level", "-DMINILINUX_PROBE=$FaultCase", "-DMINILINUX_ATTACK=$AttackCase")
+if ($AttackCase -ne 0) { $sources += 'kernel\counterexample.c' }
 if ($level -ge 1) {
     $sources += @('kernel\memory\page.c', 'kernel\memory\page_test.c')
 }

@@ -24,6 +24,13 @@ static uint64_t read_file(void) {
     int64_t first = call(SYS_OPEN, (uint64_t)(uintptr_t)name, sizeof(name) - 1, 0);
     int64_t second = call(SYS_OPEN, (uint64_t)(uintptr_t)name, sizeof(name) - 1, 0);
     check(first == 0 && second == 1);
+#if MINILINUX_ATTACK == 1
+    if (call(SYS_TASK_ID, 0, 0, 0) == 0) {
+        check(call(SYS_READ, first, 0xa00000, 1) == -2);
+        static const char passed[] = "counterexample: syscall parent permission rejected\n";
+        check(call(SYS_WRITE, (uint64_t)(uintptr_t)passed, sizeof(passed) - 1, 0) == (int64_t)(sizeof(passed) - 1));
+    }
+#endif
     check(call(SYS_OPEN, (uint64_t)(uintptr_t)name, sizeof(name) - 1, 0) == -5);
     check(call(SYS_READ, 99, out, 1) == -3);
     check(call(SYS_CLOSE, 99, 0, 0) == -3);
@@ -95,6 +102,13 @@ __attribute__((section(".text.entry"), noreturn)) void user_main(void) {
 #elif MINILINUX_LEVEL >= 6 && MINILINUX_PROBE == 4
         volatile uint8_t denied = *(volatile uint8_t *)(uintptr_t)0x900000;
         (void)denied;
+#elif MINILINUX_LEVEL >= 6 && MINILINUX_PROBE == 5
+        __asm__ volatile ("ud2");
+#elif MINILINUX_LEVEL >= 6 && MINILINUX_PROBE == 6
+        __asm__ volatile ("outb %0, %1" : : "a"((uint8_t)0), "Nd"((uint16_t)0x3f8));
+#elif MINILINUX_LEVEL >= 6 && MINILINUX_PROBE == 7
+        __asm__ volatile ("mov $1, %%eax; xor %%edx, %%edx; xor %%ecx, %%ecx; divq %%rcx"
+                          : : : "rax", "rdx", "rcx", "cc");
 #else
         volatile uint8_t denied = *(volatile uint8_t *)(uintptr_t)KERNEL_PROBE;
         (void)denied;

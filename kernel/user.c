@@ -3,6 +3,9 @@
 #include "console.h"
 #include "page.h"
 #include "user.h"
+#if MINILINUX_ATTACK != 0
+#include "counterexample.h"
+#endif
 
 extern const unsigned char user_image[];
 extern const uint64_t user_image_size;
@@ -68,6 +71,9 @@ void user_prepare(void) {
         task->frame->rsp = stack_base + 2 * PAGE_SIZE - 8;
         task->frame->rflags = 0x202;
     }
+#if MINILINUX_ATTACK != 0
+    counterexample_user_prepare(task_get(0)->space, task_get(0)->data_page);
+#endif
 }
 
 bool user_range(const struct task *task, uint64_t address, size_t length, bool writing) {

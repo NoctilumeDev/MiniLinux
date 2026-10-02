@@ -1,5 +1,8 @@
 #include <stdint.h>
 #include "console.h"
+#if MINILINUX_ATTACK != 0
+#include "counterexample.h"
+#endif
 #include "limine.h"
 #if MINILINUX_LEVEL >= 1
 #include "page.h"
@@ -134,6 +137,9 @@ void kernel_main(void) {
 #elif MINILINUX_LEVEL >= 3
     vm_init(hhdm_request.response->offset);
     cpu_init();
+#if MINILINUX_ATTACK != 0
+    counterexample_selftest();
+#endif
     task_start();
 #endif
 #else
