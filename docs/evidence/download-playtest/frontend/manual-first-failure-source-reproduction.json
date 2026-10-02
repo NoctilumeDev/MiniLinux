@@ -1,0 +1,13 @@
+{
+  "classification": "Source-bound reproduction of historical first-failure configuration; original snapshot-exported-results.json remains unchanged. Original screenshot path was overwritten by later QA; this PNG is a reproduction, not the original screenshot.",
+  "hashes": {
+    "app": "9fc0e93ea3ffc1d057a9a42a96aa25c926dbb40eee133079d363aae807a3efc0",
+    "style": "daac480e8fb5918a15b2cd92b7587b04560aa9e81cb648ac5cab9ee93706962d"
+  },
+  "geometry": {
+    "clientHeight": 16,
+    "lineHeight": "20.8px",
+    "paddingTop": "8px",
+    "paddingBottom": "8px"
+  }
+}

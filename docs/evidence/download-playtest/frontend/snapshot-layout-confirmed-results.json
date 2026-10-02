@@ -1,0 +1,548 @@
+{
+  "url": "http://127.0.0.1:8091/",
+  "method": "Reload actual export; normal clock and locators; all six shortcuts scrolled and clicked at each viewport",
+  "layouts": [
+    {
+      "window": [
+        1024,
+        700
+      ],
+      "page": [
+        1024,
+        1024,
+        700
+      ],
+      "manualHeight": 48,
+      "manualPadding": 16,
+      "manualLine": 20.8,
+      "helpHeight": 48,
+      "helpScrollHeight": 85,
+      "console": {
+        "x": 8,
+        "y": 146,
+        "width": 382,
+        "height": 379.5,
+        "right": 390,
+        "bottom": 525.5
+      },
+      "inspector": {
+        "x": 398,
+        "y": 146,
+        "width": 618,
+        "height": 379.5,
+        "right": 1016,
+        "bottom": 525.5
+      },
+      "log": {
+        "x": 8,
+        "y": 533.5,
+        "width": 618,
+        "height": 126.5,
+        "right": 626,
+        "bottom": 660
+      },
+      "manual": {
+        "x": 634,
+        "y": 533.5,
+        "width": 382,
+        "height": 126.5,
+        "right": 1016,
+        "bottom": 660
+      },
+      "footer": {
+        "x": 0,
+        "y": 668,
+        "width": 1024,
+        "height": 32,
+        "right": 1024,
+        "bottom": 700
+      },
+      "shortcuts": [
+        {
+          "command": "help",
+          "intersection": 20,
+          "scrollTop": 0
+        },
+        {
+          "command": "ls",
+          "intersection": 20,
+          "scrollTop": 0
+        },
+        {
+          "command": "cat hello.txt",
+          "intersection": 20,
+          "scrollTop": 0
+        },
+        {
+          "command": "ps",
+          "intersection": 47.5,
+          "scrollTop": 26
+        },
+        {
+          "command": "run counter-a counter-b",
+          "intersection": 47.5,
+          "scrollTop": 26
+        },
+        {
+          "command": "run fault",
+          "intersection": 47.5,
+          "scrollTop": 26
+        }
+      ],
+      "manualScrollTop": 42
+    },
+    {
+      "window": [
+        1152,
+        640
+      ],
+      "page": [
+        1152,
+        1152,
+        640
+      ],
+      "manualHeight": 48,
+      "manualPadding": 16,
+      "manualLine": 20.8,
+      "helpHeight": 33,
+      "helpScrollHeight": 69,
+      "console": {
+        "x": 8,
+        "y": 146,
+        "width": 430.890625,
+        "height": 334.5,
+        "right": 438.890625,
+        "bottom": 480.5
+      },
+      "inspector": {
+        "x": 446.890625,
+        "y": 146,
+        "width": 697.09375,
+        "height": 334.5,
+        "right": 1143.984375,
+        "bottom": 480.5
+      },
+      "log": {
+        "x": 8,
+        "y": 488.5,
+        "width": 697.09375,
+        "height": 111.5,
+        "right": 705.09375,
+        "bottom": 600
+      },
+      "manual": {
+        "x": 713.09375,
+        "y": 488.5,
+        "width": 430.890625,
+        "height": 111.5,
+        "right": 1143.984375,
+        "bottom": 600
+      },
+      "footer": {
+        "x": 0,
+        "y": 608,
+        "width": 1152,
+        "height": 32,
+        "right": 1152,
+        "bottom": 640
+      },
+      "shortcuts": [
+        {
+          "command": "help",
+          "intersection": 20,
+          "scrollTop": 0
+        },
+        {
+          "command": "ls",
+          "intersection": 20,
+          "scrollTop": 0
+        },
+        {
+          "command": "cat hello.txt",
+          "intersection": 20,
+          "scrollTop": 0
+        },
+        {
+          "command": "ps",
+          "intersection": 32.5,
+          "scrollTop": 26
+        },
+        {
+          "command": "run counter-a counter-b",
+          "intersection": 32.5,
+          "scrollTop": 26
+        },
+        {
+          "command": "run fault",
+          "intersection": 32.5,
+          "scrollTop": 26
+        }
+      ],
+      "manualScrollTop": 42
+    },
+    {
+      "window": [
+        1366,
+        768
+      ],
+      "page": [
+        1366,
+        1366,
+        768
+      ],
+      "manualHeight": 57,
+      "manualPadding": 16,
+      "manualLine": 20.8,
+      "helpHeight": 68,
+      "helpScrollHeight": 69,
+      "console": {
+        "x": 8,
+        "y": 162.375,
+        "width": 512.640625,
+        "height": 401.484375,
+        "right": 520.640625,
+        "bottom": 563.859375
+      },
+      "inspector": {
+        "x": 528.640625,
+        "y": 162.375,
+        "width": 829.34375,
+        "height": 401.484375,
+        "right": 1357.984375,
+        "bottom": 563.859375
+      },
+      "log": {
+        "x": 8,
+        "y": 571.859375,
+        "width": 829.34375,
+        "height": 156.140625,
+        "right": 837.34375,
+        "bottom": 728
+      },
+      "manual": {
+        "x": 845.34375,
+        "y": 571.859375,
+        "width": 512.640625,
+        "height": 156.140625,
+        "right": 1357.984375,
+        "bottom": 728
+      },
+      "footer": {
+        "x": 0,
+        "y": 736,
+        "width": 1366,
+        "height": 32,
+        "right": 1366,
+        "bottom": 768
+      },
+      "shortcuts": [
+        {
+          "command": "help",
+          "intersection": 20,
+          "scrollTop": 0
+        },
+        {
+          "command": "ls",
+          "intersection": 20,
+          "scrollTop": 0
+        },
+        {
+          "command": "cat hello.txt",
+          "intersection": 20,
+          "scrollTop": 0
+        },
+        {
+          "command": "ps",
+          "intersection": 39,
+          "scrollTop": 0
+        },
+        {
+          "command": "run counter-a counter-b",
+          "intersection": 39,
+          "scrollTop": 0
+        },
+        {
+          "command": "run fault",
+          "intersection": 39,
+          "scrollTop": 0
+        }
+      ],
+      "manualScrollTop": 49
+    },
+    {
+      "window": [
+        1920,
+        1080
+      ],
+      "page": [
+        1920,
+        1920,
+        1080
+      ],
+      "manualHeight": 144,
+      "manualPadding": 16,
+      "manualLine": 20.8,
+      "helpHeight": 69,
+      "helpScrollHeight": 69,
+      "console": {
+        "x": 8,
+        "y": 162.375,
+        "width": 724.265625,
+        "height": 626.125,
+        "right": 732.265625,
+        "bottom": 788.5
+      },
+      "inspector": {
+        "x": 740.265625,
+        "y": 162.375,
+        "width": 1171.71875,
+        "height": 626.125,
+        "right": 1911.984375,
+        "bottom": 788.5
+      },
+      "log": {
+        "x": 8,
+        "y": 796.5,
+        "width": 1171.71875,
+        "height": 243.5,
+        "right": 1179.71875,
+        "bottom": 1040
+      },
+      "manual": {
+        "x": 1187.71875,
+        "y": 796.5,
+        "width": 724.265625,
+        "height": 243.5,
+        "right": 1911.984375,
+        "bottom": 1040
+      },
+      "footer": {
+        "x": 0,
+        "y": 1048,
+        "width": 1920,
+        "height": 32,
+        "right": 1920,
+        "bottom": 1080
+      },
+      "shortcuts": [
+        {
+          "command": "help",
+          "intersection": 20,
+          "scrollTop": 0
+        },
+        {
+          "command": "ls",
+          "intersection": 20,
+          "scrollTop": 0
+        },
+        {
+          "command": "cat hello.txt",
+          "intersection": 20,
+          "scrollTop": 0
+        },
+        {
+          "command": "ps",
+          "intersection": 39,
+          "scrollTop": 0
+        },
+        {
+          "command": "run counter-a counter-b",
+          "intersection": 39,
+          "scrollTop": 0
+        },
+        {
+          "command": "run fault",
+          "intersection": 39,
+          "scrollTop": 0
+        }
+      ],
+      "manualScrollTop": 103
+    },
+    {
+      "window": [
+        700,
+        1000
+      ],
+      "page": [
+        700,
+        700,
+        2189
+      ],
+      "manualHeight": 263,
+      "manualPadding": 24,
+      "manualLine": 20.8,
+      "helpHeight": 107,
+      "helpScrollHeight": 107,
+      "console": {
+        "x": 8,
+        "y": 219,
+        "width": 684,
+        "height": 459.5,
+        "right": 692,
+        "bottom": 678.5
+      },
+      "inspector": {
+        "x": 8,
+        "y": 686.5,
+        "width": 684,
+        "height": 727.5,
+        "right": 692,
+        "bottom": 1414
+      },
+      "log": {
+        "x": 8,
+        "y": 1422,
+        "width": 684,
+        "height": 294,
+        "right": 692,
+        "bottom": 1716
+      },
+      "manual": {
+        "x": 8,
+        "y": 1724,
+        "width": 684,
+        "height": 404.75,
+        "right": 692,
+        "bottom": 2128.75
+      },
+      "footer": {
+        "x": 0,
+        "y": 2136.75,
+        "width": 700,
+        "height": 52,
+        "right": 700,
+        "bottom": 2188.75
+      },
+      "shortcuts": [
+        {
+          "command": "help",
+          "intersection": 39,
+          "scrollTop": 0
+        },
+        {
+          "command": "ls",
+          "intersection": 39,
+          "scrollTop": 0
+        },
+        {
+          "command": "cat hello.txt",
+          "intersection": 39,
+          "scrollTop": 0
+        },
+        {
+          "command": "ps",
+          "intersection": 43,
+          "scrollTop": 0
+        },
+        {
+          "command": "run counter-a counter-b",
+          "intersection": 43,
+          "scrollTop": 0
+        },
+        {
+          "command": "run fault",
+          "intersection": 43,
+          "scrollTop": 0
+        }
+      ],
+      "manualScrollTop": 0
+    },
+    {
+      "window": [
+        390,
+        844
+      ],
+      "page": [
+        390,
+        390,
+        2432
+      ],
+      "manualHeight": 263,
+      "manualPadding": 24,
+      "manualLine": 20.8,
+      "helpHeight": 151,
+      "helpScrollHeight": 151,
+      "console": {
+        "x": 8,
+        "y": 267,
+        "width": 374,
+        "height": 456,
+        "right": 382,
+        "bottom": 723
+      },
+      "inspector": {
+        "x": 8,
+        "y": 731,
+        "width": 374,
+        "height": 756,
+        "right": 382,
+        "bottom": 1487
+      },
+      "log": {
+        "x": 8,
+        "y": 1495,
+        "width": 374,
+        "height": 384.359375,
+        "right": 382,
+        "bottom": 1879.359375
+      },
+      "manual": {
+        "x": 8,
+        "y": 1887.359375,
+        "width": 374,
+        "height": 448.75,
+        "right": 382,
+        "bottom": 2336.109375
+      },
+      "footer": {
+        "x": 0,
+        "y": 2344.109375,
+        "width": 390,
+        "height": 88,
+        "right": 390,
+        "bottom": 2432.109375
+      },
+      "shortcuts": [
+        {
+          "command": "help",
+          "intersection": 39,
+          "scrollTop": 0
+        },
+        {
+          "command": "ls",
+          "intersection": 39,
+          "scrollTop": 0
+        },
+        {
+          "command": "cat hello.txt",
+          "intersection": 39,
+          "scrollTop": 0
+        },
+        {
+          "command": "ps",
+          "intersection": 39,
+          "scrollTop": 0
+        },
+        {
+          "command": "run counter-a counter-b",
+          "intersection": 43,
+          "scrollTop": 0
+        },
+        {
+          "command": "run fault",
+          "intersection": 43,
+          "scrollTop": 0
+        }
+      ],
+      "manualScrollTop": 0
+    }
+  ],
+  "failures": [],
+  "pageErrors": [],
+  "hashes": {
+    "app.js": "d94dc005938bdb5f29b5a35095189e1ec74919c11420c8b789275e0a722abbc9",
+    "replay.js": "681a521475258004efa0c30863abe7946eacf1bfa0b44c52fccaa93565583cf9",
+    "style.css": "76e837c78c9e87333283d26e19f29fb201bc3a8242f9f741157469baffaffd12",
+    "index.html": "2c6f9f9687150a3bf48de3389979d319f2becbc687229cdcbe4a13de3e80cf12"
+  }
+}

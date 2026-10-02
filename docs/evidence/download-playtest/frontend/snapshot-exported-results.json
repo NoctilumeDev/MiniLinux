@@ -1,0 +1,490 @@
+{
+  "url": "http://127.0.0.1:8091/",
+  "method": "Exported replay, normal wall clock and real locators; DOM reads only",
+  "tests": {
+    "labels": {
+      "downloadText": "下载 Windows 实时 LAB",
+      "downloadHref": "https://github.com/NoctilumeDev/MiniLinux/releases/download/lab-preview-20261002.1/MiniLinux-LAB-Windows-x64.zip",
+      "downloadVisible": true,
+      "counterButton": "run counter-a counter-b",
+      "manual": "按钮选择实录",
+      "faultHint": "演示故障，shell 继续"
+    },
+    "finalSnapshot": {
+      "tick": 627,
+      "sourceIndex": 40,
+      "free": "15954",
+      "callCount": 40,
+      "compared": [
+        {
+          "program": "counter-a",
+          "pid": 5,
+          "va": "0x0000000000600000",
+          "pa": "0x000000000010a000",
+          "marker": "0x000000000000a110",
+          "root": "CR3 0x0000000000104000"
+        },
+        {
+          "program": "counter-b",
+          "pid": 6,
+          "va": "0x0000000000600000",
+          "pa": "0x0000000000115000",
+          "marker": "0x000000000000b220",
+          "root": "CR3 0x000000000010f000"
+        }
+      ]
+    },
+    "returnLatest": {
+      "processes": [
+        [
+          "1",
+          "0",
+          "waiting",
+          "init"
+        ],
+        [
+          "2",
+          "1",
+          "current",
+          "shell"
+        ]
+      ],
+      "free": "15976",
+      "observation": "as of tick 642"
+    },
+    "pinnedAdvance": {
+      "observation": "快照 tick 140 · 历史录制",
+      "processCount": 4,
+      "terminalBefore": 696,
+      "terminalAfter": 1396,
+      "footerBefore": "latest event #342 · observed, not instantaneous",
+      "footerAfter": "latest event #1211 · observed, not instantaneous"
+    },
+    "unknown": "这是实录回放，其他输入请用右上角“下载 Windows 实时 LAB”。This replay contains: help, ls, cat hello.txt, ps, run hello, run reader, run counter-a counter-b, run fault, check, mem."
+  },
+  "layouts": [
+    {
+      "window": [
+        1024,
+        700
+      ],
+      "page": [
+        1024,
+        1024,
+        700
+      ],
+      "console": {
+        "x": 8,
+        "y": 146,
+        "width": 382,
+        "height": 379.5,
+        "right": 390,
+        "bottom": 525.5
+      },
+      "inspector": {
+        "x": 398,
+        "y": 146,
+        "width": 618,
+        "height": 379.5,
+        "right": 1016,
+        "bottom": 525.5
+      },
+      "log": {
+        "x": 8,
+        "y": 533.5,
+        "width": 618,
+        "height": 126.5,
+        "right": 626,
+        "bottom": 660
+      },
+      "manual": {
+        "x": 634,
+        "y": 533.5,
+        "width": 382,
+        "height": 126.5,
+        "right": 1016,
+        "bottom": 660
+      },
+      "input": {
+        "x": 74.015625,
+        "y": 451.5,
+        "width": 236.96875,
+        "height": 27,
+        "right": 310.984375,
+        "bottom": 478.5
+      },
+      "footer": {
+        "x": 0,
+        "y": 668,
+        "width": 1024,
+        "height": 32,
+        "right": 1024,
+        "bottom": 700
+      },
+      "processViewport": 108,
+      "links": {
+        "x": 766.953125,
+        "y": 74,
+        "width": 245.046875,
+        "height": 22,
+        "right": 1012,
+        "bottom": 96
+      },
+      "manualBody": 16
+    },
+    {
+      "window": [
+        1152,
+        640
+      ],
+      "page": [
+        1152,
+        1152,
+        640
+      ],
+      "console": {
+        "x": 8,
+        "y": 146,
+        "width": 430.890625,
+        "height": 334.5,
+        "right": 438.890625,
+        "bottom": 480.5
+      },
+      "inspector": {
+        "x": 446.890625,
+        "y": 146,
+        "width": 697.09375,
+        "height": 334.5,
+        "right": 1143.984375,
+        "bottom": 480.5
+      },
+      "log": {
+        "x": 8,
+        "y": 488.5,
+        "width": 697.09375,
+        "height": 111.5,
+        "right": 705.09375,
+        "bottom": 600
+      },
+      "manual": {
+        "x": 713.09375,
+        "y": 488.5,
+        "width": 430.890625,
+        "height": 111.5,
+        "right": 1143.984375,
+        "bottom": 600
+      },
+      "input": {
+        "x": 74.015625,
+        "y": 406.5,
+        "width": 285.859375,
+        "height": 27,
+        "right": 359.875,
+        "bottom": 433.5
+      },
+      "footer": {
+        "x": 0,
+        "y": 608,
+        "width": 1152,
+        "height": 32,
+        "right": 1152,
+        "bottom": 640
+      },
+      "processViewport": 63,
+      "links": {
+        "x": 894.953125,
+        "y": 74,
+        "width": 245.046875,
+        "height": 22,
+        "right": 1140,
+        "bottom": 96
+      },
+      "manualBody": 16
+    },
+    {
+      "window": [
+        1366,
+        768
+      ],
+      "page": [
+        1366,
+        1366,
+        768
+      ],
+      "console": {
+        "x": 8,
+        "y": 162.375,
+        "width": 512.640625,
+        "height": 401.484375,
+        "right": 520.640625,
+        "bottom": 563.859375
+      },
+      "inspector": {
+        "x": 528.640625,
+        "y": 162.375,
+        "width": 829.34375,
+        "height": 401.484375,
+        "right": 1357.984375,
+        "bottom": 563.859375
+      },
+      "log": {
+        "x": 8,
+        "y": 571.859375,
+        "width": 829.34375,
+        "height": 156.140625,
+        "right": 837.34375,
+        "bottom": 728
+      },
+      "manual": {
+        "x": 845.34375,
+        "y": 571.859375,
+        "width": 512.640625,
+        "height": 156.140625,
+        "right": 1357.984375,
+        "bottom": 728
+      },
+      "input": {
+        "x": 74.015625,
+        "y": 506.359375,
+        "width": 367.609375,
+        "height": 27,
+        "right": 441.625,
+        "bottom": 533.359375
+      },
+      "footer": {
+        "x": 0,
+        "y": 736,
+        "width": 1366,
+        "height": 32,
+        "right": 1366,
+        "bottom": 768
+      },
+      "processViewport": 129,
+      "links": {
+        "x": 1108.953125,
+        "y": 90.375,
+        "width": 245.046875,
+        "height": 22,
+        "right": 1354,
+        "bottom": 112.375
+      },
+      "manualBody": 56
+    },
+    {
+      "window": [
+        1920,
+        1080
+      ],
+      "page": [
+        1920,
+        1920,
+        1080
+      ],
+      "console": {
+        "x": 8,
+        "y": 162.375,
+        "width": 724.265625,
+        "height": 626.125,
+        "right": 732.265625,
+        "bottom": 788.5
+      },
+      "inspector": {
+        "x": 740.265625,
+        "y": 162.375,
+        "width": 1171.71875,
+        "height": 626.125,
+        "right": 1911.984375,
+        "bottom": 788.5
+      },
+      "log": {
+        "x": 8,
+        "y": 796.5,
+        "width": 1171.71875,
+        "height": 243.5,
+        "right": 1179.71875,
+        "bottom": 1040
+      },
+      "manual": {
+        "x": 1187.71875,
+        "y": 796.5,
+        "width": 724.265625,
+        "height": 243.5,
+        "right": 1911.984375,
+        "bottom": 1040
+      },
+      "input": {
+        "x": 74.015625,
+        "y": 731,
+        "width": 579.234375,
+        "height": 27,
+        "right": 653.25,
+        "bottom": 758
+      },
+      "footer": {
+        "x": 0,
+        "y": 1048,
+        "width": 1920,
+        "height": 32,
+        "right": 1920,
+        "bottom": 1080
+      },
+      "processViewport": 281,
+      "links": {
+        "x": 1662.953125,
+        "y": 90.375,
+        "width": 245.046875,
+        "height": 22,
+        "right": 1908,
+        "bottom": 112.375
+      },
+      "manualBody": 144
+    },
+    {
+      "window": [
+        700,
+        1000
+      ],
+      "page": [
+        700,
+        700,
+        2189
+      ],
+      "console": {
+        "x": 8,
+        "y": 219,
+        "width": 684,
+        "height": 459.5,
+        "right": 692,
+        "bottom": 678.5
+      },
+      "inspector": {
+        "x": 8,
+        "y": 686.5,
+        "width": 684,
+        "height": 727.5,
+        "right": 692,
+        "bottom": 1414
+      },
+      "log": {
+        "x": 8,
+        "y": 1422,
+        "width": 684,
+        "height": 294,
+        "right": 692,
+        "bottom": 1716
+      },
+      "manual": {
+        "x": 8,
+        "y": 1724,
+        "width": 684,
+        "height": 404.75,
+        "right": 692,
+        "bottom": 2128.75
+      },
+      "input": {
+        "x": 75.015625,
+        "y": 613,
+        "width": 536.96875,
+        "height": 27,
+        "right": 611.984375,
+        "bottom": 640
+      },
+      "footer": {
+        "x": 0,
+        "y": 2136.75,
+        "width": 700,
+        "height": 52,
+        "right": 700,
+        "bottom": 2188.75
+      },
+      "processViewport": 78,
+      "links": {
+        "x": 442.953125,
+        "y": 129.5,
+        "width": 245.046875,
+        "height": 22,
+        "right": 688,
+        "bottom": 151.5
+      },
+      "manualBody": 263
+    },
+    {
+      "window": [
+        390,
+        844
+      ],
+      "page": [
+        390,
+        390,
+        2432
+      ],
+      "console": {
+        "x": 8,
+        "y": 267,
+        "width": 374,
+        "height": 456,
+        "right": 382,
+        "bottom": 723
+      },
+      "inspector": {
+        "x": 8,
+        "y": 731,
+        "width": 374,
+        "height": 756,
+        "right": 382,
+        "bottom": 1487
+      },
+      "log": {
+        "x": 8,
+        "y": 1495,
+        "width": 374,
+        "height": 384.359375,
+        "right": 382,
+        "bottom": 1879.359375
+      },
+      "manual": {
+        "x": 8,
+        "y": 1887.359375,
+        "width": 374,
+        "height": 448.75,
+        "right": 382,
+        "bottom": 2336.109375
+      },
+      "input": {
+        "x": 75.015625,
+        "y": 641,
+        "width": 226.96875,
+        "height": 27,
+        "right": 301.984375,
+        "bottom": 668
+      },
+      "footer": {
+        "x": 0,
+        "y": 2344.109375,
+        "width": 390,
+        "height": 88,
+        "right": 390,
+        "bottom": 2432.109375
+      },
+      "processViewport": 78,
+      "links": {
+        "x": 200.5625,
+        "y": 120,
+        "width": 183.4375,
+        "height": 22,
+        "right": 384,
+        "bottom": 142
+      },
+      "manualBody": 263
+    }
+  ],
+  "failures": [],
+  "pageErrors": [],
+  "hashes": {
+    "recording": "41b40894dda0b47a937bfa21c85480e262de158983062ca7318e1a63e6b49ecc",
+    "app.js": "9fc0e93ea3ffc1d057a9a42a96aa25c926dbb40eee133079d363aae807a3efc0",
+    "replay.js": "681a521475258004efa0c30863abe7946eacf1bfa0b44c52fccaa93565583cf9",
+    "style.css": "daac480e8fb5918a15b2cd92b7587b04560aa9e81cb648ac5cab9ee93706962d",
+    "index.html": "2c6f9f9687150a3bf48de3389979d319f2becbc687229cdcbe4a13de3e80cf12"
+  }
+}

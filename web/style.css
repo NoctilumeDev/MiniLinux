@@ -91,13 +91,15 @@ tbody tr.selected button { text-decoration: underline; text-underline-offset: 3p
 .bottom-row { display: grid; grid-template-columns: minmax(0, .618fr) minmax(380px, .382fr); gap: 8px; margin-top: 8px; }
 .log-panel { display: flex; flex-direction: column; background: var(--ink); color: var(--paper); }
 .event-area { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, .8fr); }
-.event-log { flex: 1; min-height: 0; contain: size; overflow: auto; padding: 10px 12px; font-size: 13px; line-height: 1.65; }
+.event-log { flex: 1; min-height: 0; contain: size; overflow: auto; padding: 10px 12px; font-size: 13px; line-height: 1.65; direction: rtl; scrollbar-color: #666 #111; scrollbar-width: thin; }
+/* Place the log scrollbar on its outside edge; records still read left to right. */
+.event-log > * { direction: ltr; }
 .event-row { display: grid; grid-template-columns: 65px minmax(0, 1fr); gap: 12px; width: 100%; padding: 0; color: inherit; text-align: left; line-height: inherit; }
 .event-row:hover { background: #222; }
 .event-row.selected { background: #253021; }
 .event-row > span { overflow-wrap: anywhere; }
 .event-row > span:first-child { color: #aaa99f; white-space: pre; }
-.event-info { min-width: 0; min-height: 0; overflow: auto; border-left: 1px solid #444; padding: 6px 10px; font-size: 13px; line-height: 1.4; }
+.event-info { min-width: 0; min-height: 0; overflow: auto; border-left: 1px solid #666; padding: 6px 10px; font-size: 13px; line-height: 1.4; scrollbar-color: #666 #111; scrollbar-width: thin; }
 .event-title { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .event-title h3 { font-size: 13px; }
 .event-title button { font-size: 11px; color: var(--green); padding: 0 3px; }

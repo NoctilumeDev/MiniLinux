@@ -44,13 +44,18 @@ def package(output, iso, extractor, extractor_source, limine_license):
         "@echo off", "setlocal",
         'set "PSModulePath=%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\Modules"',
         'cd /d "%~dp0"',
-        'if "%~1"=="" (',
+        'set "LAB_PROXY=%~1"',
+        'set "LAB_BROWSER_OPTION="',
+        'if "%~1"=="--no-browser" set "LAB_PROXY="',
+        'if "%~1"=="--no-browser" set "LAB_BROWSER_OPTION=--no-browser"',
+        'if "%~2"=="--no-browser" set "LAB_BROWSER_OPTION=--no-browser"',
+        'if "%LAB_PROXY%"=="" (',
         '  "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -NoProfile -ExecutionPolicy Bypass -File "%~dp0tools\\prepare-desktop.ps1"',
         ') else (',
-        '  "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -NoProfile -ExecutionPolicy Bypass -File "%~dp0tools\\prepare-desktop.ps1" -Proxy "%~1"',
+        '  "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -NoProfile -ExecutionPolicy Bypass -File "%~dp0tools\\prepare-desktop.ps1" -Proxy "%LAB_PROXY%"',
         ')',
         "if errorlevel 1 goto failed",
-        '"%~dp0runtime\\python\\python.exe" -I "%~dp0tools\\desktop-launch.py"',
+        '"%~dp0runtime\\python\\python.exe" -I "%~dp0tools\\desktop-launch.py" %LAB_BROWSER_OPTION%',
         "if errorlevel 1 goto failed", "exit /b 0", ":failed",
         "echo LAB could not start. See READ-ME.txt for retry and proxy instructions.",
         "echo Keep the error above when reporting a problem.", "pause", ""
@@ -74,6 +79,8 @@ def package(output, iso, extractor, extractor_source, limine_license):
         "下载失败可以按同样方法重试；不修改全局代理或系统模块配置。\n"
         "如果没有自动打开浏览器，请复制启动窗口显示的 http://127.0.0.1:端口/ 网址。\n"
         "下次打开的端口可能变化，请使用这次显示的新网址。\n"
+        "若不想自动打开默认浏览器，可运行 .\\Start.cmd --no-browser，手动打开显示的网址。\n"
+        "同时需要代理时：.\\Start.cmd http://127.0.0.1:7897 --no-browser。\n"
         "这是固定程序和文件的教学体验，不是 Linux 发行版。\n\n"
         "English quick start\n"
         "1. Extract this entire ZIP to a writable folder on Windows 10/11 x64.\n"
@@ -88,6 +95,7 @@ def package(output, iso, extractor, extractor_source, limine_license):
         "If downloads need a proxy, run in PowerShell:\n"
         "  .\\Start.cmd http://127.0.0.1:7897\n"
         "Replace that URL with your own proxy. No global setting is changed.\n"
+        "Append --no-browser to leave the default browser alone and open the printed URL yourself.\n"
         "A failed download can be retried with the same command. Verified archives\n"
         "are cached for later offline starts.\n\n"
         "Python: PSF license, included in the vendor archive.\n"

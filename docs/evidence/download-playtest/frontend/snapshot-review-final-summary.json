@@ -1,0 +1,212 @@
+{
+  "target": "http://127.0.0.1:8091/",
+  "result": "passed",
+  "hashes": {
+    "recording": "41b40894dda0b47a937bfa21c85480e262de158983062ca7318e1a63e6b49ecc",
+    "app.js": "d94dc005938bdb5f29b5a35095189e1ec74919c11420c8b789275e0a722abbc9",
+    "replay.js": "681a521475258004efa0c30863abe7946eacf1bfa0b44c52fccaa93565583cf9",
+    "style.css": "76e837c78c9e87333283d26e19f29fb201bc3a8242f9f741157469baffaffd12",
+    "index.html": "2c6f9f9687150a3bf48de3389979d319f2becbc687229cdcbe4a13de3e80cf12"
+  },
+  "liveFixtureIndexSha256": "c2429a1a5f5f72725d8416294f96906accb2e3af3f3164dae3ad8c8ac95af9ab",
+  "method": "Independent Edge headless; normal wall clock and locator input; actual exported replay plus legal LIVE API fixtures; no QEMU or shared IAB",
+  "counterSnapshot": {
+    "tick": 627,
+    "sourceIndex": 40,
+    "free": "15954",
+    "callCount": 40,
+    "compared": [
+      {
+        "program": "counter-a",
+        "pid": 5,
+        "va": "0x0000000000600000",
+        "pa": "0x000000000010a000",
+        "marker": "0x000000000000a110",
+        "root": "CR3 0x0000000000104000"
+      },
+      {
+        "program": "counter-b",
+        "pid": 6,
+        "va": "0x0000000000600000",
+        "pa": "0x0000000000115000",
+        "marker": "0x000000000000b220",
+        "root": "CR3 0x000000000010f000"
+      }
+    ]
+  },
+  "returnLabel": "回到当前回放",
+  "returnLatest": {
+    "processes": [
+      [
+        "1",
+        "0",
+        "waiting",
+        "init"
+      ],
+      [
+        "2",
+        "1",
+        "current",
+        "shell"
+      ]
+    ],
+    "free": "15976",
+    "observation": "as of tick 642"
+  },
+  "inspectorPinnedWhileConsoleAndLogAdvance": {
+    "observation": "快照 tick 140 · 历史录制",
+    "processCount": 4,
+    "terminalBefore": 696,
+    "terminalAfter": 1396,
+    "footerBefore": "latest event #342 · observed, not instantaneous",
+    "footerAfter": "latest event #1211 · observed, not instantaneous"
+  },
+  "layouts": [
+    {
+      "window": [
+        1024,
+        700
+      ],
+      "page": [
+        1024,
+        1024,
+        700
+      ],
+      "manualHeight": 48,
+      "manualLine": 20.8,
+      "helpHeight": 48,
+      "helpScrollHeight": 85,
+      "allSixButtonsClicked": true,
+      "manualKeyboardScroll": 42
+    },
+    {
+      "window": [
+        1152,
+        640
+      ],
+      "page": [
+        1152,
+        1152,
+        640
+      ],
+      "manualHeight": 48,
+      "manualLine": 20.8,
+      "helpHeight": 33,
+      "helpScrollHeight": 69,
+      "allSixButtonsClicked": true,
+      "manualKeyboardScroll": 42
+    },
+    {
+      "window": [
+        1366,
+        768
+      ],
+      "page": [
+        1366,
+        1366,
+        768
+      ],
+      "manualHeight": 57,
+      "manualLine": 20.8,
+      "helpHeight": 68,
+      "helpScrollHeight": 69,
+      "allSixButtonsClicked": true,
+      "manualKeyboardScroll": 49
+    },
+    {
+      "window": [
+        1920,
+        1080
+      ],
+      "page": [
+        1920,
+        1920,
+        1080
+      ],
+      "manualHeight": 144,
+      "manualLine": 20.8,
+      "helpHeight": 69,
+      "helpScrollHeight": 69,
+      "allSixButtonsClicked": true,
+      "manualKeyboardScroll": 103
+    },
+    {
+      "window": [
+        700,
+        1000
+      ],
+      "page": [
+        700,
+        700,
+        2189
+      ],
+      "manualHeight": 263,
+      "manualLine": 20.8,
+      "helpHeight": 107,
+      "helpScrollHeight": 107,
+      "allSixButtonsClicked": true,
+      "manualKeyboardScroll": 0
+    },
+    {
+      "window": [
+        390,
+        844
+      ],
+      "page": [
+        390,
+        390,
+        2432
+      ],
+      "manualHeight": 263,
+      "manualLine": 20.8,
+      "helpHeight": 151,
+      "helpScrollHeight": 151,
+      "allSixButtonsClicked": true,
+      "manualKeyboardScroll": 0
+    }
+  ],
+  "liveControls": {
+    "stopped": "stop/input/send/shortcuts disabled; restart enabled; last snapshot retained",
+    "disconnected": "stop/restart/input/send/shortcuts disabled; state unknown and reopen LAB guidance",
+    "reconnect": "all run controls enabled; Observed CPL label",
+    "epoch": "old snapshot cleared",
+    "freeZero": "0"
+  },
+  "knownFiveCounterexamples": "all passed with normal polling and locators",
+  "pageErrors": [],
+  "failures": [],
+  "firstFailure": {
+    "report": "snapshot-exported-results.json",
+    "hashes": {
+      "recording": "41b40894dda0b47a937bfa21c85480e262de158983062ca7318e1a63e6b49ecc",
+      "app.js": "9fc0e93ea3ffc1d057a9a42a96aa25c926dbb40eee133079d363aae807a3efc0",
+      "replay.js": "681a521475258004efa0c30863abe7946eacf1bfa0b44c52fccaa93565583cf9",
+      "style.css": "daac480e8fb5918a15b2cd92b7587b04560aa9e81cb648ac5cab9ee93706962d",
+      "index.html": "2c6f9f9687150a3bf48de3389979d319f2becbc687229cdcbe4a13de3e80cf12"
+    },
+    "manualHeight": 16,
+    "lineHeight": 20.8,
+    "affectedWindows": [
+      [
+        1024,
+        700
+      ],
+      [
+        1152,
+        640
+      ]
+    ],
+    "classification": "P2 manual body cropped; repaired to 48px and independent local shortcut scrolling",
+    "originalScreenshot": "The original screenshot path was accidentally overwritten by later QA; first JSON and original tool image remain retained. Source-exact reproduction is explicitly labelled.",
+    "sourceBoundReproduction": "manual-first-failure-source-reproduction.json",
+    "reproducedScreenshot": "manual-first-failure-source-reproduced-1024.png"
+  },
+  "evidence": [
+    "snapshot-exported-final-results.json",
+    "snapshot-layout-confirmed-results.json",
+    "snapshot-live-final-results.json",
+    "snapshot-fixed-layout-1024.png",
+    "snapshot-fixed-layout-1152.png",
+    "snapshot-final-new-label-counter-1366.png"
+  ]
+}
