@@ -62,7 +62,14 @@
     <div class="bottom-row">
       <section class="panel log-panel" id="trace-panel">
         <div class="panel-title"><h2>Serial Log / Kernel Events</h2><button id="clear-events">clear view</button></div>
-        <div id="events" class="event-log" role="log" aria-live="off" tabindex="0" aria-label="Kernel event log"></div>
+        <div class="event-area">
+          <div id="events" class="event-log" role="log" aria-live="off" tabindex="0" aria-label="Kernel event log"></div>
+          <section class="event-info" tabindex="0" aria-label="Recorded event details">
+            <div class="event-title"><h3>Event Detail</h3><button id="follow-events" aria-pressed="true">latest</button></div>
+            <p id="event-meta">Waiting for an event.</p>
+            <dl id="event-fields" class="event-fields"></dl>
+          </section>
+        </div>
       </section>
       <section class="panel manual-panel" id="manual-panel">
         <div class="panel-title"><h2>Manual / Notes</h2><span id="manual-topic">MINILINUX(1)</span></div>

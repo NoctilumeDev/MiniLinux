@@ -4,7 +4,8 @@ const calls = ["pid", "write", "ticks", "report", "exit", "open", "read", "close
 let cursor = 0, epoch = "", state = null, selectedPid = 2, events = [], paused = false;
 let consoleStart = 0, traceStart = 0, eventStart = 0, lastCommand = "", requestBusy = false;
 let view = "console";
-const processRows = new Map(), callRows = new Map();
+let selectedEvent = null, eventDetailKey = "";
+const processRows = new Map(), callRows = new Map(), eventRows = new Map();
 const manuals = {
   help: ["HELP(1)", "NAME", "help — list the shell commands", "EXAMPLE", "help\nls\ncat hello.txt\nps\nrun hello\nrun reader\nrun counter-a counter-b"],
   cat: ["CAT(1)", "NAME", "cat — read bytes from RamFS", "MECHANISM", "user shell → open → read → write → close\nPointers are checked against all page-table levels.\nTwo files: /hello.txt and /empty.txt."],
@@ -77,41 +78,68 @@ function describe(event) {
   switch (event.kind) {
     case "boot": return "kernel booted · x86_64 · one CPU";
     case "spawn": return `spawn pid=${f[0]} parent=${f[1]} program=${f[2]}`;
-    case "schedule": return `timer CPL${f[3]}: PID ${f[0]} → PID ${f[1]} · CR3 ${f[2]}`;
-    case "exit": return `exit pid=${f[0]} status=${f[1]} · release user pages`;
+    case "schedule": return `timer CPL${f[3]} · PID ${f[0]} → ${f[1]}`;
+    case "exit": return `exit PID ${f[0]} · status ${f[1]}`;
     case "wait": return `wait pid=${f[0]} for child=${f[1]}`;
-    case "fault": return `USER FAULT pid=${f[0]} vector=${f[1]} error=${f[2]} address=${f[3]} CPL${f[5]}`;
+    case "fault": return `USER FAULT PID ${f[0]} · vector ${f[1]}`;
     case "memory": return `frames=${f[0]} free=${f[1]}`;
     default: return "";
   }
 }
+function renderEventInfo(event) {
+  const key = event ? `${selectedEvent ? "selected" : "latest"}:${event.id}` : "empty";
+  if (key === eventDetailKey) return;
+  eventDetailKey = key;
+  $("follow-events").setAttribute("aria-pressed", String(!selectedEvent));
+  $("event-meta").textContent = event ? `${selectedEvent ? "Selected" : "Latest"} #${event.id} · tick ${event.tick} · ${event.kind}` : "No event in this view.";
+  const fragment = document.createDocumentFragment();
+  function field(label, value) {
+    const term = document.createElement("dt"), data = document.createElement("dd");
+    term.textContent = label; data.textContent = value;
+    fragment.append(term, data);
+  }
+  if (event) {
+    const f = event.fields;
+    switch (event.kind) {
+      case "schedule": field("From PID", f[0]); field("To PID", f[1]); field("Next CR3", f[2]); field("Saved CPL", f[3]); break;
+      case "fault": field("PID", f[0]); field("Vector", f[1]); field("Error", f[2]); field("Address", f[3]); field("RIP", f[4]); field("Saved CPL", f[5]); break;
+      case "spawn": field("PID", f[0]); field("Parent PID", f[1]); field("Program ID", f[2]); break;
+      case "wait": field("Parent PID", f[0]); field("Child PID", f[1]); break;
+      case "exit": field("PID", f[0]); field("Status", f[1]); break;
+      case "memory": field("Frames", f[0]); field("Free pages", f[1]); break;
+      case "boot": field("Mode", f[0]); field("Architecture", f[1]); field("Timer target", `${f[2]} Hz`); field("Slots", f[3]); break;
+    }
+  }
+  $("event-fields").replaceChildren(fragment);
+}
 function renderEvents() {
   const relevant = events.filter(e => e.id > eventStart && describe(e) && (view !== "fault" || e.kind === "fault")).slice(-80);
   const log = $("events"), follow = log.scrollTop + log.clientHeight >= log.scrollHeight - 30;
-  const fragment = document.createDocumentFragment();
   relevant.forEach(event => {
-    const line = document.createElement("div"), tick = document.createElement("span");
-    const message = document.createElement("span"), detail = document.createElement("span");
-    line.className = "event-row";
-    tick.textContent = String(event.tick).padStart(7);
-    const f = event.fields;
-    // Separate actual record fields so long lines use the whole log width.
-    switch (event.kind) {
-      case "schedule": message.textContent = `timer CPL${f[3]} · PID ${f[0]} → ${f[1]}`; detail.textContent = `CR3 ${f[2]}`; break;
-      case "memory": message.textContent = `frames ${f[0]}`; detail.textContent = `free ${f[1]}`; break;
-      case "exit": message.textContent = `exit PID ${f[0]} · status ${f[1]}`; detail.textContent = "release user pages"; break;
-      case "fault": message.textContent = `USER FAULT PID ${f[0]} · vector ${f[1]} · error ${f[2]} · CPL${f[5]}`; detail.textContent = f[3]; break;
-      default: message.textContent = describe(event);
+    let line = eventRows.get(event.id);
+    if (!line) {
+      const tick = document.createElement("span"), message = document.createElement("span");
+      line = document.createElement("button");
+      tick.textContent = String(event.tick).padStart(7); message.textContent = describe(event);
+      line.setAttribute("aria-label", `Inspect ${event.kind} event ${event.id} at tick ${event.tick}`);
+      line.onclick = () => { selectedEvent = event; renderEvents(); };
+      line.append(tick, message); log.append(line); eventRows.set(event.id, line);
     }
-    detail.className = "event-detail"; line.append(tick, message, detail); fragment.append(line);
+    const selected = selectedEvent?.id === event.id;
+    line.className = selected ? "event-row selected" : "event-row";
+    line.setAttribute("aria-pressed", String(selected));
   });
+  for (const [id, line] of eventRows) {
+    if (!relevant.some(event => event.id === id)) { line.remove(); eventRows.delete(id); }
+  }
+  log.querySelector("p")?.remove();
   if (!relevant.length) {
     const empty = document.createElement("p");
-    empty.textContent = view === "fault" ? "No user fault observed. Try: run fault" : "No events in this view.";
-    fragment.append(empty);
+    empty.textContent = view === "fault" ? "No fault in this view. Try: run fault" : "No events in this view.";
+    log.append(empty);
   }
-  log.replaceChildren(fragment);
   if (follow) log.scrollTop = log.scrollHeight;
+  renderEventInfo(selectedEvent || relevant[relevant.length - 1]);
 }
 function renderCalls() {
   if (paused) return;
@@ -153,6 +181,7 @@ async function poll() {
     if (state.epoch !== epoch) {
       epoch = state.epoch; cursor = 0; events = []; consoleStart = traceStart = eventStart = 0;
       selectedPid = 2;
+      selectedEvent = null; eventDetailKey = ""; eventRows.clear(); $("events").replaceChildren();
       processRows.clear(); callRows.clear(); $("processes").replaceChildren(); $("syscalls").replaceChildren();
       $("syscall-detail").textContent = "Select a call to inspect its arguments.";
       $("mode-witness").textContent = "Awaiting a recorded user entry.";
@@ -181,7 +210,8 @@ $("command").onkeydown = event => { if (event.key === "ArrowUp") { event.prevent
 document.querySelectorAll("[data-command]").forEach(button => { button.onclick = () => command(button.dataset.command); });
 $("clear-console").onclick = () => { consoleStart = state ? state.console_base + state.console.length : 0; $("terminal").textContent = ""; };
 $("clear-trace").onclick = () => { traceStart = cursor; callRows.clear(); $("syscalls").replaceChildren(); };
-$("clear-events").onclick = () => { eventStart = cursor; $("events").textContent = ""; };
+$("clear-events").onclick = () => { eventStart = cursor; selectedEvent = null; renderEvents(); };
+$("follow-events").onclick = () => { selectedEvent = null; renderEvents(); };
 $("pause-trace").onclick = () => { paused = !paused; $("pause-trace").textContent = paused ? "resume" : "pause"; if (!paused) renderCalls(); };
 $("restart").onclick = async () => {
   $("restart").disabled = true; $("command").disabled = true; $("connection").textContent = "RESTARTING";
@@ -197,6 +227,7 @@ const panels = {console: "console-panel", process: "process-panel", memory: "mem
 document.querySelectorAll("[data-view]").forEach(button => {
   button.onclick = () => {
     view = button.dataset.view;
+    if (view === "fault" && selectedEvent?.kind !== "fault") selectedEvent = null;
     document.querySelectorAll("[data-view]").forEach(item => item.classList.toggle("active", item === button));
     document.querySelectorAll(".focused").forEach(item => item.classList.remove("focused"));
     const panel = $(panels[button.dataset.view]); panel.classList.add("focused");
