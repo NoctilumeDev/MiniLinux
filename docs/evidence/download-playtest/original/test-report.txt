@@ -1,0 +1,67 @@
+MiniLinux independent public-download playtest, 2026-10-02
+Identity: new independent unpack on the shared Windows host, not another clean Windows machine.
+Public release: https://github.com/NoctilumeDev/MiniLinux/releases/tag/lab-preview-20261002
+Release source: 231fdd9a5bc2cc16f81e554d83f27ebc6b4b4182; ISO/replay coordinate cc93731.
+Public ZIP: MiniLinux-LAB-Windows-x64.zip, 2930931 bytes.
+Actual SHA256: 9210A0F44BE614A99AE898CF0C2AF370CA8822FA1FC00BA60A2086BC9B43D4F3.
+Directory: C:\Users\lenovo\AppData\Local\Temp\MiniLinux 陌生下载者 20261002 独立试玩\原始解包\MiniLinux-LAB
+Creation-before condition: parent root did not exist; recorded in identity.txt. No D-drive runtime/cache copied.
+Download: public GitHub API resolved asset URL; anonymous curl.exe --proxy http://127.0.0.1:7897 --fail --location downloaded actual release ZIP. Headers retained.
+Public README was freshly fetched from raw main and independently observed in own GitHub browser tab. Web-search cached README was stale M0; fresh public main was the current replay/LAB README at b6e79f1.
+
+First original Start.cmd attempt:
+Default Codex bundled pwsh shell; & '.\Start.cmd' 2>&1 | Tee-Object ...; tty true. Original Start.cmd invokes powershell.exe via cmd.exe.
+Failure at prepare-desktop.ps1:8: Get-FileHash not recognized. Message: LAB could not start. Keep this message for troubleshooting. Press any key to continue.
+No downloads, Python or QEMU yet. First failed console session 75985 ended after a newline at pause. First log start-first-raw.log retained.
+Controlled diagnostics showed WinPS 5.1.26100.9444 inherited bundled PowerShell 7 module path through cmd. Get-Content loaded bundled Microsoft.PowerShell.Utility.psd1, which did not export Get-FileHash in WinPS. Import-Module by name did not restore it. Direct explicit system powershell.exe invocation received normal WinPS module path and all three commands existed. Raw environment diagnostic retained. This is a startup robustness gap, not proof that a normal Explorer double-click failed.
+
+First real network preparation:
+Original package script, direct C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\prepare-desktop.ps1 -Proxy http://127.0.0.1:7897.
+Downloaded Python 3.13.16 embed archive, 11439094 bytes, SHA256 97DAE5274CC54867065E8D5A3226E48C35017ED332A0FDB0E27D5B5821961297.
+Downloaded QEMU 20260811 archive, 206615928 bytes, SHA256 F98A8AEB5F7FAEA9765B6DEE28316C266CD179D80354A2FED8E50176F9A2E59F.
+Prepared only inside package runtime. First log prepare-first-network-raw.log retained. No compiler/GDB/WSL/global Python installation used.
+
+Controlled original launcher start:
+For this one exec child process only, fixed PSModulePath to standard WinPS directories; then executed unchanged package Start.cmd. This is an equivalent controllable wrapper, not qualification of the first bare Start.cmd path.
+Ready URL http://127.0.0.1:56516/. Package embedded Python -I PID14592; owned QEMU PID37964; COM56517/56518. Own browser tab opened at printed URL; default-browser auto-opening was not visually verified by this managed browser test.
+All 21 files originally distributed in ZIP were independently hashed against ZIP entries after playtest: 0 changed originals. distribution-byte-readback.json retained.
+
+Actual live browser operations and observed witnesses:
+help: input+Enter produced command list and fixed programs hello,reader,counter-a,counter-b,fault.
+ls: clicked quick button; /hello.txt 17 bytes and /empty.txt 0 bytes.
+cat hello.txt: hello from ramfs. PID2 open/read/read EOF/close visible; read returned17, buffer0x801db0, length0x80, fd0. Clicked read row; details retained.
+ps: PID1 waiting init CR3=0x77000; PID2 ready shell CR3=0x82000.
+run hello: typed+send; hello from user mode; PID3 exited status0; spawn/exit/wait visible.
+run reader: typed+Enter; reading /hello.txt through syscalls; hello from ramfs; PID4 exited status0.
+run counters quick button: actually sends run counter-a counter-b. PID5/6 step1..5, markersa110/b220, both status0; free15954 during execution to15976 afterwards. First attempt to inspect PID5 after human/tool turnaround missed its short lifetime; preserved initial and done snapshots.
+Repeated counters: PID7/8; actual selected maps showed same VA0x600000 -> PA0x120000 /0x12b000 and CR3=0x11a000/0x125000. Both later output steps1..5 and exit0. Snapshot maps and screenshot retained.
+Typed run counters, copied from quick-button label: actual guest replied run: unknown embedded program. Preserved transcript; label is misleading in live mode.
+run fault: clicked quick button. PID9 vector14, status142. Selected fault event8935 tick20953: error5, address0xffffffff80000000, RIP0x4000ea, saved CPL3. Free pages returned15976.
+cat after fault: shell accepted command and returned hello from ramfs, proving continued operation.
+stop guest: QEMU37964 exited; Python14592 and HTTP56516 remained. Page STOPPED, disabled command box, retained current shell display.
+restart guest: fresh QEMU PID38768, new COM55195/55196. Page passed RESTARTING to RUNNING; terminal/history reset to fresh boot; cat succeeded in new PID2.
+Ctrl+C: launcher tool session19612 ended, return1 from interrupted host session. Independent CIM and TCP readback at20:18:54 found own cmd/python/qemu count0 and HTTP/old+newCOM listeners0. No forced process killing was used.
+After launcher closure: page DISCONNECTED, still retains data; input disabled but stop/restart/send visually available; red error Cannot reach the laboratory bridge: Failed to fetch. No recovery next-step guidance.
+
+Independent public REPLAY operations:
+Own public tab followed fresh README online link. Initial page REPLAY, Recorded2026-10-02 cc93731 boot frame1/1; text says recorded clips/no kernel.
+Clicked cat hello.txt: REPLAY cc93731 cat hello.txt frame2/2, fixed returned transcript. Clicked run fault: REPLAY cc93731 run fault frame2/2, recorded PID7 fault/exit142. Identity distinction is observable; does not prove live public kernel.
+Browser CUA public navigation had multiple30/60-second timeouts; recovered same created tab; later API calls generally20-21seconds. This is an automation-environment observation, not a product failure diagnosis.
+
+Cache preparation:
+After shutdown, original prepare script with deliberately unreachable per-command proxy http://127.0.0.1:1 returned ready/exit0 in0.6085seconds; no Downloading output, cache file sizes/timestamps unchanged. Confirms reuse of this unpack's own downloads. Does not claim the entire machine was offline.
+
+Product blockers/ambiguities for root to fix:
+P1 function/flow: Start.cmd inherited module path causes hash command failure in tested Codex-pwsh-to-cmd route; generic final error gives no actionable next step.
+P2 entrance/label: standalone online REPLAY screen has SOURCE only, lacks download/live LAB route. README's 直接在线试玩 can imply live before user reaches English replay limitation.
+P2 label: run counters quick button text is not valid live guest command; actual execution string differs.
+P2 observation flow: short-lived counters disappear before selecting both PIDs; no obvious full-Inspector retained snapshot/freeze route.
+P2 stop/close flow: STOPPED retains current shell states and same generic command hint; stop still available; DISCONNECTED retains stop/restart/send and shows only Failed to fetch, no reopen Start.cmd/new URL explanation.
+P3 label/language: public README Chinese, package READ-ME and UI English; proxy instructions assume package-root PowerShell cwd without telling novice how to open it.
+P3 label: live interface uses Recorded CPL3 entry / Recorded event details, which collides with REPLAY mode terminology.
+P3 action clarity: Manual/Notes buttons immediately execute guest commands, without an adjacent click-exec explanation; run fault's nonfatal demonstration purpose is not visible beside button.
+P3 first-preparation feedback: captured prepare logs only contain two URLs then ready, no stage/cache explanation. Captured pipeline may suppress standard WinPS progress; not established as native-console absence.
+
+Evidence directory includes original downloads/headers, release coordinates, first failure, controlled diagnostics, runtime hashes, individual live command snapshots, process/port readbacks, distribution-byte readback, cache readback and replay snapshots.
+Key screenshots: replay-entry.png, live-counter-b.png, live-fault-detail.png, live-stop.png, live-launcher-closed.png.
+VM released to root; no own guest remains. Original release bytes and first failures preserved. New release must be re-downloaded and tested under its own hash; no qualification transferred from this run.

@@ -6,6 +6,26 @@
 
 Windows 启动包运行真实客体，包含固定 ISO、同一网页、标准库桥接和启动脚本。首次运行从官方来源下载约 220 MB 的 Python/QEMU 档案，仅解包到包内 runtime；后续使用缓存。无需编译器、GDB、WSL 或既有 Python/QEMU。7-Zip 解包工具附原许可及对应源码，Limine 和 Tux 许可保留。窗口保持打开，Ctrl+C 关闭桥接和自己的 QEMU；这仍是固定程序、固定文件的教学体验。
 
+## 从公开下载重新走一遍
+
+新的独立智能体从公开发布下载原始 v2 ZIP，在全新中文加空格目录首次联网准备并操作真实客体，没有借用 D 盘运行时。它先发现 `Start.cmd` 在 PowerShell 7 → cmd → Windows PowerShell 5.1 的继承模块环境中找不到 `Get-FileHash`，未能启动；首败保留。这不证明普通资源管理器双击失败，但确实推翻了该启动路径的资格。随后仅在单次子进程中调整模块路径以继续观察，包内 21 个原始文件的字节始终未改；这次受控通过不算原始启动脚本通过。
+
+实际试玩完成 help、ls、cat、ps、hello、reader、两组 counter、fault 后继续 cat、stop/restart 与退出清理。试玩还发现九处具体入口、标注或观察问题。原报告、启动首败及清理见 [download-playtest/original](evidence/download-playtest/original/test-report.txt)。
+
+| 真实问题 | 最小修补 |
+| --- | --- |
+| 启动继承错误的 PowerShell 模块路径 | Start.cmd 在自己的进程里选择系统 Windows PowerShell 模块，并允许直接传入代理地址；不改系统配置。 |
+| 实录页面没有真实 LAB 下载下一步 | 右上增加 Windows 下载入口，未知输入提示指向该入口；README 明说实录回放。 |
+| `run counters` 标题不是可输入的实际命令 | 按钮显示完整 `run counter-a counter-b`。 |
+| counter 结束过快，来不及比较两个地址空间 | 保留最近一次两个 counter 同时存在的真实快照；PID、映射、free 和 syscall 采用同一帧，客体与日志继续。 |
+| 停止/断连仍像当前可操作状态 | 标明末次记录或未知状态，禁用不适用的操作，指明 restart 或重开启动窗口并使用新网址。 |
+| 中文读者不知道在哪输入代理命令 | 包内中文快速开始说明解压、打开所在目录的 PowerShell、代理、重试和退出。 |
+| LIVE 的 Recorded 与 REPLAY 混淆 | LIVE 用 Observed；REPLAY 保留 Recorded。 |
+| 手册按钮的动作与 fault 后果不清 | 明说按钮执行命令/选择实录，fault 提示 shell 继续。 |
+| 首次准备与缓存阶段难辨 | 显示四步准备过程、首下载大小、缓存和重试说明。 |
+
+新增安全提示和完整命令还触发小桌面手册正文仅 16px 的首败；保留字号与整体比例，让快捷区局部滚动并为正文留出完整行。新版本仍须按自己的 ZIP 哈希重新下载，通过原始 Start.cmd、浏览器和清理闭环后才升级发布结论；旧 ZIP 的首败不被覆盖。
+
 ## 这次怎么找问题
 
 三位子智能体独立检查运行链、前端反例和机制源码，随后另有产品评审。QEMU 测试与预览串行，使用独立工作区，保留首败；没有为通过修改守卫或降低既有判据。

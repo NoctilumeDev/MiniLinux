@@ -42,9 +42,9 @@ PID 1 / init → PID 2 / shell → spawn → 用户程序
 
 日志左侧是时间线，右侧显示选中记录的字段：调度的 PID/CR3/CPL、故障的地址/RIP/错误码等。点击记录可保持这次观察，点击 `latest` 恢复跟随；这是一条已记录事件的详情，不是当前 CPU 的即时状态。
 
-**[在线试玩：实录交互回放](https://noctilumedev.github.io/MiniLinux/)**。无需准备本机工具；先点 `cat hello.txt`，再试 `run counters` 与 `run fault`。页面标注 `REPLAY`，输入选择已有片段；可暂停后查看 PID、页映射和原始事件，网页不运行新客体。
+**[在线实录交互回放](https://noctilumedev.github.io/MiniLinux/)**。无需准备本机工具；先点 `cat hello.txt`，再试 `run counter-a counter-b` 与 `run fault`。页面标注 `REPLAY`，输入选择已有片段；可暂停后查看 PID、页映射和原始事件，网页不运行新客体。页面右上角提供运行真实客体的 Windows 下载入口。
 
-**[下载 Windows LAB 预览包](https://github.com/NoctilumeDev/MiniLinux/releases/tag/lab-preview-20261002)**。解压后打开 `Start.cmd`，运行真实 64 MiB QEMU 客体；首次联网下载约 220 MB 的官方 Python/QEMU 档案，只解包到包内目录，以后可用缓存。无需编译器、GDB、WSL 或预装 Python/QEMU。原始 ZIP 已在新的中文加空格目录独立启动、复验命令并检查退出清理；发布后匿名下载的哈希相符。录制来源、运行与产品复验见 [体验记录](docs/EXPERIENCE.md)。
+**[下载 Windows LAB 预览包 ZIP](https://github.com/NoctilumeDev/MiniLinux/releases/download/lab-preview-20261002.1/MiniLinux-LAB-Windows-x64.zip)**（[版本说明](https://github.com/NoctilumeDev/MiniLinux/releases/tag/lab-preview-20261002.1)）。解压后打开 `Start.cmd`，运行真实 64 MiB QEMU 客体；首次联网下载约 220 MB 的官方 Python/QEMU 档案，只解包到包内目录，以后可用缓存。无需编译器、GDB、WSL 或预装 Python/QEMU。包内有中文快速开始与代理说明；遇到下载失败可重试。counter 结束后点“查看最近 counter 快照”比较两个 PID：只固定观察窗，不暂停客体。录制来源、原始首败与各版本复验分别记录在 [体验记录](docs/EXPERIENCE.md)。
 
 `LAB` 上层和宿主桥接的自动验证入口是 `./tools/check-lab.ps1`。请先停止当前预览再验证，以免同时改写同一构建目录、镜像和记录。本轮受测源码 `ac3e5cb` 已从 GitHub 干净克隆重跑所有入口，候选位于 [PR #2](https://github.com/NoctilumeDev/MiniLinux/pull/2)，基于尚未合入的 PR #1。薄用户态的证明、首败与限制见 [USERLAND](docs/USERLAND.md)，视觉和浏览器验证见 [design-qa](design-qa.md)。
 
