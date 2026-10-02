@@ -35,6 +35,28 @@ static uint64_t read_file(void) {
     check(call(SYS_READ, 99, out, 1) == -3);
     check(call(SYS_CLOSE, 99, 0, 0) == -3);
     check(call(SYS_READ, first, USER_CODE, 4) == -2);
+#if MINILINUX_ATTACK == 4
+    check(call(SYS_WRITE, 0, 0, 0) == 0);
+    check(call(SYS_READ, first, 0, 0) == 0);
+    check(call(SYS_WRITE, 0, 1, 0) == -2);
+    check(call(SYS_WRITE, UINT64_C(1) << 47, 1, 0) == -2);
+    check(call(SYS_WRITE, (UINT64_C(1) << 47) - 1, 2, 0) == -2);
+    check(call(SYS_WRITE, USER_DATA, COPY_LIMIT + 1, 0) == -2);
+    check(call(SYS_READ, 99, USER_DATA, COPY_LIMIT) == -3);
+    check(call(SYS_READ, 99, USER_DATA, COPY_LIMIT + 1) == -2);
+    check(call(SYS_READ, UINT64_MAX, USER_DATA, 1) == -3);
+    check(call(SYS_CLOSE, UINT64_MAX, 0, 0) == -3);
+    check(call(SYS_OPEN, 0, 0, 0) == -4);
+    check(call(SYS_OPEN, (uint64_t)(uintptr_t)name, sizeof(name), 0) == -4);
+    check(call(SYS_OPEN, USER_DATA + 4096 - 1, 2, 0) == -2);
+    check(call(SYS_READ, 99, USER_STACK + 4096 - 8, 16) == -3);
+    volatile uint8_t *last = (volatile uint8_t *)(uintptr_t)(USER_DATA + 4096 - 1);
+    *last = 'A';
+    check(call(SYS_WRITE, (uint64_t)(uintptr_t)last, 1, 0) == 1);
+    check(call(SYS_WRITE, (uint64_t)(uintptr_t)last, 2, 0) == -2);
+    static const char bounds_passed[] = "counterexample: pointer endpoints checked without consuming file bytes\n";
+    check(call(SYS_WRITE, (uint64_t)(uintptr_t)bounds_passed, sizeof(bounds_passed) - 1, 0) == (int64_t)(sizeof(bounds_passed) - 1));
+#endif
     volatile uint8_t *edge = (volatile uint8_t *)(uintptr_t)(USER_DATA + 4096 - 8);
     for (unsigned i = 0; i < 8; i++) { edge[i] = 0xa5; }
     check(call(SYS_READ, first, (uint64_t)(uintptr_t)edge, 16) == -2);
@@ -59,6 +81,35 @@ static uint64_t read_file(void) {
 }
 #endif
 
+#if MINILINUX_ATTACK == 5
+static void entry_probe(void) {
+    uint64_t result = 0, flags = 0;
+    uint64_t until = (uint64_t)call(SYS_TICKS, 0, 0, 0) + 4;
+    uint64_t expected_until = until;
+    register uint64_t a __asm__("r8") = 0x8888;
+    register uint64_t b __asm__("r9") = 0x9999;
+    register uint64_t c __asm__("r10") = 0xaaaa;
+    register uint64_t d __asm__("r11") = 0xbbbb;
+    register uint64_t e __asm__("r12") = 0xcccc;
+    register uint64_t f __asm__("r13") = 0xdddd;
+    register uint64_t g __asm__("r14") = 0xeeee;
+    register uint64_t h __asm__("r15") = 0xffff;
+    /* Keep DF and sentinels live through syscalls AND real timer switches.
+       Clear DF before returning to C, which requires forward string direction. */
+    __asm__ volatile ("std; 1: mov %[tick_number], %%eax; int $0x80; cmp %[until], %%rax;"
+                      " jb 1b; pushfq; popq %[flags]; cld"
+                      : "+a"(result), [until] "+b"(until), [flags] "=r"(flags),
+                        "+r"(a), "+r"(b), "+r"(c), "+r"(d),
+                        "+r"(e), "+r"(f), "+r"(g), "+r"(h)
+                      : [tick_number] "i"(SYS_TICKS) : "memory", "cc");
+    check(result >= expected_until && until == expected_until && (flags & (UINT64_C(1) << 10)));
+    check(a == 0x8888 && b == 0x9999 && c == 0xaaaa && d == 0xbbbb &&
+          e == 0xcccc && f == 0xdddd && g == 0xeeee && h == 0xffff);
+    static const char passed[] = "counterexample: DF and nine registers survived timer and syscall entry\n";
+    check(call(SYS_WRITE, (uint64_t)(uintptr_t)passed, sizeof(passed) - 1, 0) == (int64_t)(sizeof(passed) - 1));
+}
+#endif
+
 __attribute__((section(".text.entry"), noreturn)) void user_main(void) {
     uint64_t id = (uint64_t)call(SYS_TASK_ID, 0, 0, 0);
     static const char greeting[] = "user: syscall returned to CPL3\n";
@@ -72,6 +123,9 @@ __attribute__((section(".text.entry"), noreturn)) void user_main(void) {
     uint64_t file_length = 0;
 #if MINILINUX_LEVEL >= 5
     file_length = read_file();
+#endif
+#if MINILINUX_ATTACK == 5
+    entry_probe();
 #endif
 
     volatile uint64_t *data = (volatile uint64_t *)(uintptr_t)USER_DATA;

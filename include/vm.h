@@ -19,6 +19,7 @@ void vm_switch(uint64_t root);
 bool vm_create(struct address_space *space);
 bool vm_map(struct address_space *space, uint64_t virtual_address,
             uint64_t physical_address, unsigned flags);
+/* Return effective permissions across all four levels, not only leaf flags. */
 bool vm_lookup(const struct address_space *space, uint64_t virtual_address,
                uint64_t *physical_address, unsigned *flags);
 bool vm_unmap(struct address_space *space, uint64_t virtual_address);

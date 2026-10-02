@@ -61,8 +61,14 @@ bool vm_create(struct address_space *space) {
     return true;
 }
 
-/* Walk only our lower half. Large bootloader mappings are never modified. */
-static uint64_t *leaf_entry(const struct address_space *space, uint64_t address) {
+static unsigned entry_flags(uint64_t entry) {
+    return ((entry & PTE_WRITE) ? VM_WRITE : 0) |
+           ((entry & PTE_USER) ? VM_USER : 0) | ((entry & PTE_NX) ? 0 : VM_EXEC);
+}
+
+/* Every level can restrict access. Walk only the lower half we own. */
+static uint64_t *leaf_entry(const struct address_space *space, uint64_t address,
+                            unsigned *permissions) {
     if (space == NULL || space->root == 0 || address >= (UINT64_C(1) << 47)) {
         return NULL;
     }
@@ -70,6 +76,7 @@ static uint64_t *leaf_entry(const struct address_space *space, uint64_t address)
     for (int shift = 39; shift >= 21; shift -= 9) {
         uint64_t entry = table[(address >> shift) & 511];
         if (!(entry & PTE_PRESENT) || (entry & PTE_LARGE)) { return NULL; }
+        if (permissions != NULL) { *permissions &= entry_flags(entry); }
         table = table_at(entry & PTE_ADDRESS);
     }
     return &table[(address >> 12) & 511];
@@ -81,7 +88,7 @@ bool vm_map(struct address_space *space, uint64_t address, uint64_t physical,
         address >= (UINT64_C(1) << 47) || address % PAGE_SIZE != 0 ||
         physical % PAGE_SIZE != 0 || page_data(physical) == NULL ||
         (flags & ~(VM_WRITE | VM_USER | VM_EXEC)) != 0) { return false; }
-    uint64_t *existing = leaf_entry(space, address);
+    uint64_t *existing = leaf_entry(space, address, NULL);
     if (existing != NULL && (*existing & PTE_PRESENT)) { return false; }
     uint64_t *table = table_at(space->root);
     for (int shift = 39; shift >= 21; shift -= 9) {
@@ -89,7 +96,7 @@ bool vm_map(struct address_space *space, uint64_t address, uint64_t physical,
         if (!(table[index] & PTE_PRESENT)) {
             uint64_t next = 0;
             if (!new_table(space, &next)) { return false; }
-            /* The leaf decides access; upper levels permit user traversal. */
+            /* New parents permit traversal; existing parents can restrict it. */
             table[index] = next | PTE_PRESENT | PTE_WRITE | PTE_USER;
         }
         if (table[index] & PTE_LARGE) { return false; }
@@ -105,17 +112,17 @@ bool vm_map(struct address_space *space, uint64_t address, uint64_t physical,
 
 bool vm_lookup(const struct address_space *space, uint64_t address,
                uint64_t *physical, unsigned *flags) {
-    uint64_t *leaf = leaf_entry(space, address);
+    unsigned permissions = VM_WRITE | VM_USER | VM_EXEC;
+    uint64_t *leaf = leaf_entry(space, address, &permissions);
     if (leaf == NULL || !(*leaf & PTE_PRESENT)) { return false; }
     *physical = (*leaf & PTE_ADDRESS) + address % PAGE_SIZE;
-    *flags = ((*leaf & PTE_WRITE) ? VM_WRITE : 0) |
-             ((*leaf & PTE_USER) ? VM_USER : 0) | ((*leaf & PTE_NX) ? 0 : VM_EXEC);
+    *flags = permissions & entry_flags(*leaf);
     return true;
 }
 
 bool vm_unmap(struct address_space *space, uint64_t address) {
     if (address % PAGE_SIZE != 0) { return false; }
-    uint64_t *leaf = leaf_entry(space, address);
+    uint64_t *leaf = leaf_entry(space, address, NULL);
     if (leaf == NULL || !(*leaf & PTE_PRESENT)) { return false; }
     *leaf = 0;
     if (space->root == vm_current_root()) {

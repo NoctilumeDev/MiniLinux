@@ -14,7 +14,7 @@ foreach ($memory in @(64, 256)) {
 }
 & (Join-Path $PSScriptRoot 'debug.ps1') -ToolRoot $ToolRoot -Milestone $Milestone
 if ($Milestone -eq 'M6') {
-    foreach ($probe in @(2, 3, 4)) {
+    foreach ($probe in @(2, 3, 4, 5, 6, 7)) {
         & (Join-Path $PSScriptRoot 'build.ps1') -ToolRoot $ToolRoot -Milestone M6 -FaultCase $probe
         & (Join-Path $PSScriptRoot 'image.ps1') -ToolRoot $ToolRoot -Milestone M6
         & (Join-Path $PSScriptRoot 'verify-image.ps1') -ToolRoot $ToolRoot -IsoPath $iso

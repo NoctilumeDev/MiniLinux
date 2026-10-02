@@ -94,22 +94,27 @@ bool user_range(const struct task *task, uint64_t address, size_t length, bool w
 
 struct interrupt_frame *user_fault(struct interrupt_frame *frame, uint64_t address) {
     struct task *task = task_current();
-    serial_write("user page fault: task="); serial_write_number(task->id);
-    serial_write(" vector=14 error="); serial_write_hex(frame->error);
-    serial_write(" CR2="); serial_write_hex(address);
+    serial_write(frame->vector == 14 ? "user page fault: task=" : "user exception: task=");
+    serial_write_number(task->id);
+    serial_write(" vector="); serial_write_number(frame->vector);
+    serial_write(" error="); serial_write_hex(frame->error);
+    serial_write(" CS="); serial_write_hex(frame->cs);
+    if (frame->vector == 14) { serial_write(" CR2="); serial_write_hex(address); }
     serial_write(" RIP="); serial_write_hex(frame->rip); serial_write("\n");
-    uint64_t expected_address = KERNEL_PROBE, expected_error = 5;
+    uint64_t expected_address = KERNEL_PROBE, expected_error = 5, expected_vector = 14;
 #if MINILINUX_LEVEL >= 6
     switch (MINILINUX_PROBE) {
     case 1: break;
     case 2: expected_address = USER_CODE; expected_error = 7; break;
     case 3: expected_address = USER_DATA; expected_error = 21; break;
     case 4: expected_address = 0x900000; expected_error = 4; break;
-    case 5: case 6: case 7: break; /* Fixture only: dispatch has not been expanded yet. */
+    case 5: expected_vector = 6; expected_address = 0; expected_error = 0; break;
+    case 6: expected_vector = 13; expected_address = 0; expected_error = 0; break;
+    case 7: expected_vector = 0; expected_address = 0; expected_error = 0; break;
     }
 #endif
     if (task->id != 0 || !task->reported || frame->cs != 0x23 ||
-        address != expected_address || frame->error != expected_error) {
+        frame->vector != expected_vector || address != expected_address || frame->error != expected_error) {
         panic("unexpected user fault");
     }
     task->fault_seen = true;

@@ -5,12 +5,15 @@ param(
     [int]$TimeoutSeconds = 20,
     [ValidateSet('M0', 'M1', 'M2', 'M3', 'M4', 'M5', 'M6')][string]$Milestone = 'M0',
     [switch]$CorruptRegister,
-    [switch]$AliasUserData
+    [switch]$AliasUserData,
+    [switch]$SkipClearDirection
 )
 
 $ErrorActionPreference = 'Stop'
 if ($CorruptRegister -and $Milestone -ne 'M3') { throw 'Register injection belongs to M3 only.' }
 if ($AliasUserData -and $Milestone -ne 'M6') { throw 'Data alias injection belongs to M6 only.' }
+if ($SkipClearDirection -and $Milestone -ne 'M6') { throw 'Direction injection belongs to the M6 entry fixture.' }
+if ($SkipClearDirection -and $AliasUserData) { throw 'Use one injection at a time.' }
 $project = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
 $qemu = Join-Path $ToolRoot 'qemu-20260811\qemu-system-x86_64.exe'
 $iso = if ($IsoPath) { $IsoPath } else {
@@ -48,7 +51,7 @@ if ($Milestone -eq 'M3') {
     $commands += 'disable 4'
     $panicBreakpoint = 5
 }
-if ([int]$Milestone.Substring(1) -ge 4 -and -not $AliasUserData) {
+if ([int]$Milestone.Substring(1) -ge 4 -and -not $AliasUserData -and -not $SkipClearDirection) {
     $commands += @('break task_start', 'continue', 'disable 2',
                    'break *0x400000', 'continue', 'info registers rip cs ss rsp cr3', 'disable 3',
                    'break syscall_dispatch', 'continue', 'p *frame', 'disable 4',
@@ -67,6 +70,15 @@ if ($AliasUserData) {
                    'p/x $table[0]', 'p/x tasks[0].data_page', 'p/x tasks[1].data_page',
                    'if ($table[0] & 0x000ffffffffff000) != tasks[0].data_page',
                    'quit 1', 'end')
+    $panicBreakpoint = 3
+}
+if ($SkipClearDirection) {
+    $commands += @('break cpu_enter_frame', 'continue', 'disable 2',
+                   'x/i interrupt_common+23',
+                   'if *(unsigned char *)(interrupt_common+23) != 0xfc', 'quit 1', 'end',
+                   'set {unsigned char}(interrupt_common+23) = 0x90',
+                   'x/i interrupt_common+23',
+                   'if *(unsigned char *)(interrupt_common+23) != 0x90', 'quit 1', 'end')
     $panicBreakpoint = 3
 }
 $commands += @('break panic', 'continue', 'bt', 'detach')
@@ -117,7 +129,7 @@ try {
 }
 Get-Content -LiteralPath $log
 $serial = [string](Get-Content -LiteralPath $log -Raw)
-$expectedStop = if ($CorruptRegister) { 'M3 register guard changed' } elseif ($AliasUserData) { 'user address space marker changed' } else { "$Milestone reached its intentional stop" }
+$expectedStop = if ($CorruptRegister) { 'M3 register guard changed' } elseif ($AliasUserData) { 'user address space marker changed' } elseif ($SkipClearDirection) { 'counterexample: C entry received DF' } else { "$Milestone reached its intentional stop" }
 if (-not $serial.Contains("MiniLinux PANIC: $expectedStop")) { throw 'Debugger observed an unexpected stop.' }
 if ($Milestone -eq 'M1') {
     if (-not $serial.Contains('MiniLinux M1: physical page checks passed') -or

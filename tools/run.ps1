@@ -28,7 +28,7 @@ try {
             [string](Get-Content -LiteralPath $log -Raw)
         } else { '' }
         if ($null -eq $output) { $output = '' }
-        if ($output.Contains("$Milestone reached its intentional stop")) { break }
+        if ($output.Contains('MiniLinux PANIC:')) { break }
         if ($guest.HasExited) { break }
     } while ((Get-Date) -lt $deadline)
 } finally {
