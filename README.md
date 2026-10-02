@@ -42,7 +42,7 @@ PID 1 / init → PID 2 / shell → spawn → 用户程序
 
 日志左侧是时间线，右侧显示选中记录的字段：调度的 PID/CR3/CPL、故障的地址/RIP/错误码等。点击记录可保持这次观察，点击 `latest` 恢复跟随；这是一条已记录事件的详情，不是当前 CPU 的即时状态。
 
-在线 demo 已选定为真实运行记录的交互回放，会明确标注 `REPLAY`；Windows 下载版则运行真实 QEMU 客体。两项体验入口仍在准备，发布并验证后再加入链接。当前先使用上面的本机入口。
+**[在线试玩：实录交互回放](https://noctilumedev.github.io/MiniLinux/)**。无需准备本机工具；先点 `cat hello.txt`，再试 `run counters` 与 `run fault`。页面标注 `REPLAY`，输入选择已有片段；可暂停后查看 PID、页映射和原始事件，网页不运行新客体。Windows 启动包运行真实 QEMU，正在做最后下载启动验证。录制来源、运行与产品复验见 [体验记录](docs/EXPERIENCE.md)。
 
 `LAB` 上层和宿主桥接的自动验证入口是 `./tools/check-lab.ps1`。请先停止当前预览再验证，以免同时改写同一构建目录、镜像和记录。本轮受测源码 `ac3e5cb` 已从 GitHub 干净克隆重跑所有入口，候选位于 [PR #2](https://github.com/NoctilumeDev/MiniLinux/pull/2)，基于尚未合入的 PR #1。薄用户态的证明、首败与限制见 [USERLAND](docs/USERLAND.md)，视觉和浏览器验证见 [design-qa](design-qa.md)。
 

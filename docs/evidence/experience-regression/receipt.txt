@@ -1,0 +1,11 @@
+observed=2026-10-02T19:06:29.5704472+08:00
+base=cc937317c7af9a99d8987059776654f0a85a57d8
+fixture=e6746766b2916d0abab3be570b19e0565e8d250e
+baseline=64/256 MiB; both mixed fault/counter orders passed
+fixture=64/256 MiB; struct output, wait identities, queued input probes passed
+kernel/ABI/boot/linker diff from base: empty
+first-failure-files=0
+fixture worktree: clean
+QEMU/GDB: none
+probe Python: none
+debug port 1234: no listener

@@ -1,0 +1,234 @@
+{
+  "recordingSource": "cc937317c7af9a99d8987059776654f0a85a57d8",
+  "recordingSha256": "41b40894dda0b47a937bfa21c85480e262de158983062ca7318e1a63e6b49ecc",
+  "recordedAt": "2026-10-02T10:59:45.681242+00:00",
+  "method": "Real recorded snapshots; headless Edge; replay clock advanced deterministically; no QEMU",
+  "clips": [
+    {
+      "command": "boot",
+      "frames": 1,
+      "epoch": "replay-2",
+      "sequence": 26,
+      "retained": 13,
+      "visible": 6,
+      "syscalls": 5,
+      "pids": [
+        1,
+        2
+      ],
+      "consoleBytes": 149,
+      "latest": 22
+    },
+    {
+      "command": "help",
+      "frames": 2,
+      "epoch": "replay-3",
+      "sequence": 52,
+      "retained": 22,
+      "visible": 6,
+      "syscalls": 14,
+      "pids": [
+        1,
+        2
+      ],
+      "consoleBytes": 280,
+      "latest": 22
+    },
+    {
+      "command": "ls",
+      "frames": 2,
+      "epoch": "replay-4",
+      "sequence": 78,
+      "retained": 31,
+      "visible": 6,
+      "syscalls": 23,
+      "pids": [
+        1,
+        2
+      ],
+      "consoleBytes": 330,
+      "latest": 22
+    },
+    {
+      "command": "cat hello.txt",
+      "frames": 2,
+      "epoch": "replay-5",
+      "sequence": 115,
+      "retained": 51,
+      "visible": 6,
+      "syscalls": 40,
+      "pids": [
+        1,
+        2
+      ],
+      "consoleBytes": 367,
+      "latest": 22
+    },
+    {
+      "command": "ps",
+      "frames": 2,
+      "epoch": "replay-6",
+      "sequence": 147,
+      "retained": 66,
+      "visible": 6,
+      "syscalls": 40,
+      "pids": [
+        1,
+        2
+      ],
+      "consoleBytes": 503,
+      "latest": 22
+    },
+    {
+      "command": "run hello",
+      "frames": 3,
+      "epoch": "replay-7",
+      "sequence": 227,
+      "retained": 87,
+      "visible": 12,
+      "syscalls": 40,
+      "pids": [
+        1,
+        2
+      ],
+      "consoleBytes": 567,
+      "latest": 190
+    },
+    {
+      "command": "run reader",
+      "frames": 3,
+      "epoch": "replay-8",
+      "sequence": 296,
+      "retained": 113,
+      "visible": 17,
+      "syscalls": 40,
+      "pids": [
+        1,
+        2
+      ],
+      "consoleBytes": 672,
+      "latest": 260
+    },
+    {
+      "command": "run counter-a counter-b",
+      "frames": 43,
+      "epoch": "replay-9",
+      "sequence": 1211,
+      "retained": 669,
+      "visible": 80,
+      "syscalls": 40,
+      "pids": [
+        1,
+        2
+      ],
+      "consoleBytes": 1396,
+      "latest": 1174
+    },
+    {
+      "command": "run fault",
+      "frames": 2,
+      "epoch": "replay-10",
+      "sequence": 1257,
+      "retained": 689,
+      "visible": 80,
+      "syscalls": 40,
+      "pids": [
+        1,
+        2
+      ],
+      "consoleBytes": 1512,
+      "latest": 1239
+    },
+    {
+      "command": "check",
+      "frames": 3,
+      "epoch": "replay-11",
+      "sequence": 1430,
+      "retained": 762,
+      "visible": 80,
+      "syscalls": 40,
+      "pids": [
+        1,
+        2
+      ],
+      "consoleBytes": 1727,
+      "latest": 1393
+    },
+    {
+      "command": "mem",
+      "frames": 2,
+      "epoch": "replay-12",
+      "sequence": 1471,
+      "retained": 769,
+      "visible": 80,
+      "syscalls": 40,
+      "pids": [
+        1,
+        2
+      ],
+      "consoleBytes": 1761,
+      "latest": 1393
+    }
+  ],
+  "failures": [],
+  "fault": {
+    "id": 1235,
+    "fields": [
+      "PID",
+      "7",
+      "Vector",
+      "14",
+      "Error",
+      "5",
+      "Address",
+      "0xffffffff80000000",
+      "RIP",
+      "0x00000000004000ea",
+      "Saved CPL",
+      "3"
+    ],
+    "focus": {
+      "same": true,
+      "focused": true
+    }
+  },
+  "clear": {
+    "meta": "No event in this view.",
+    "visible": 0
+  },
+  "historicalPin": {
+    "historical": {
+      "id": 1,
+      "tick": 0,
+      "kind": "boot"
+    },
+    "meta": "Selected #1 · tick 0 · boot",
+    "focus": {
+      "tag": "DIV",
+      "id": "events"
+    },
+    "inVisibleWindow": false
+  },
+  "latestScroll": {
+    "top": 1609,
+    "height": 126,
+    "scrollHeight": 1735
+  },
+  "unsupported": {
+    "error": "This replay contains: help, ls, cat hello.txt, ps, run hello, run reader, run counter-a counter-b, run fault, check, mem. Download LAB to execute other commands.",
+    "input": "not-a-recorded-command",
+    "epoch": "replay-14"
+  },
+  "reset": {
+    "epoch": "replay-15",
+    "sequence": 26,
+    "meta": "Latest #22 · tick 1 · wait"
+  },
+  "pageErrors": [],
+  "sourceSha256": {
+    "/": "28e59464eb8d858365d974a3cd6a9e73ade32a4a3cf27211f3394e469b345d8f",
+    "/app.js": "db45cbf7b977b9588a9903bfd02bd548235d3829b7c45457de4f7b9e0f73050e",
+    "/replay.js": "08f58da380f9f10b5dc03521c4ccabf877d44dcbe61dc8380b6e1d0b140ed97a",
+    "/style.css": "68c398092e9d0bcf49541e25c520bb6a02505e82e91f88fd2d82f80d78b153ea"
+  }
+}

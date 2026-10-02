@@ -2,6 +2,14 @@
 
 final result: passed
 
+## 实录回放与独立反例复验
+
+同一黑白结构新增 REPLAY 传输层，显式显示录制日期、来源、片段与 frame 进度；终端旁标明命令仅选实录。产品评审后增加暂停/继续，暂停中能选择另一片段。cat、counter、fault 各有一行观察提示，没有把假状态放进观察窗。
+
+证据见 [回放桌面](docs/evidence/replay/replay-desktop.jpg)、[窄窗](docs/evidence/replay/replay-narrow.jpg)、[六档几何](docs/evidence/replay/replay-layout.json)。将原稿与这两张新图放在同一次图像输入中比较：字体、层级、颜色、Tux 和外框比例不变；记录与 UI 模式不同，不作逐值匹配。1920×1080、1366×768、1152×640、1024×700 均一屏；700/390 窄窗纵向排列，没有整页横向溢出。长故障详情可在内部滚动读取完整 RIP/CPL。
+
+独立测试真实记录的 11 clips，逐字核对终端与事件字段；五个前端首败已保留并修复，另做产品经理评审与暂停后比较两份地址映射的实际回测，见 [EXPERIENCE](docs/EXPERIENCE.md)。窗口比例没有因修补重新改变。
+
 ## 日志与选中事件详情
 
 紧凑排列仍在宽黑框右侧留下大片空白（P2）。用户选择保留外框比例，在内部增加选中事件详情；此前的间距修补只解决了一条记录两端分离，未解决内容与容器宽度不匹配。现在左侧为时间线，右侧为原始记录字段，详情保持或恢复跟随均可操作。
@@ -56,4 +64,4 @@ final result: passed
 - 停止后 STOPPED、输入禁用；重启后 RUNNING，只剩新客体 init/shell 和记录，旧终端清空。浏览器 warn/error 为空。
 - 未逐档测试浏览器菜单的缩放倍率；上述较小有效视口是适配证据，不是所有缩放倍率的保证。更小的桌面高度可能需要在各框内查看更多记录。
 
-本次只修改网页表现和文档，核对 kernel/include/user/tools/boot/linker.ld 与 ac3e5cb 无差异。M0–M6、LAB 和桥接的历史运行资格仍见 [USERLAND](docs/USERLAND.md)，没有用本次视觉通过升级内核声明。无未解决的 P0/P1/P2 项。
+网页表现与体验交付分开验证；kernel/include/user/boot/linker.ld 与 ac3e5cb 无差异。新增下载工具以及桥接的相对资源路径修补单独复验，M0–M6、LAB 的历史运行资格仍见 [USERLAND](docs/USERLAND.md)，没有用本次视觉通过升级内核声明。无未解决的视觉 P0/P1/P2 项。

@@ -3,7 +3,7 @@ const $ = id => document.getElementById(id);
 const calls = ["pid", "write", "ticks", "report", "exit", "open", "read", "close", "program", "spawn", "wait", "input", "process", "file", "memory", "inspect"];
 let cursor = 0, epoch = "", state = null, selectedPid = 2, events = [], paused = false;
 let consoleStart = 0, traceStart = 0, eventStart = 0, lastCommand = "", requestBusy = false;
-let view = "console";
+let view = "console", connectionFailed = false;
 let selectedEvent = null, eventDetailKey = "";
 const processRows = new Map(), callRows = new Map(), eventRows = new Map();
 const manuals = {
@@ -29,10 +29,7 @@ function manual(topic = "help") {
 }
 function error(message = "") { $("error").hidden = !message; $("error").textContent = message; }
 async function post(path, body) {
-  const response = await fetch(path, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)});
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.error || "Laboratory request failed");
-  return data;
+  return laboratory.post(path, body);
 }
 function row(values) {
   const tr = document.createElement("tr");
@@ -130,9 +127,17 @@ function renderEvents() {
     line.setAttribute("aria-pressed", String(selected));
   });
   for (const [id, line] of eventRows) {
-    if (!relevant.some(event => event.id === id)) { line.remove(); eventRows.delete(id); }
+    if (!relevant.some(event => event.id === id)) {
+      if (line.contains(document.activeElement)) log.focus();
+      line.remove(); eventRows.delete(id);
+    }
   }
   log.querySelector("p")?.remove();
+  // Returning from FAULT must restore time order without replacing focused rows.
+  relevant.forEach((event, index) => {
+    const line = eventRows.get(event.id), next = log.children[index];
+    if (line !== next) log.insertBefore(line, next || null);
+  });
   if (!relevant.length) {
     const empty = document.createElement("p");
     empty.textContent = view === "fault" ? "No fault in this view. Try: run fault" : "No events in this view.";
@@ -164,21 +169,27 @@ function render() {
   const terminal = $("terminal"), follow = terminal.scrollTop + terminal.clientHeight >= terminal.scrollHeight - 35;
   terminal.textContent = state.console.slice(Math.max(0, consoleStart - state.console_base));
   if (follow) terminal.scrollTop = terminal.scrollHeight;
-  $("connection").textContent = state.status.toUpperCase(); $("connection").className = state.status;
-  $("coordinates").textContent = `QEMU TCG · 1 CPU · ${state.guest_memory} MiB · COM1 / COM2`;
+  const replay = laboratory.mode === "replay";
+  $("connection").textContent = replay ? (state.status === "running" ? "REPLAY" : "REPLAY PAUSED") : state.status.toUpperCase(); $("connection").className = state.status;
+  $("coordinates").textContent = replay ? `Recorded ${laboratory.recording.recorded_at.slice(0, 10)} · ${laboratory.recording.source.slice(0, 7)} · ${laboratory.clip.command} · frame ${laboratory.frame + 1}/${laboratory.clip.frames.length}` : `QEMU TCG · 1 CPU · ${state.guest_memory} MiB · COM1 / COM2`;
   $("observation").textContent = `as of tick ${state.ticks}`;
   $("free-pages").textContent = state.free || "—";
   $("footer-state").textContent = `latest event #${state.sequence} · observed, not instantaneous`;
-  $("command").disabled = state.status !== "running";
+  $("command").disabled = state.status !== "running" && !(replay && state.status === "paused");
+  if (replay) {
+    $("stop").textContent = state.status === "paused" ? "resume replay" : "pause replay";
+    const hints = {"cat hello.txt": "Find open/read/close in Syscall Trace; click read for its buffer and returned byte count.", "run counter-a counter-b": "Select their PIDs to compare VA 0x600000 and physical pages. Pause to inspect.", "run fault": "Use FAULT to inspect vector 14; the recorded shell returns after this process stops."};
+    document.querySelector(".terminal-note").textContent = "Recorded clips only. " + (hints[laboratory.clip.command] || "Commands select a recording; no kernel runs here.");
+  }
   renderProcesses(); renderMaps(); renderEvents(); renderCalls();
   if (state.error) error(state.error);
 }
 async function poll() {
   try {
-    const response = await fetch(`/api/state?after=${cursor}`);
-    if (!response.ok) throw new Error("Bridge unavailable");
-    state = await response.json();
+    state = await laboratory.read(cursor);
+    if (connectionFailed) { error(); connectionFailed = false; }
     if (state.epoch !== epoch) {
+      const previousEpoch = epoch;
       epoch = state.epoch; cursor = 0; events = []; consoleStart = traceStart = eventStart = 0;
       selectedPid = 2;
       selectedEvent = null; eventDetailKey = ""; eventRows.clear(); $("events").replaceChildren();
@@ -186,19 +197,20 @@ async function poll() {
       $("syscall-detail").textContent = "Select a call to inspect its arguments.";
       $("mode-witness").textContent = "Awaiting a recorded user entry.";
       error();
-      // The old cursor may be larger than this new guest's sequence.
-      if (!state.events.length) { setTimeout(poll, 50); return; }
+      // Any old cursor can hide the new guest's prefix, even if a suffix arrived.
+      if (previousEpoch) { setTimeout(poll, 50); return; }
     }
     events.push(...state.events); events = events.slice(-2000); cursor = state.sequence;
     render();
   } catch (exc) {
+    connectionFailed = true;
     $("connection").textContent = "DISCONNECTED"; $("connection").className = "disconnected";
-    $("command").disabled = true; error(`Cannot reach the laboratory bridge: ${exc.message}`);
+    $("command").disabled = true; error(`${laboratory.mode === "replay" ? "Cannot load recorded replay" : "Cannot reach the laboratory bridge"}: ${exc.message}`);
   }
   setTimeout(poll, 350);
 }
 async function command(value) {
-  if (requestBusy || !state || state.status !== "running") return;
+  if (requestBusy || !state || (state.status !== "running" && !(laboratory.mode === "replay" && state.status === "paused"))) return;
   if (!/^[\x20-\x7e\t]*$/.test(value)) { error("The teaching shell accepts ASCII commands."); return; }
   requestBusy = true;
   try { error(); await post("/api/input", {text: value + "\r"}); lastCommand = value; manual(value.trim().split(/\s+/)[0]); $("command").value = ""; }
@@ -211,7 +223,7 @@ document.querySelectorAll("[data-command]").forEach(button => { button.onclick =
 $("clear-console").onclick = () => { consoleStart = state ? state.console_base + state.console.length : 0; $("terminal").textContent = ""; };
 $("clear-trace").onclick = () => { traceStart = cursor; callRows.clear(); $("syscalls").replaceChildren(); };
 $("clear-events").onclick = () => { eventStart = cursor; selectedEvent = null; renderEvents(); };
-$("follow-events").onclick = () => { selectedEvent = null; renderEvents(); };
+$("follow-events").onclick = () => { selectedEvent = null; renderEvents(); $("events").scrollTop = $("events").scrollHeight; };
 $("pause-trace").onclick = () => { paused = !paused; $("pause-trace").textContent = paused ? "resume" : "pause"; if (!paused) renderCalls(); };
 $("restart").onclick = async () => {
   $("restart").disabled = true; $("command").disabled = true; $("connection").textContent = "RESTARTING";
@@ -238,4 +250,10 @@ document.querySelectorAll("[data-view]").forEach(button => {
 });
 $("about").onclick = () => $("about-dialog").showModal();
 $("close-about").onclick = () => $("about-dialog").close();
+if (laboratory.mode === "replay") {
+  $("stop").textContent = "pause replay"; $("restart").textContent = "reset replay";
+  document.querySelector(".terminal-note").textContent = "Recorded clips only. Commands select a recording; no kernel runs in this browser.";
+  $("about-dialog").querySelectorAll("p")[1].textContent = "This is an interactive replay of real QEMU runs. Console, processes, mappings and events come from recorded snapshots. Commands select clips; they do not execute a new guest. The Windows LAB download runs the actual kernel.";
+  document.querySelector("footer > span").textContent = "MiniLinux / REPLAY · actual recorded mechanisms";
+}
 manual(); poll();

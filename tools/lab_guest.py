@@ -22,7 +22,7 @@ def available_port() -> int:
 
 class Guest:
     def __init__(self, project: Path, tool_root: Path, memory: int = 64):
-        self.project, self.tool_root, self.memory = project, tool_root, memory
+        self.project, self.tool_root, self.memory = project.resolve(), tool_root.resolve(), memory
         self.lock = threading.RLock()
         self.write_lock = threading.Lock()
         self.process = None
@@ -54,9 +54,11 @@ class Guest:
                 "-serial", "chardev:tty",
                 "-chardev", f"socket,id=observe,host=127.0.0.1,port={trace_port},server=on,wait=on",
                 "-serial", "chardev:observe", "-boot", "d", "-cdrom",
-                str(self.tool_root / "images/minilinux-lab.iso")]
+                "images/minilinux-lab.iso", "-L", "qemu-20260811/share"]
         try:
-            self.process = subprocess.Popen(args, cwd=self.project, stdout=self.stderr,
+            # QEMU's Windows file arguments may lose non-ASCII absolute paths.
+            # Keep its working directory at the runtime root and use relative assets.
+            self.process = subprocess.Popen(args, cwd=self.tool_root, stdout=self.stderr,
                                             stderr=self.stderr, creationflags=0x08000000)
             for port in (tty_port, trace_port):
                 deadline = time.monotonic() + 10

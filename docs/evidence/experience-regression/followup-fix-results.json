@@ -1,0 +1,249 @@
+{
+  "revision": "working-tree-fix-after-762f05c",
+  "tests": {
+    "filterOrder": {
+      "traceBefore": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "fault": [
+        3
+      ],
+      "traceAfter": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "expected": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "detail": {
+        "meta": "Latest #4 · tick 4 · schedule",
+        "fields": "From PID3To PID4Next CR30x0000000000080000Saved CPL3",
+        "pressed": "true"
+      }
+    },
+    "focusEviction": {
+      "activeBefore": "Inspect schedule event 1 at tick 1",
+      "pinnedBefore": {
+        "meta": "Selected #1 · tick 1 · schedule",
+        "fields": "From PID3To PID4Next CR30x0000000000080000Saved CPL3",
+        "pressed": "false"
+      },
+      "activeAfter": {
+        "tag": "DIV",
+        "id": "events",
+        "label": "Kernel event log"
+      },
+      "pinnedAfter": {
+        "meta": "Selected #1 · tick 1 · schedule",
+        "fields": "From PID3To PID4Next CR30x0000000000080000Saved CPL3",
+        "pressed": "false"
+      },
+      "rowIds": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81
+      ],
+      "afterTab": {
+        "id": "",
+        "label": "Inspect schedule event 2 at tick 2"
+      }
+    },
+    "epochNonempty": {
+      "requests": [
+        "/api/state?after=0",
+        "/api/state?after=2",
+        "/api/state?after=0"
+      ],
+      "epoch": "B",
+      "cursor": 4,
+      "rowIds": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "retainedEventIds": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "detail": {
+        "meta": "Latest #4 · tick 4 · schedule",
+        "fields": "From PID3To PID4Next CR30x0000000000080000Saved CPL3",
+        "pressed": "true"
+      }
+    },
+    "latestScroll": {
+      "detail": {
+        "meta": "Latest #80 · tick 80 · schedule",
+        "fields": "From PID3To PID4Next CR30x0000000000080000Saved CPL3",
+        "pressed": "true"
+      },
+      "geometry": {
+        "top": 1609,
+        "height": 126,
+        "scrollHeight": 1735
+      }
+    },
+    "recoveryError": {
+      "before": {
+        "connection": "DISCONNECTED",
+        "errorHidden": false,
+        "error": "Cannot reach the laboratory bridge: Failed to fetch"
+      },
+      "after": {
+        "connection": "RUNNING",
+        "errorHidden": true,
+        "error": ""
+      }
+    },
+    "commandErrorPersistence": {
+      "before": {
+        "hidden": false,
+        "error": "Unsupported fixture command"
+      },
+      "after": {
+        "hidden": false,
+        "error": "Unsupported fixture command"
+      }
+    },
+    "stableRetainedFocus": {
+      "identitySame": true,
+      "focusedSame": true,
+      "detail": {
+        "meta": "Selected #40 · tick 40 · schedule",
+        "fields": "From PID3To PID4Next CR30x0000000000080000Saved CPL3",
+        "pressed": "false"
+      }
+    },
+    "clear": {
+      "rowIds": [],
+      "detail": {
+        "meta": "No event in this view.",
+        "fields": "",
+        "pressed": "true"
+      },
+      "afterNewEvent": {
+        "rowIds": [
+          82
+        ],
+        "detail": {
+          "meta": "Latest #82 · tick 82 · schedule",
+          "fields": "From PID3To PID4Next CR30x0000000000080000Saved CPL3",
+          "pressed": "true"
+        }
+      }
+    },
+    "epochEmpty": {
+      "resetCursor": 0,
+      "requests": [
+        "/api/state?after=100",
+        "/api/state?after=0"
+      ],
+      "rowIds": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "detail": {
+        "meta": "Latest #4 · tick 4 · schedule",
+        "fields": "From PID3To PID4Next CR30x0000000000080000Saved CPL3",
+        "pressed": "true"
+      }
+    }
+  },
+  "sourceSha256": {
+    "/": "04ccd2ac4d798d026a632039b1febd9bae5bf5c658c06180adbcaef01eee443f",
+    "/app.js": "db45cbf7b977b9588a9903bfd02bd548235d3829b7c45457de4f7b9e0f73050e",
+    "/style.css": "68c398092e9d0bcf49541e25c520bb6a02505e82e91f88fd2d82f80d78b153ea",
+    "/live.js": "e8f111ab00750bbb5576b0a611a724a94e0f74ab4391e4a931b17b61bc2a805e"
+  },
+  "pageErrors": []
+}
