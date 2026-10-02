@@ -1,0 +1,6 @@
+
+Algorithm : SHA256
+Hash      : 9532D9E39D8EB710C0FCA11A69D3938BA1811CEA129F71AC0783215FC29BC840
+Path      : C:\Users\lenovo\AppData\Local\Temp\MiniLinux 静默下载者 20261002.2 独立试玩\MiniLinux-LAB-Windows-x64.zip
+
+

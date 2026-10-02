@@ -2,6 +2,14 @@
 
 final result: passed
 
+## 下载试玩后的布局与标注
+
+原始公开下载试玩发现 counter 观察太短、命令标题不一致及停止/断连说明不清；修后同一帧 counter 快照、实际命令、LIVE/REPLAY 标签与恢复入口分别复验。独立正常墙钟报告见 [小结果](docs/evidence/download-playtest/frontend/snapshot-review-final-summary.json)。小桌面手册正文被挤成 16px 的首败保留；修后正文至少 48px，快捷区局部滚动，六档无整页横向溢出，桌面仍一屏。
+
+用户进一步选定日志滚动条在最左、详情滚动条在最右，中间竖线，两个区域互不联动。只用 CSS 放置滚动条，记录继续从左到右读；短详情不强制制造滚动条。根浏览器实际分别滚动并保存 [位置与六档几何](docs/evidence/download-playtest/scroll/independent-scroll-results.json)。这份布局观察使用 app `d94dc005…` 与新 style `d3c6861b…`；其后 app 只再修停止/断连快照退出按钮名称，实际下载包另做独立真实 UI 复验，坐标见 [EXPERIENCE](docs/EXPERIENCE.md)。
+
+新版 [公开页面截图](docs/evidence/download-playtest/public-final/published-demo.jpg) 来自实际 GitHub Pages：REPLAY、完整命令、手册按钮动作和 Windows 下载入口均可见。公开资源 app/replay/style/recording 的匿名哈希匹配导出源；index 只有 Git 将 CRLF 转 LF，精确比较另存，不声称两个不同哈希相同。用户的默认浏览器被重复复验启动器自动打开的问题，改由原包提供 `--no-browser` 路径静默测试；不是靠关闭用户窗口解决。
+
 ## 实录回放与独立反例复验
 
 同一黑白结构新增 REPLAY 传输层，显式显示录制日期、来源、片段与 frame 进度；终端旁标明命令仅选实录。产品评审后增加暂停/继续，暂停中能选择另一片段。cat、counter、fault 各有一行观察提示，没有把假状态放进观察窗。

@@ -1,0 +1,30 @@
+MiniLinux lab-preview-20261002.1 independent cold download / launcher / cleanup report
+Scope: shared-host independent new Chinese-and-space unpack; not a second clean Windows machine. New source49554f2430c46924fba30c38c609f6a2c88433b2. Public release JSON retained.
+Actual public ZIP2933617bytes, SHA2561C27D973C797BBDF978F578016B57492AACB2175EFF8784A70C7C181D9E8121B.
+Root did not exist before this test. No D-drive runtime/cache and no old unpack files copied.
+Fresh Chinese READ-ME four-step instructions read; explains correct package-root PowerShell location, proxy Start.cmd command, runtime cache, stop/restart, webpage-vs-launcher lifetime, fallback printed URL and new port on next start.
+
+Original default launcher path actually executed:
+Default Codex bundled pwsh shell -> & .\Start.cmd http://127.0.0.1:7897 -> cmd.exe -> package-provided WinPS prepare -> package Python -I desktop launcher.
+No manual PSModulePath change, no prep script first, no file editing. Parent PSModulePath captured with bundled module path still present. Prior release's Get-FileHash failure did not recur.
+Four stages appeared: packaged kernel check, embedded Python prepare, QEMU download/verify/unpack, QEMU runtime check. Standard WinPS native network/Expand-Archive progress visibly emitted in tty tool output; logs retained with stage messages.
+Cold downloaded official Python archive11439094bytes SHA97DAE5274CC54867065E8D5A3226E48C35017ED332A0FDB0E27D5B5821961297, and official QEMU archive206615928bytes SHAF98A8AEB5F7FAEA9765B6DEE28316C266CD179D80354A2FED8E50176F9A2E59F.
+Actual ISO SHA AA4CDB629DD5CB3C3C279B7387BB1FE7A633EE861B0625FC9187538EB753F231.
+URL52654; cmd3236, embedded Python11576, first QEMU36992; COM52655/52656. Original launcher did auto-open default browser, which interrupted the user. After user steering no default-launcher repeats were made.
+All21 original distribution files compared independently against actual downloaded ZIP entries: changed_count0.
+
+Browser/API qualification boundary:
+This agent's CUA was unavailable on the followup turn: browser registry empty even after reset; no .1 UI qualification claimed by this agent.
+Root's new independent fresh_browser_playtest performed actual .1 UI on this cold guest and reported commands/snapshots/fault/stop/restart complete, then released to this VM-owning agent. Its browser evidence belongs to that agent's own report.
+This agent only used GET/api/state after locating its package-defined endpoint, no POSTs/command injection. Initial readback running, epoch93a51cc40c9a3462, pid36992,64MiB, free15976, boot shell.
+Read-only during-browser evidence retained actual raw serial command output: counters5/6 steps1..5/status0, hello7/status0, fault8/vector14/status142, post-faultcat succeeds. This corroborates guest execution, not this agent's UI action.
+Before close after fresh agent's restart: running, epoch6a481183632cd002, QEMU14780, new COM50742/50743, fresh boot pluscat success.
+
+Exit / cache:
+On fresh agent's explicit release, this agent Ctrl+C'ed original session20187. No manual kill used. Interrupted host session returned1.
+Independent cleanup20:53:09: own cmd/python/qemu process_count0; HTTP52654 and both rounds' COM50742/50743/52655/52656 listener_count0; active owned TCP count0. Normal system-owned TIME_WAIT records are not live owned processes or listeners.
+Fresh browser agent subsequently captured DISCONNECTED with input/send/stop/restart disabled and Chinese unknown-state/reopen-LAB-new-URL guidance; belongs to that agent's screenshot.
+After all UI released and launcher closed, package prepare only (not launcher) with unreachable per-command proxy http://127.0.0.1:1 returned ready/exit0 in0.5615s, explicitly Using this package Python runtime / QEMU runtime. No Downloading output, cache timestamps unchanged, no browser popup. No machine-wide offline claim.
+
+Cold/path/cleanup evidence directory: identity.txt, release.json, zip-download-headers.txt, zip-hash.txt, parent-PSModulePath.txt, start-first-original-raw.log, runtime-download-hashes.json, iso-hash.json, distribution-byte-readback.json, first-running-processes.json, first-http-listener.json, api-first-state.json, api-during-fresh-ui.json, api-before-close.json, before-close-coordinates.json, exit-cleanup.json, cache-unreachable-proxy.log, cache-readback.json.
+.1 preserved. Final .2 has its own fresh public ZIP/root/no-browser cold-start identity, no qualification transferred automatically.

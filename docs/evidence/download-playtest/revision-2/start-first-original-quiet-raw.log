@@ -1,0 +1,13 @@
+First start downloads about 220 MB of official archives; later starts use this folder cache.
+Runtime stays in this package. No system installation or global proxy setting is changed.
+[1/4] Checking the packaged kernel image
+[2/4] Preparing the embedded Python runtime
+Downloading https://www.python.org/ftp/python/3.13.16/python-3.13.16-embed-amd64.zip
+Downloading now; the first run can take several minutes. Failed downloads can be retried.
+[3/4] Preparing QEMU (download, verify, then unpack)
+Downloading https://qemu.weilnetz.de/w64/qemu-w64-setup-20260811.exe
+Downloading now; the first run can take several minutes. Failed downloads can be retried.
+[4/4] Checking the QEMU runtime; LAB will open next
+LAB runtime ready. Keep Start.cmd open; Ctrl+C closes LAB and its QEMU.
+MiniLinux LAB: http://127.0.0.1:49396/
+Real QEMU guest. Leave this window open. Ctrl+C closes LAB and QEMU.

@@ -30,7 +30,13 @@ Windows 启动包运行真实客体，包含固定 ISO、同一网页、标准�
 
 用户还指出复验反复自动打开默认浏览器造成干扰，以及日志滚动条位于黑框中间不直观。后续启动包增加 `Start.cmd --no-browser`（有代理时追加在代理后），打印网址供手动打开；正常双击仍打开一次。按用户选择，日志滚动条移到左侧，详情滚动条在右侧，中间竖线分区；记录仍从左到右读。实际分别用键盘滚动两栏，左侧翻到 0 时右侧仍在 64.67，右侧再翻到 0 时左侧保持 0，故障六字段不变。[独立滚动与六档几何](evidence/download-playtest/scroll/independent-scroll-results.json) 保留该轮实录观察，不冒充实时运行。
 
-新版本仍须按自己的 ZIP 哈希重新下载，通过原始 Start.cmd、浏览器和清理闭环后才升级发布结论；旧 ZIP 的首败不被覆盖。
+最终 `lab-preview-20261002.2` 固定源码 `6964b15c601bb69fa7886340645b5b295d3aa9bf`，公开原始 ZIP 为 2,933,901 字节、SHA256 `9532d9e39d8eb710c0fca11a69d3938ba1811cea129f71ac0783215fc29bc840`。独立智能体重新公开下载到全新中文加空格目录，直接用原始 `Start.cmd proxy --no-browser`，在原父模块环境冷准备并启动；两个官方运行时再次实际下载，没有旧包缓存或 D 盘模块。CIM 读回包内 Python `-I` 的实际 `--no-browser` 参数；原分发 21 个文件最终哈希均未改变。
+
+第二位独立智能体操作这台客体的真实浏览器，完成所有命令、两次 counter、快照下继续执行、fault 后 cat、stop/restart 和断连。真实 1280×720 下日志 PageUp 从 1622.67 到 1544.67，详情保持 0；详情 PageDown 从 0 到 48.67，日志保持 1544.67；再滚日志时详情仍保持 48.67，选中的 fault 六字段不变。running/STOPPED/DISCONNECTED 分别显示“回到实时观察”/“回到末次记录”/“回到末次记录”，实际返回状态一致，原标注反例通过。[浏览器报告](evidence/download-playtest/revision-2/REPORT.md) 保留实际尺寸；该子线程的 viewport 设置没有改变实际尺寸，因此没有冒称它独立验证了 1024。
+
+原 launcher Ctrl+C 后，其目录下 cmd/Python/QEMU、HTTP/两轮 COM 监听与已有连接均为 0；只运行 prepare 并传入不可达代理 `127.0.0.1:1` 仍成功（0.5566 秒），证明使用本包缓存，不宣称整机断网。下载代理负责原包身份与清理，浏览器代理负责实际点击；前者本轮浏览器工具不可用，明确没有把只读 API 旁证当成自己的 UI 操作。旧 ZIP 的首败保留，资格没有写回旧包。
+
+最终公开页面部署为 `17b5184e83c1991fab3e03752e63e7b040b1ff8c`。匿名读回 app `a04b661d…`、replay `681a5214…`、style `d3c6861b…`、recording 均匹配导出文件；HTML 只有 Git 换行标准化，精确差异与完整哈希另存 [public-final](evidence/download-playtest/public-final/hashes.json)。实际浏览器确认 REPLAY、下载直链、正常文字方向、分区与一屏；[截图](evidence/download-playtest/public-final/published-demo.jpg) 保留实际发布结果。一次 CUA 下载事件等待超时，未取得文件路径，未归因于产品；实际公开 ZIP 下载与运行由上述独立代理完整验证。
 
 ## 这次怎么找问题
 
@@ -44,11 +50,11 @@ Windows 启动包运行真实客体，包含固定 ISO、同一网页、标准�
 
 本轮小证据集见 [experience-regression](evidence/experience-regression)：首败、复验结果、原源码测试报告、独立夹具 patch 与清理读回分别保存。完整原始 build 快照留在报告中的独立工作区；网页回测按文件 SHA256 绑定，与 `cc937317` 的内核运行坐标分开。
 
-最终网页 `app.js` SHA256 为 `BD093A0B6BFF9D22AD382EA69E5B61C367EF463082E75BD9DE61A13959823FB7`，`replay.js` 为 `4E0CE2A833D4D752B51738B942161779B64DF3D913B45BB9284C34C41BA85416`。独立浏览器使用正常墙钟和实际点击，复验全部 11 段及暂停/继续；五个已知反例另以合法 API 夹具和正常轮询复验。结果分别在 `normal-clock-confirmed-results.json` 和 `normal-poll-api-fixture-results.json`，无失败或页面异常。一次 reset 检查提前命中了旧 boot 内容；等待新 REPLAY 读回后通过，原观察保留为 `normal-clock-pre-ack-first-failure.json`，不归为内核失败。
+第一次发布前的网页 `app.js` SHA256 为 `BD093A0B6BFF9D22AD382EA69E5B61C367EF463082E75BD9DE61A13959823FB7`，`replay.js` 为 `4E0CE2A833D4D752B51738B942161779B64DF3D913B45BB9284C34C41BA85416`。独立浏览器使用正常墙钟和实际点击，复验全部 11 段及暂停/继续；五个已知反例另以合法 API 夹具和正常轮询复验。结果分别在 `normal-clock-confirmed-results.json` 和 `normal-poll-api-fixture-results.json`，无失败或页面异常。一次 reset 检查提前命中了旧 boot 内容；等待新 REPLAY 读回后通过，原观察保留为 `normal-clock-pre-ack-first-failure.json`，不归为内核失败。
 
 Windows v1 原始 ZIP 的首次官方网络下载成功，但解包到中文加空格目录后，QEMU 无法打开中文绝对 ISO 路径。原 ZIP 与日志保留，不能把后来的通过写回它。只将客体镜像和 BIOS 参数改为相对于包内 runtime 的路径，修后的同目录 launcher、64/256 MiB USERLAND 及 BRIDGE 原探针均通过；关闭后的 QEMU、包内 Python 和采样端口无残留。此修补不改变内核、用户代码或 ABI。
 
-最终 v2 原始 ZIP 来自提交 `231fdd9a5bc2cc16f81e554d83f27ebc6b4b4182`，SHA256 `9210a0f44be614a99ae898cf0c2af370ca8822fa1fc00ba60a2086bc9b43d4f3`，2,930,931 字节。独立智能体原样解包到另一新的中文加空格目录，通过缓存准备、包内 Python `-I` launcher、完整 HTTP 命令、双 counter、fault 后 cat、stop/restart 和清理；运行中的 216 个模块没有 D 盘模块。v2 没有再重复首次网络下载或两档 USERLAND，前者在原 v1、后者在相同 Guest/ISO 的修后 v1 分别记录。Ctrl+C 的外层 PowerShell 返回 1，实际进程和端口清理通过，两种事实分开保留。
+历史 v2 原始 ZIP 来自提交 `231fdd9a5bc2cc16f81e554d83f27ebc6b4b4182`，SHA256 `9210a0f44be614a99ae898cf0c2af370ca8822fa1fc00ba60a2086bc9b43d4f3`，2,930,931 字节。独立智能体原样解包到另一新的中文加空格目录，通过缓存准备、包内 Python `-I` launcher、完整 HTTP 命令、双 counter、fault 后 cat、stop/restart 和清理；运行中的 216 个模块没有 D 盘模块。v2 没有再重复首次网络下载或两档 USERLAND，前者在原 v1、后者在相同 Guest/ISO 的修后 v1 分别记录。Ctrl+C 的外层 PowerShell 返回 1，实际进程和端口清理通过，两种事实分开保留。后来的原始 Start.cmd 首败另在上节记录，这段通过不能覆盖它。
 
 下载入口为 [Windows LAB preview](https://github.com/NoctilumeDev/MiniLinux/releases/tag/lab-preview-20261002)，标签固定在上述提交。发布后匿名 HTTPS 下载的字节数与 SHA256 均匹配受测 ZIP。三段资格、原始首败、哈希及清理读回见 [desktop](evidence/experience-regression/desktop)。这是同机独立解包资格，没有冒充另一台 Windows 的安装结果。
 

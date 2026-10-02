@@ -1,0 +1,23 @@
+[
+  {
+    "ProcessId": 1072,
+    "ParentProcessId": 36876,
+    "Name": "cmd.exe",
+    "ExecutablePath": "C:\\WINDOWS\\system32\\cmd.exe",
+    "CommandLine": "C:\\WINDOWS\\system32\\cmd.exe /c \"\"C:\\Users\\lenovo\\AppData\\Local\\Temp\\MiniLinux 静默下载者 20261002.2 独立试玩\\全新静默解包\\MiniLinux-LAB\\Start.cmd\" http://127.0.0.1:7897 --no-browser\""
+  },
+  {
+    "ProcessId": 24916,
+    "ParentProcessId": 1072,
+    "Name": "python.exe",
+    "ExecutablePath": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\MiniLinux 静默下载者 20261002.2 独立试玩\\全新静默解包\\MiniLinux-LAB\\runtime\\python\\python.exe",
+    "CommandLine": "\"C:\\Users\\lenovo\\AppData\\Local\\Temp\\MiniLinux 静默下载者 20261002.2 独立试玩\\全新静默解包\\MiniLinux-LAB\\runtime\\python\\python.exe\"  -I \"C:\\Users\\lenovo\\AppData\\Local\\Temp\\MiniLinux 静默下载者 20261002.2 独立试玩\\全新静默解包\\MiniLinux-LAB\\tools\\desktop-launch.py\" --no-browser"
+  },
+  {
+    "ProcessId": 33144,
+    "ParentProcessId": 24916,
+    "Name": "qemu-system-x86_64.exe",
+    "ExecutablePath": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\MiniLinux 静默下载者 20261002.2 独立试玩\\全新静默解包\\MiniLinux-LAB\\runtime\\qemu-20260811\\qemu-system-x86_64.exe",
+    "CommandLine": "\"C:\\Users\\lenovo\\AppData\\Local\\Temp\\MiniLinux 静默下载者 20261002.2 独立试玩\\全新静默解包\\MiniLinux-LAB\\runtime\\qemu-20260811\\qemu-system-x86_64.exe\" -machine pc -m 64 -smp 1 -accel tcg,tb-size=32 -display none -monitor none -no-reboot -chardev socket,id=tty,host=127.0.0.1,port=55310,server=on,wait=on -serial chardev:tty -chardev socket,id=observe,host=127.0.0.1,port=55311,server=on,wait=on -serial chardev:observe -boot d -cdrom images/minilinux-lab.iso -L qemu-20260811/share"
+  }
+]

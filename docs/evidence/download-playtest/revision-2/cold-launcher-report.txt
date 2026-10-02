@@ -1,0 +1,56 @@
+MiniLinux 公开 Windows LAB 下载与启动闭环复验（.1/.2）
+测试身份：download_playtest，在用户同一 Windows 电脑的独立、创建前不存在的中文+空格 Temp 目录；不是另一台干净 Windows，也未证明 Explorer 双击路径。主仓未预读/修改，未替换任何分发字节，未复制 D 盘或旧包 runtime/cache。首次原版 Start.cmd 失败证据仍单独保留；本报告不覆盖它。
+
+结论：.1 公开原始 Start.cmd 默认启动冷准备成功；.2 公开原始 Start.cmd --no-browser 冷准备成功，并实际转发至包内嵌入 Python。两轮各自全新目录、实际公开 ZIP、从官方站点重新联网下载 runtime。原始首败中的 PowerShell 模块环境无需测试者手工修正。
+
+.1 默认路径：
+公开标签 lab-preview-20261002.1，源 49554f2430c46924fba30c38c609f6a2c88433b2。
+ZIP 2933617 bytes，SHA256 1C27D973C797BBDF978F578016B57492AACB2175EFF8784A70C7C181D9E8121B。
+默认 Codex bundled pwsh -> cmd，直接 .\Start.cmd http://127.0.0.1:7897；未先 prepare，未手改父/子 PSModulePath。
+原生四阶段完成，URL http://127.0.0.1:52654/，确实打开系统默认浏览器（用户因此要求后续静默）。此成功记录保留；后续没有重复默认启动。
+.1 关闭后本目录进程与已绑定端口均 0；不可达代理仅 prepare 缓存验证 exit 0，约 0.5615s。
+完整 .1 小报告：C:\Users\lenovo\AppData\Local\Temp\MiniLinux 新版下载者 20261002.1 独立试玩\evidence\cold-launcher-report.txt。
+
+.2 本轮原始静默路径：
+公开 URL https://github.com/NoctilumeDev/MiniLinux/releases/download/lab-preview-20261002.2/MiniLinux-LAB-Windows-x64.zip
+公开 release API 绑定标签 lab-preview-20261002.2，源 6964b15c601bb69fa7886340645b5b295d3aa9bf。
+实际 ZIP 2933901 bytes，SHA256 9532D9E39D8EB710C0FCA11A69D3938BA1811CEA129F71AC0783215FC29BC840。
+解包位置：C:\Users\lenovo\AppData\Local\Temp\MiniLinux 静默下载者 20261002.2 独立试玩\全新静默解包\MiniLinux-LAB。
+中文 READ-ME 明确首次约 220 MB、稍后缓存、保留窗口、Ctrl+C 清理、代理用包目录，以及原生 --no-browser 命令。
+实际默认 bundled pwsh -> cmd 命令：.\Start.cmd http://127.0.0.1:7897 --no-browser。
+未人工固定 PSModulePath，未先手调 prepare，未使用技术包装器。parent-PSModulePath.txt 保留原继承环境。
+终端依次打印 [1/4] kernel、[2/4] Python、[3/4] QEMU、[4/4] runtime 检查及 URL http://127.0.0.1:49396/。
+CIM：cmd PID 1072 -> 嵌入 Python PID 24916，实际参数 -I 包内 tools\desktop-launch.py --no-browser -> 包内 QEMU PID 33144。原包 launcher 的浏览器分支受 args.no_browser 控制；本轮未操作系统默认浏览器，也没有重复默认启动。
+
+真正首次网络（未借缓存）：
+Python 官方 URL https://www.python.org/ftp/python/3.13.16/python-3.13.16-embed-amd64.zip
+11439094 bytes，SHA256 97DAE5274CC54867065E8D5A3226E48C35017ED332A0FDB0E27D5B5821961297，下载文件本地时间 20:55:06。
+QEMU 官方 URL https://qemu.weilnetz.de/w64/qemu-w64-setup-20260811.exe
+206615928 bytes，SHA256 F98A8AEB5F7FAEA9765B6DEE28316C266CD179D80354A2FED8E50176F9A2E59F，本地时间 20:56:37。
+ISO SHA256 AA4CDB629DD5CB3C3C279B7387BB1FE7A633EE861B0625FC9187538EB753F231。
+冷准备原日志明确两次 Downloading 官方 URL，且每次提示首次可用数分钟、失败可重试。两个 archive 是本 .2 新目录自行下载。
+
+真实 UI 证据边界：
+.1/.2 浏览器真实动作由独立 fresh_browser_playtest 智能体在其自己的 IAB 完成，截图/交互报告归它；本智能体未将该实玩冒充自己的浏览器操作。其 .2 已报告 help/ls/cat/ps/hello/reader、完整 run counter-a counter-b、fault 后 cat、双 PID 保留快照、切 PID、回到实时、stop/restart、左右独立滚动通过。API GET 是只读旁证，未用 API POST 代替 UI。
+本 .2 api-during-fresh-ui.json 旁证：counter PID 5/6 step 1–5、marker a110/b220、exit 0；fault PID 7 发生 vector 14、exit 142；其后 cat hello.txt 输出 hello from ramfs。
+最终 restart 的 API：epoch 76e5e62947c6fbfa，与初始 eda2995e7db65a01 不同；新 QEMU PID 40544，COM 55077/55078。关闭前 console 再见 cat 成功及新 counter PID 3/4 step 1–5、exit 0。
+fresh_browser_playtest 明确释放后，本智能体才 Ctrl+C；它在原标签捕获最终 DISCONNECTED、固定快照按钮改为末次记录的证据。
+
+退出与缓存：
+从原 ownsVM session 42663 Ctrl+C，主机 interrupt exit 1。独立 CIM 本 .2 目录 cmd/python/QEMU 均 0；49396/55077/55078/55310/55311 无 listener；原 owned process 活动 TCP 0。系统残留 TIME_WAIT 未误判为产品存活。
+退出后仅原始 tools\prepare-desktop.ps1 -Proxy http://127.0.0.1:1 验证缓存，没有启动 launcher 或浏览器。exit 0，0.5566179s，明确 Using this package Python runtime / QEMU runtime；两个 archive 的 SHA 仍与冷下载相同。
+退出与缓存检查完成后，再将 ZIP 的全部 21 个原始文件逐 SHA 对比磁盘；0 changed。生成 runtime 不属于原始分发文件。
+
+产品体验意见：
+原版首败、counter 快照/按钮、STOPPED 与 DISCONNECTED 困惑均保留原证据，由 root 修复；本轮没有发现新的下载/原始静默启动阻断。默认启动会弹用户系统浏览器是 .1 的实际体验，.2 原生静默路径用于本轮，不能因此声称 .1 默认路径本来静默。仅凭本轮不扩张到别的 Windows 环境。在线公开入口和最终 UI 标注详见 root/fresh_browser_playtest 的独立实际页面报告。
+
+关键原始证据（本 report 同目录，8 个）：
+1. release.json：公开 .2 标签、源、asset 大小/URL。
+2. start-first-original-quiet-raw.log：原始命令冷准备四步、官方下载与 URL。
+3. first-running-processes.json：实际 cmd -> Python --no-browser -> 新目录 QEMU。
+4. runtime-download-hashes.json：两官方 archive 实际 SHA。
+5. distribution-byte-readback.json：最终原 ZIP 21 文件 0 改动。
+6. api-during-fresh-ui.json：仅只读客体状态/console 旁证。
+7. cache-readback.json：不可达代理仅 prepare 的 exit、时间、archive SHA。
+8. exit-cleanup.json：最终原进程与全部相关端口清理。
+最终独立 UI 断连读回：fresh_browser_playtest 在同 49396 标签确认固定快照 tick 2709 的按钮自动改为“回到末次记录”；实际点击后回末次 tick 23242/PID 2，仍明确 DISCONNECTED。恢复指导正确、输入/发送/stop/restart 均不可用。缓存检查之后最终 CIM 与相关 listeners 仍为 0。

@@ -1,0 +1,68 @@
+{
+  "before": {
+    "details": [
+      {
+        "borderLeft": "0.666667px",
+        "dir": "ltr",
+        "h": 114,
+        "rect": {
+          "bottom": 678.6667098999023,
+          "height": 113.55208587646484,
+          "left": 439.1458435058594,
+          "right": 783.5312805175781,
+          "top": 565.1146240234375,
+          "width": 344.38543701171875,
+          "x": 439.1458435058594,
+          "y": 565.1146240234375
+        },
+        "sh": 162,
+        "text": "Event Detail\nlatest\n\nSelected #8834 · tick 22948 · fault\n\nPID\n7\nVector\n14\nError\n5\nAddress\n0xffffffff80000000\nRIP\n0x00000000004000ea\nSaved CPL\n3",
+        "top": 0
+      }
+    ],
+    "logs": [
+      {
+        "childDir": "ltr",
+        "dir": "rtl",
+        "h": 114,
+        "rect": {
+          "bottom": 678.6667098999023,
+          "height": 113.55208587646484,
+          "left": 8.666666984558105,
+          "right": 439.14585399627686,
+          "top": 565.1146240234375,
+          "width": 430.4791870117187,
+          "x": 8.666666984558105,
+          "y": 565.1146240234375
+        },
+        "sh": 1736,
+        "top": 1622.6666259765625
+      }
+    ],
+    "viewport": [
+      1280,
+      720
+    ]
+  },
+  "afterLeft": {
+    "details": {
+      "text": "Event Detail\nlatest\n\nSelected #8834 · tick 22948 · fault\n\nPID\n7\nVector\n14\nError\n5\nAddress\n0xffffffff80000000\nRIP\n0x00000000004000ea\nSaved CPL\n3",
+      "top": 0
+    },
+    "logs": {
+      "h": 114,
+      "sh": 1736,
+      "top": 1544.6666259765625
+    }
+  },
+  "beforeRight": {
+    "detailsText": "Event Detail\nlatest\n\nSelected #8834 · tick 22948 · fault\n\nPID\n7\nVector\n14\nError\n5\nAddress\n0xffffffff80000000\nRIP\n0x00000000004000ea\nSaved CPL\n3",
+    "detailsTop": 0,
+    "logsTop": 1544.6666259765625
+  },
+  "afterRight": {
+    "detailsText": "Event Detail\nlatest\n\nSelected #8834 · tick 22948 · fault\n\nPID\n7\nVector\n14\nError\n5\nAddress\n0xffffffff80000000\nRIP\n0x00000000004000ea\nSaved CPL\n3",
+    "detailsTop": 48.66666793823242,
+    "logsTop": 1544.6666259765625
+  }
+}

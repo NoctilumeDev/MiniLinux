@@ -18,7 +18,7 @@ Limine → kernel_main → 物理页 → 四级页表 → PIT/中断 → 数组�
 
 M0–M6 保留固定内嵌程序的两个实例和实验完成后的 intentional stop。其上新增独立 `LAB` 模式：真正的用户态 init/shell 创建、等待演示程序，再用浏览器连接同一台 QEMU 的输入输出与机制记录。没有任意 ELF 加载器。网络、磁盘恢复、SMP、客体 GUI、完整 POSIX、动态链接和生产 hardening 都不在目标内。
 
-![MiniLinux 真实客体控制台与事件详情](docs/evidence/userland-console/event-details-desktop.jpg)
+![Windows LAB：故障被隔离，日志与详情分别滚动](docs/evidence/download-playtest/revision-2/fault-right-scrolled-left-stable.jpg)
 
 ## 操作这个系统
 
@@ -40,11 +40,13 @@ PID 1 / init → PID 2 / shell → spawn → 用户程序
 
 黑白页面以终端、观察窗、日志和手册为主体。桌面上方黑白宽度为 38.2:61.8，下方反转为 61.8:38.2；四个外框、输入和页脚共同适应一个浏览器视口，整页不需要上下滚动。长记录与手册在各自框内滚动，保留可读字号；窄窗口改为上下排列的长页面。浏览器是宿主观察工具，MiniLinux 客体仍是串口系统。
 
-日志左侧是时间线，右侧显示选中记录的字段：调度的 PID/CR3/CPL、故障的地址/RIP/错误码等。点击记录可保持这次观察，点击 `latest` 恢复跟随；这是一条已记录事件的详情，不是当前 CPU 的即时状态。
+日志左侧是时间线，右侧显示选中记录的字段：调度的 PID/CR3/CPL、故障的地址/RIP/错误码等。日志的滚动条在最左，详情的滚动条在最右，中间竖线分区，两个区域各自滚动。点击记录可保持这次观察，点击 `latest` 恢复跟随；这是一条已记录事件的详情，不是当前 CPU 的即时状态。
 
 **[在线实录交互回放](https://noctilumedev.github.io/MiniLinux/)**。无需准备本机工具；先点 `cat hello.txt`，再试 `run counter-a counter-b` 与 `run fault`。页面标注 `REPLAY`，输入选择已有片段；可暂停后查看 PID、页映射和原始事件，网页不运行新客体。页面右上角提供运行真实客体的 Windows 下载入口。
 
 **[下载 Windows LAB 预览包 ZIP](https://github.com/NoctilumeDev/MiniLinux/releases/download/lab-preview-20261002.2/MiniLinux-LAB-Windows-x64.zip)**（[版本说明](https://github.com/NoctilumeDev/MiniLinux/releases/tag/lab-preview-20261002.2)）。解压后打开 `Start.cmd`，运行真实 64 MiB QEMU 客体；首次联网下载约 220 MB 的官方 Python/QEMU 档案，只解包到包内目录，以后可用缓存。无需编译器、GDB、WSL 或预装 Python/QEMU。包内有中文快速开始与代理说明；遇到下载失败可重试。counter 结束后点“查看最近 counter 快照”比较两个 PID：只固定观察窗，不暂停客体。录制来源、原始首败与各版本复验分别记录在 [体验记录](docs/EXPERIENCE.md)。
+
+新版公开 ZIP 已由独立智能体重新下载，在本机全新中文加空格目录用原始 `Start.cmd --no-browser` 冷启动，另一位智能体实际操作页面；命令、快照、两栏滚动、停止/重启/断连与退出清理均通过。静默参数只打印网址，方便手动打开浏览器；默认双击会打开一次浏览器。
 
 `LAB` 上层和宿主桥接的自动验证入口是 `./tools/check-lab.ps1`。请先停止当前预览再验证，以免同时改写同一构建目录、镜像和记录。本轮受测源码 `ac3e5cb` 已从 GitHub 干净克隆重跑所有入口，候选位于 [PR #2](https://github.com/NoctilumeDev/MiniLinux/pull/2)，基于尚未合入的 PR #1。薄用户态的证明、首败与限制见 [USERLAND](docs/USERLAND.md)，视觉和浏览器验证见 [design-qa](design-qa.md)。
 
