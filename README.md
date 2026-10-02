@@ -4,20 +4,22 @@
 
 Linux-inspired, independently implemented. 本项目没有使用 Linux 内核源码，不是 Linux 发行版、fork 或兼容实现。核心机制自己写，教学之外复用工具；代码以普通循环、数组和 switch 为主，少量汇编处理 CPU 入口。
 
-**[直接在线试玩](https://noctilumedev.github.io/MiniLinux/)** · **[下载 Windows LAB 预览包](https://github.com/NoctilumeDev/MiniLinux/releases/tag/lab-preview-20261002)** · **[顺着程序读代码](https://github.com/NoctilumeDev/MiniLinux/blob/feat/userland-console/docs/WALKTHROUGH.md)**
+**[在线实录交互回放](https://noctilumedev.github.io/MiniLinux/)** · **[下载 Windows 实时 LAB ZIP](https://github.com/NoctilumeDev/MiniLinux/releases/download/lab-preview-20261002.2/MiniLinux-LAB-Windows-x64.zip)** · **[顺着程序读代码](https://github.com/NoctilumeDev/MiniLinux/blob/feat/userland-console/docs/WALKTHROUGH.md)**
 
-![MiniLinux 实录回放与原始故障详情](https://raw.githubusercontent.com/NoctilumeDev/MiniLinux/feat/userland-console/docs/evidence/replay/published-demo.jpg)
+![Windows LAB：故障被隔离，日志与详情分别滚动](https://raw.githubusercontent.com/NoctilumeDev/MiniLinux/feat/userland-console/docs/evidence/download-playtest/revision-2/fault-right-scrolled-left-stable.jpg)
 
 ## 先玩一次
 
 在线页面是明确标注 **REPLAY** 的实录交互回放，选择命令就打开对应真实运行片段。终端、进程、地址映射和事件来自同一次 QEMU 录制，网页不运行新内核。
 
 1. 点 `cat hello.txt`，看到 RamFS 字节返回终端，点击 syscall 查看参数。
-2. 点 `run counters`，暂停回放，选择两个 PID：相同虚拟地址 `0x600000` 对应不同物理页。
+2. 点 `run counter-a counter-b`，暂停回放或查看最近 counter 快照，选择两个 PID：相同虚拟地址 `0x600000` 对应不同物理页。
 3. 点 `run fault`，选择日志里的 fault，查看地址、RIP、错误码与 CPL；只有指定程序退出。
 4. 点击 `resume replay` 继续，或 `reset replay` 回到启动记录。
 
-想输入命令、实时运行客体，就下载 Windows 包。Windows 10/11 x64 下解压整个 ZIP，打开 `Start.cmd`；首次联网下载约 220 MB 的官方 Python/QEMU 档案，只解包到包内 `runtime`，后续可用缓存离线启动。无需编译器、GDB、WSL 或预装 Python/QEMU。启动窗口保持打开，Ctrl+C 关闭桥接和它自己的 QEMU。代理用法与许可见包内 `READ-ME.txt`。
+想输入命令、实时运行客体，就下载 Windows 包（[版本说明](https://github.com/NoctilumeDev/MiniLinux/releases/tag/lab-preview-20261002.2)）。Windows 10/11 x64 下解压整个 ZIP，打开 `Start.cmd`；首次联网下载约 220 MB 的官方 Python/QEMU 档案，只解包到包内 `runtime`，后续使用缓存。无需编译器、GDB、WSL 或预装 Python/QEMU。启动窗口保持打开，Ctrl+C 关闭桥接和它自己的 QEMU。中文开始、代理与重试说明见包内 `READ-ME.txt`。不想自动打开默认浏览器时，运行 `Start.cmd --no-browser`，手动打开它打印的网址。
+
+counter 结束后可以查看最近的双实例快照：观察窗固定同一帧，客体与日志继续运行。日志的滚动条在左，详情的滚动条在右，中间竖线分区，各自滚动。stop 保留末次记录；断连时提示重开 LAB 并使用新网址，避免把旧记录看作当前状态。
 
 这是固定程序、固定 RamFS 文件的教学体验；没有任意 ELF 加载器。浏览器是宿主观察工具，客体本身仍是串口系统。
 
@@ -44,9 +46,9 @@ Limine → kernel_main → 物理页 → 四级页表 → PIT / 中断 → 轮�
 | M6 进程声明 | 相同虚拟地址能否存不同数据？ | 不同页表根与物理页、独立标记、七种保护/异常探针、坏别名拒绝。 |
 | LAB 薄上层 | 人怎样操作这条机制链？ | 用户态 init/shell、spawn/wait、hello/reader/counter/fault，故障接管与页回收。 |
 
-M0–M6 和 LAB 候选已从精确提交干净工作区重跑完整验证。本轮另有独立智能体执行反例、64/256 MiB 回归、前端 11 段回放和产品评审，修补日志顺序、重启增量、焦点/连接恢复与中文路径启动问题；首败保留。最终原始 Windows ZIP 已在新的中文加空格目录原样启动、验证命令及清理，发布后的匿名下载哈希相符。范围与限制见 [体验与独立复验](https://github.com/NoctilumeDev/MiniLinux/blob/feat/userland-console/docs/EXPERIENCE.md)。
+M0–M6 和 LAB 候选已从精确提交干净工作区重跑完整验证。本轮另有独立智能体执行反例、64/256 MiB 回归、前端 11 段回放和产品评审，修补日志顺序、重启增量、焦点/连接恢复与中文路径启动问题；首败保留。再从公开下载重新试玩，发现并修补启动模块环境、命令名称、counter 观察与停止/断连标注。最终 `.2` 原始 ZIP 在本机全新中文加空格目录用包内 `Start.cmd --no-browser` 冷启动，另一位智能体实际操作浏览器；两栏独立滚动、所有命令、三态快照、stop/restart 与退出清理通过，下载哈希相符。范围与限制见 [体验与独立复验](https://github.com/NoctilumeDev/MiniLinux/blob/feat/userland-console/docs/EXPERIENCE.md)。
 
-**主线与候选分开：**`main` 保留 M0 源码；M0–M6 在 [PR #1](https://github.com/NoctilumeDev/MiniLinux/pull/1)，LAB/页面/下载工具在 [PR #2](https://github.com/NoctilumeDev/MiniLinux/pull/2)，尚未合入。下载标签 `lab-preview-20261002` 固定在 `231fdd9`，不会随候选分支移动。当前首页更新只涉及 README。
+**主线与候选分开：**`main` 保留 M0 源码；M0–M6 在 [PR #1](https://github.com/NoctilumeDev/MiniLinux/pull/1)，LAB/页面/下载工具在 [PR #2](https://github.com/NoctilumeDev/MiniLinux/pull/2)，尚未合入。下载标签 `lab-preview-20261002.2` 固定在 `6964b15`，不会随候选分支移动；旧版本与首败保留。当前首页更新只涉及 README。
 
 ## 从源码运行
 
