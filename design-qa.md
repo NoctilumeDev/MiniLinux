@@ -1,10 +1,16 @@
 # MiniLinux 控制台视觉与交互复验
 
-final result: blocked
+final result: passed
 
 ## 日志与选中事件详情
 
-紧凑排列仍在宽黑框右侧留下大片空白（P2）。用户选择保留外框比例，在内部增加选中事件详情；此前的间距修补只解决了一条记录两端分离，未解决内容与容器宽度不匹配。新结构等待最终截图与交互、视口复验，旧 passed 不作为新结构的资格。
+紧凑排列仍在宽黑框右侧留下大片空白（P2）。用户选择保留外框比例，在内部增加选中事件详情；此前的间距修补只解决了一条记录两端分离，未解决内容与容器宽度不匹配。现在左侧为时间线，右侧为原始记录字段，详情保持或恢复跟随均可操作。
+
+新证据：[桌面](docs/evidence/userland-console/event-details-desktop.jpg)、[详情局部](docs/evidence/userland-console/event-details-region.jpg)、[窄窗](docs/evidence/userland-console/event-details-narrow.jpg)、[六档几何读回](docs/evidence/userland-console/event-details-layout.json)。最终桌面为 1366×768，整页同高；选中的调度记录完整显示 From PID、To PID、Next CR3、Saved CPL，详情高度与内容高度均为 127 px。较矮窗口允许详情框内滚动，没有截掉外框或缩小整页。日志 13 px，详情 13 px / 1.4，完整地址不省略。
+
+实际点击与 Enter 选择记录、保持历史详情、新事件到来、恢复 latest、FAULT 筛选、清空和客体重启均复验。故障记录显示 vector 14、error 5、完整地址与 RIP、CPL 3；重启后旧选择与旧故障字段清空。1920×1080、1366×768、1152×640、1024×700 均一屏外框；700×1000、390×844 自然纵向排列，无整页或详情横向溢出。浏览器 warn/error 为空。
+
+原稿与新桌面、窄窗放在同一次图像输入中比较：字体层级、黑白配色、Tux 资产和四框结构保留；事件详情是用户选择的结构调整。此处 passed 仅是这次视觉与交互复验，另有子智能体针对 cc93731 的完整运行与反例检查进行中，不把它混成已完成的独立测试。
 
 ## 日志间距复查（2026-10-02）
 
