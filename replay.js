@@ -1,7 +1,7 @@
 "use strict";
 // Select a recorded clip, then advance its actual snapshots. No command executes here.
 const laboratory = {
-  mode: "replay", recording: null, clip: null, frame: 0, started: 0, epoch: 0, stopped: false,
+  mode: "replay", recording: null, clip: null, frame: 0, started: 0, epoch: 0, stopped: false, pausedAt: 0,
   async load() {
     if (this.recording) return;
     const response = await fetch("recording.json");
@@ -23,12 +23,16 @@ const laboratory = {
     const retained = this.clip.frames.slice(0, this.frame + 1).flatMap(frame => frame.state.events).slice(-2000);
     state.events = retained.filter(event => event.id > after);
     state.epoch = `replay-${this.epoch}`;
-    state.status = this.stopped ? "stopped" : "running";
+    state.status = this.stopped ? "paused" : "running";
     return state;
   },
   async post(path, body) {
     await this.load();
-    if (path === "/api/stop") this.stopped = true;
+    if (path === "/api/stop") {
+      if (this.stopped) this.started += performance.now() - this.pausedAt;
+      else this.pausedAt = performance.now();
+      this.stopped = !this.stopped;
+    }
     else if (path === "/api/restart") this.select(this.recording.clips[0]);
     else if (path === "/api/input") {
       const command = body.text.trim().replace(/\s+/g, " ");

@@ -170,12 +170,17 @@ function render() {
   terminal.textContent = state.console.slice(Math.max(0, consoleStart - state.console_base));
   if (follow) terminal.scrollTop = terminal.scrollHeight;
   const replay = laboratory.mode === "replay";
-  $("connection").textContent = replay ? (state.status === "running" ? "REPLAY" : "REPLAY STOPPED") : state.status.toUpperCase(); $("connection").className = state.status;
-  $("coordinates").textContent = replay ? `Recorded ${laboratory.recording.recorded_at.slice(0, 10)} · source ${laboratory.recording.source.slice(0, 7)} · ${laboratory.clip.command}` : `QEMU TCG · 1 CPU · ${state.guest_memory} MiB · COM1 / COM2`;
+  $("connection").textContent = replay ? (state.status === "running" ? "REPLAY" : "REPLAY PAUSED") : state.status.toUpperCase(); $("connection").className = state.status;
+  $("coordinates").textContent = replay ? `Recorded ${laboratory.recording.recorded_at.slice(0, 10)} · ${laboratory.recording.source.slice(0, 7)} · ${laboratory.clip.command} · frame ${laboratory.frame + 1}/${laboratory.clip.frames.length}` : `QEMU TCG · 1 CPU · ${state.guest_memory} MiB · COM1 / COM2`;
   $("observation").textContent = `as of tick ${state.ticks}`;
   $("free-pages").textContent = state.free || "—";
   $("footer-state").textContent = `latest event #${state.sequence} · observed, not instantaneous`;
-  $("command").disabled = state.status !== "running";
+  $("command").disabled = state.status !== "running" && !(replay && state.status === "paused");
+  if (replay) {
+    $("stop").textContent = state.status === "paused" ? "resume replay" : "pause replay";
+    const hints = {"cat hello.txt": "Find open/read/close in Syscall Trace; click read for its buffer and returned byte count.", "run counter-a counter-b": "Select their PIDs to compare VA 0x600000 and physical pages. Pause to inspect.", "run fault": "Use FAULT to inspect vector 14; the recorded shell returns after this process stops."};
+    document.querySelector(".terminal-note").textContent = "Recorded clips only. " + (hints[laboratory.clip.command] || "Commands select a recording; no kernel runs here.");
+  }
   renderProcesses(); renderMaps(); renderEvents(); renderCalls();
   if (state.error) error(state.error);
 }
@@ -205,7 +210,7 @@ async function poll() {
   setTimeout(poll, 350);
 }
 async function command(value) {
-  if (requestBusy || !state || state.status !== "running") return;
+  if (requestBusy || !state || (state.status !== "running" && !(laboratory.mode === "replay" && state.status === "paused"))) return;
   if (!/^[\x20-\x7e\t]*$/.test(value)) { error("The teaching shell accepts ASCII commands."); return; }
   requestBusy = true;
   try { error(); await post("/api/input", {text: value + "\r"}); lastCommand = value; manual(value.trim().split(/\s+/)[0]); $("command").value = ""; }
@@ -246,7 +251,7 @@ document.querySelectorAll("[data-view]").forEach(button => {
 $("about").onclick = () => $("about-dialog").showModal();
 $("close-about").onclick = () => $("about-dialog").close();
 if (laboratory.mode === "replay") {
-  $("stop").textContent = "stop replay"; $("restart").textContent = "reset replay";
+  $("stop").textContent = "pause replay"; $("restart").textContent = "reset replay";
   document.querySelector(".terminal-note").textContent = "Recorded clips only. Commands select a recording; no kernel runs in this browser.";
   $("about-dialog").querySelectorAll("p")[1].textContent = "This is an interactive replay of real QEMU runs. Console, processes, mappings and events come from recorded snapshots. Commands select clips; they do not execute a new guest. The Windows LAB download runs the actual kernel.";
   document.querySelector("footer > span").textContent = "MiniLinux / REPLAY · actual recorded mechanisms";
