@@ -37,7 +37,7 @@ const laboratory = {
     else if (path === "/api/input") {
       const command = body.text.trim().replace(/\s+/g, " ");
       const clip = this.recording.clips.find(item => item.command === command);
-      if (!clip) throw new Error("This replay contains: help, ls, cat hello.txt, ps, run hello, run reader, run counter-a counter-b, run fault, check, mem. Download LAB to execute other commands.");
+      if (!clip) throw new Error("这是实录回放，其他输入请用右上角“下载 Windows 实时 LAB”。This replay contains: help, ls, cat hello.txt, ps, run hello, run reader, run counter-a counter-b, run fault, check, mem.");
       this.select(clip);
     } else throw new Error("Unknown replay control");
     return {okay: true};

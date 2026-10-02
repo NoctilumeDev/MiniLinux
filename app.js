@@ -5,6 +5,7 @@ let cursor = 0, epoch = "", state = null, selectedPid = 2, events = [], paused =
 let consoleStart = 0, traceStart = 0, eventStart = 0, lastCommand = "", requestBusy = false;
 let view = "console", connectionFailed = false;
 let selectedEvent = null, eventDetailKey = "";
+let counterSnapshot = null, inspectorSnapshot = null;
 const processRows = new Map(), callRows = new Map(), eventRows = new Map();
 const manuals = {
   help: ["HELP(1)", "NAME", "help — list the shell commands", "EXAMPLE", "help\nls\ncat hello.txt\nps\nrun hello\nrun reader\nrun counter-a counter-b"],
@@ -37,9 +38,10 @@ function row(values) {
   return tr;
 }
 function renderProcesses() {
+  const observed = inspectorSnapshot?.state || state;
   const body = $("processes");
-  if (!state.processes.some(p => p.pid === selectedPid)) selectedPid = state.processes.find(p => p.program === "shell")?.pid || state.processes[0]?.pid;
-  for (const process of state.processes) {
+  if (!observed.processes.some(p => p.pid === selectedPid)) selectedPid = observed.processes.find(p => p.program === "shell")?.pid || observed.processes[0]?.pid;
+  for (const process of observed.processes) {
     let tr = processRows.get(process.pid);
     if (!tr) {
       tr = row(["", "", "", process.program]);
@@ -53,21 +55,22 @@ function renderProcesses() {
     tr.className = process.pid === selectedPid ? "selected" : "";
   }
   for (const [pid, tr] of processRows) {
-    if (!state.processes.some(p => p.pid === pid)) { tr.remove(); processRows.delete(pid); }
+    if (!observed.processes.some(p => p.pid === pid)) { tr.remove(); processRows.delete(pid); }
   }
-  $("empty-processes").hidden = !!state.processes.length;
+  $("empty-processes").hidden = !!observed.processes.length;
 }
 function renderMaps() {
-  const process = state.processes.find(p => p.pid === selectedPid);
+  const observed = inspectorSnapshot?.state || state;
+  const process = observed.processes.find(p => p.pid === selectedPid);
   $("map-pid").textContent = process ? `(pid=${selectedPid})` : "";
   $("map-root").textContent = "CR3 " + (process?.root || "—");
   const fragment = document.createDocumentFragment();
-  Object.values(state.maps[selectedPid] || {}).sort((a, b) => a.va.localeCompare(b.va)).forEach(map => {
+  Object.values(observed.maps[selectedPid] || {}).sort((a, b) => a.va.localeCompare(b.va)).forEach(map => {
     const perm = "r" + ((map.flags & 1) ? "w" : "-") + ((map.flags & 4) ? "x" : "-");
     fragment.append(row([map.va, map.pa, perm, map.name]));
   });
   $("mappings").replaceChildren(fragment);
-  const data = state.data[selectedPid];
+  const data = observed.data[selectedPid];
   $("data-marker").textContent = data ? `data marker ${data.marker}` : "Waiting for mapped-page observations.";
 }
 function describe(event) {
@@ -148,7 +151,8 @@ function renderEvents() {
 }
 function renderCalls() {
   if (paused) return;
-  const recent = events.filter(e => e.kind === "syscall" && e.id > traceStart).slice(-40);
+  const source = inspectorSnapshot?.events || events;
+  const recent = source.filter(e => e.kind === "syscall" && e.id > traceStart).slice(-40);
   const body = $("syscalls");
   recent.forEach(event => {
     if (callRows.has(event.id)) return;
@@ -162,9 +166,27 @@ function renderCalls() {
   for (const [id, tr] of callRows) {
     if (!recent.some(e => e.id === id)) { tr.remove(); callRows.delete(id); }
   }
-  const last = [...events].reverse().find(e => e.kind === "syscall");
-  if (last) $("mode-witness").textContent = `Recorded CPL ${last.fields[6]} entry · PID ${last.fields[0]} · tick ${last.tick}`;
+  const last = [...source].reverse().find(e => e.kind === "syscall");
+  if (last) $("mode-witness").textContent = `${laboratory.mode === "replay" ? "Recorded" : "Observed"} CPL ${last.fields[6]} entry · PID ${last.fields[0]} · tick ${last.tick}`;
 }
+function renderInspector() {
+  if (!state) return;
+  const observed = inspectorSnapshot?.state || state;
+  const source = laboratory.mode === "replay" ? "历史录制" : connectionFailed ? "客体状态未知" : state.status === "running" ? "客体继续运行" : "客体已停止";
+  $("observation").textContent = inspectorSnapshot ? `快照 tick ${observed.ticks} · ${source}` : `${connectionFailed || state.status !== "running" ? "末次记录" : "as of"} tick ${observed.ticks}`;
+  $("free-pages").textContent = observed.free ?? "—";
+  $("counter-snapshot").disabled = !counterSnapshot;
+  $("counter-snapshot").textContent = inspectorSnapshot ? (laboratory.mode === "replay" ? "回到当前回放" : "回到实时观察") : "查看最近 counter 快照";
+  renderProcesses(); renderMaps(); renderCalls();
+}
+$("counter-snapshot").onclick = () => {
+  inspectorSnapshot = inspectorSnapshot ? null : counterSnapshot;
+  if (inspectorSnapshot) selectedPid = inspectorSnapshot.state.processes.find(p => p.program === "counter-a")?.pid || 2;
+  paused = false; $("pause-trace").textContent = "pause";
+  traceStart = 0; callRows.clear(); $("syscalls").replaceChildren();
+  $("syscall-detail").textContent = "Select a call to inspect its arguments.";
+  renderInspector();
+};
 function render() {
   const terminal = $("terminal"), follow = terminal.scrollTop + terminal.clientHeight >= terminal.scrollHeight - 35;
   terminal.textContent = state.console.slice(Math.max(0, consoleStart - state.console_base));
@@ -172,16 +194,20 @@ function render() {
   const replay = laboratory.mode === "replay";
   $("connection").textContent = replay ? (state.status === "running" ? "REPLAY" : "REPLAY PAUSED") : state.status.toUpperCase(); $("connection").className = state.status;
   $("coordinates").textContent = replay ? `Recorded ${laboratory.recording.recorded_at.slice(0, 10)} · ${laboratory.recording.source.slice(0, 7)} · ${laboratory.clip.command} · frame ${laboratory.frame + 1}/${laboratory.clip.frames.length}` : `QEMU TCG · 1 CPU · ${state.guest_memory} MiB · COM1 / COM2`;
-  $("observation").textContent = `as of tick ${state.ticks}`;
-  $("free-pages").textContent = state.free || "—";
   $("footer-state").textContent = `latest event #${state.sequence} · observed, not instantaneous`;
   $("command").disabled = state.status !== "running" && !(replay && state.status === "paused");
+  document.querySelector("#command-form button").disabled = $("command").disabled;
+  $("restart").disabled = false;
+  document.querySelectorAll("[data-command]").forEach(button => { button.disabled = $("command").disabled; });
+  $("stop").disabled = !replay && state.status !== "running";
   if (replay) {
     $("stop").textContent = state.status === "paused" ? "resume replay" : "pause replay";
     const hints = {"cat hello.txt": "Find open/read/close in Syscall Trace; click read for its buffer and returned byte count.", "run counter-a counter-b": "Select their PIDs to compare VA 0x600000 and physical pages. Pause to inspect.", "run fault": "Use FAULT to inspect vector 14; the recorded shell returns after this process stops."};
     document.querySelector(".terminal-note").textContent = "Recorded clips only. " + (hints[laboratory.clip.command] || "Commands select a recording; no kernel runs here.");
+  } else {
+    document.querySelector(".terminal-note").textContent = state.status === "running" ? "实时 QEMU。命令在用户态执行；counter 结束后可查看最近快照。↑ 回忆上一条命令。" : "客体已停止；观察窗保留末次记录。点 restart guest 从启动重新运行。";
   }
-  renderProcesses(); renderMaps(); renderEvents(); renderCalls();
+  renderInspector(); renderEvents();
   if (state.error) error(state.error);
 }
 async function poll() {
@@ -192,25 +218,32 @@ async function poll() {
       const previousEpoch = epoch;
       epoch = state.epoch; cursor = 0; events = []; consoleStart = traceStart = eventStart = 0;
       selectedPid = 2;
+      counterSnapshot = inspectorSnapshot = null;
       selectedEvent = null; eventDetailKey = ""; eventRows.clear(); $("events").replaceChildren();
       processRows.clear(); callRows.clear(); $("processes").replaceChildren(); $("syscalls").replaceChildren();
       $("syscall-detail").textContent = "Select a call to inspect its arguments.";
-      $("mode-witness").textContent = "Awaiting a recorded user entry.";
+      $("mode-witness").textContent = "Awaiting a user entry.";
       error();
       // Any old cursor can hide the new guest's prefix, even if a suffix arrived.
       if (previousEpoch) { setTimeout(poll, 50); return; }
     }
     events.push(...state.events); events = events.slice(-2000); cursor = state.sequence;
+    if (state.processes.some(p => p.program === "counter-a") && state.processes.some(p => p.program === "counter-b")) counterSnapshot = {state, events: events.slice()};
     render();
   } catch (exc) {
     connectionFailed = true;
     $("connection").textContent = "DISCONNECTED"; $("connection").className = "disconnected";
     $("command").disabled = true; error(`${laboratory.mode === "replay" ? "Cannot load recorded replay" : "Cannot reach the laboratory bridge"}: ${exc.message}`);
+    document.querySelector("#command-form button").disabled = true; $("restart").disabled = true;
+    document.querySelectorAll("[data-command]").forEach(button => { button.disabled = true; });
+    $("stop").disabled = true;
+    if (laboratory.mode !== "replay") document.querySelector(".terminal-note").textContent = "连接中断，客体当前状态未知。若已关闭启动窗口，请重开 LAB，并打开它显示的网址。";
+    renderInspector();
   }
   setTimeout(poll, 350);
 }
 async function command(value) {
-  if (requestBusy || !state || (state.status !== "running" && !(laboratory.mode === "replay" && state.status === "paused"))) return;
+  if (connectionFailed || requestBusy || !state || (state.status !== "running" && !(laboratory.mode === "replay" && state.status === "paused"))) return;
   if (!/^[\x20-\x7e\t]*$/.test(value)) { error("The teaching shell accepts ASCII commands."); return; }
   requestBusy = true;
   try { error(); await post("/api/input", {text: value + "\r"}); lastCommand = value; manual(value.trim().split(/\s+/)[0]); $("command").value = ""; }
@@ -251,9 +284,12 @@ document.querySelectorAll("[data-view]").forEach(button => {
 $("about").onclick = () => $("about-dialog").showModal();
 $("close-about").onclick = () => $("about-dialog").close();
 if (laboratory.mode === "replay") {
+  $("download-lab").hidden = false;
+  $("manual-actions").textContent = "按钮选择实录";
   $("stop").textContent = "pause replay"; $("restart").textContent = "reset replay";
   document.querySelector(".terminal-note").textContent = "Recorded clips only. Commands select a recording; no kernel runs in this browser.";
   $("about-dialog").querySelectorAll("p")[1].textContent = "This is an interactive replay of real QEMU runs. Console, processes, mappings and events come from recorded snapshots. Commands select clips; they do not execute a new guest. The Windows LAB download runs the actual kernel.";
   document.querySelector("footer > span").textContent = "MiniLinux / REPLAY · actual recorded mechanisms";
 }
+else document.querySelector(".event-info").setAttribute("aria-label", "Observed event details");
 manual(); poll();
