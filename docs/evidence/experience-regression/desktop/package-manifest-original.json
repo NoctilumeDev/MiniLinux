@@ -1,0 +1,8 @@
+{
+  "format": 1,
+  "source": "231fdd9a5bc2cc16f81e554d83f27ebc6b4b4182",
+  "iso_sha256": "aa4cdb629dd5cb3c3c279b7387bb1fe7a633ee861b0625fc9187538eb753f231",
+  "app_sha256": "bd093a0b6bff9d22ad382ea69e5b61c367ef463082e75bd9de61a13959823fb7",
+  "extractor_exe_sha256": "6ee3c0ed0b27663c1b948ae85a7c0bb073aed1498983182f3f0df1f6a8c30b2f",
+  "extractor_dll_sha256": "65e4c1f855f9ef6e8f0f5df8e3f27d9eb5f07311408639da0a1ca0b8f4871b0d"
+}

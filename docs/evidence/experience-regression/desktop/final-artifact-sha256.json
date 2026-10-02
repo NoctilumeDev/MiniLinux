@@ -1,0 +1,50 @@
+[
+  {
+    "Path": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\MiniLinux desktop 最终 v2 231fdd9 20261002\\original-v2.zip",
+    "Hash": "9210A0F44BE614A99AE898CF0C2AF370CA8822FA1FC00BA60A2086BC9B43D4F3"
+  },
+  {
+    "Path": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\MiniLinux desktop 最终 v2 231fdd9 20261002\\package\\MiniLinux-LAB\\package.json",
+    "Hash": "D5989D50D29EB05A92DB3BD137861818908B0D4AF1E5038F849270D736A602FC"
+  },
+  {
+    "Path": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\MiniLinux desktop 最终 v2 231fdd9 20261002\\package\\MiniLinux-LAB\\web\\app.js",
+    "Hash": "BD093A0B6BFF9D22AD382EA69E5B61C367EF463082E75BD9DE61A13959823FB7"
+  },
+  {
+    "Path": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\MiniLinux desktop 最终 v2 231fdd9 20261002\\package\\MiniLinux-LAB\\tools\\lab_guest.py",
+    "Hash": "4901B21F29913D1412B49D9361F09204961B985F79E58853CF27C8FD808B8CC3"
+  },
+  {
+    "Path": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\MiniLinux desktop 最终 v2 231fdd9 20261002\\package\\MiniLinux-LAB\\tools\\desktop-launch.py",
+    "Hash": "4DB18110BAFA527C7ACED0F7BEA2620D6AC6C170A62A7F4C28BB5FF63C5D1AB7"
+  },
+  {
+    "Path": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\MiniLinux desktop 最终 v2 231fdd9 20261002\\package\\MiniLinux-LAB\\tools\\lab-server.py",
+    "Hash": "3D20E234A4516D5BA6D0C6701210C1D792A2423A4ED18EDB733A134380E3052D"
+  },
+  {
+    "Path": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\MiniLinux desktop 最终 v2 231fdd9 20261002\\package\\MiniLinux-LAB\\tools\\prepare-desktop.ps1",
+    "Hash": "7C11784CA63BAA94A222B39AD6D160E86D249AB5422ECA9E051A6FF48E830A75"
+  },
+  {
+    "Path": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\MiniLinux desktop 最终 v2 231fdd9 20261002\\package\\MiniLinux-LAB\\runtime\\python\\python.exe",
+    "Hash": "31FE10B4ED82A2F960AF0EF9931F46A4B84FF286F8B6FFD9DEE098CF4F10F17F"
+  },
+  {
+    "Path": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\MiniLinux desktop 最终 v2 231fdd9 20261002\\package\\MiniLinux-LAB\\runtime\\qemu-20260811\\qemu-system-x86_64.exe",
+    "Hash": "47D57A6072E0BB3BD98F87926EB129EB1736DFE818C67B3B81EF7CE4EDD0B3CD"
+  },
+  {
+    "Path": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\MiniLinux desktop 最终 v2 231fdd9 20261002\\package\\MiniLinux-LAB\\runtime\\images\\minilinux-lab.iso",
+    "Hash": "AA4CDB629DD5CB3C3C279B7387BB1FE7A633EE861B0625FC9187538EB753F231"
+  },
+  {
+    "Path": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\MiniLinux desktop 最终 v2 231fdd9 20261002\\package\\MiniLinux-LAB\\runtime\\downloads\\python-3.13.16-embed-amd64.zip",
+    "Hash": "97DAE5274CC54867065E8D5A3226E48C35017ED332A0FDB0E27D5B5821961297"
+  },
+  {
+    "Path": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\MiniLinux desktop 最终 v2 231fdd9 20261002\\package\\MiniLinux-LAB\\runtime\\downloads\\qemu-w64-setup-20260811.exe",
+    "Hash": "F98A8AEB5F7FAEA9765B6DEE28316C266CD179D80354A2FED8E50176F9A2E59F"
+  }
+]

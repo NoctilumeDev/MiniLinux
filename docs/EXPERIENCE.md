@@ -18,4 +18,14 @@ Windows 启动包运行真实客体，包含固定 ISO、同一网页、标准�
 
 本轮小证据集见 [experience-regression](evidence/experience-regression)：首败、复验结果、原源码测试报告、独立夹具 patch 与清理读回分别保存。完整原始 build 快照留在报告中的独立工作区；网页回测按文件 SHA256 绑定，与 `cc937317` 的内核运行坐标分开。
 
+最终网页 `app.js` SHA256 为 `BD093A0B6BFF9D22AD382EA69E5B61C367EF463082E75BD9DE61A13959823FB7`，`replay.js` 为 `4E0CE2A833D4D752B51738B942161779B64DF3D913B45BB9284C34C41BA85416`。独立浏览器使用正常墙钟和实际点击，复验全部 11 段及暂停/继续；五个已知反例另以合法 API 夹具和正常轮询复验。结果分别在 `normal-clock-confirmed-results.json` 和 `normal-poll-api-fixture-results.json`，无失败或页面异常。一次 reset 检查提前命中了旧 boot 内容；等待新 REPLAY 读回后通过，原观察保留为 `normal-clock-pre-ack-first-failure.json`，不归为内核失败。
+
+Windows v1 原始 ZIP 的首次官方网络下载成功，但解包到中文加空格目录后，QEMU 无法打开中文绝对 ISO 路径。原 ZIP 与日志保留，不能把后来的通过写回它。只将客体镜像和 BIOS 参数改为相对于包内 runtime 的路径，修后的同目录 launcher、64/256 MiB USERLAND 及 BRIDGE 原探针均通过；关闭后的 QEMU、包内 Python 和采样端口无残留。此修补不改变内核、用户代码或 ABI。
+
+最终 v2 原始 ZIP 来自提交 `231fdd9a5bc2cc16f81e554d83f27ebc6b4b4182`，SHA256 `9210a0f44be614a99ae898cf0c2af370ca8822fa1fc00ba60a2086bc9b43d4f3`，2,930,931 字节。独立智能体原样解包到另一新的中文加空格目录，通过缓存准备、包内 Python `-I` launcher、完整 HTTP 命令、双 counter、fault 后 cat、stop/restart 和清理；运行中的 216 个模块没有 D 盘模块。v2 没有再重复首次网络下载或两档 USERLAND，前者在原 v1、后者在相同 Guest/ISO 的修后 v1 分别记录。Ctrl+C 的外层 PowerShell 返回 1，实际进程和端口清理通过，两种事实分开保留。
+
+下载入口为 [Windows LAB preview](https://github.com/NoctilumeDev/MiniLinux/releases/tag/lab-preview-20261002)，标签固定在上述提交。发布后匿名 HTTPS 下载的字节数与 SHA256 均匹配受测 ZIP。三段资格、原始首败、哈希及清理读回见 [desktop](evidence/experience-regression/desktop)。这是同机独立解包资格，没有冒充另一台 Windows 的安装结果。
+
+公开 [GitHub Pages](https://noctilumedev.github.io/MiniLinux/) 在 `gh-pages` 提交 `dc3399740b7e9fe78596852107733e2a3c944ae5` 部署成功。匿名下载 app/replay/recording 哈希与最终受测文件匹配；实际浏览器 cat 输出、选中 fault #1235 的六个字段均正确，1280×720 整页尺寸等于视口，warn/error 为空。[公开页面截图](evidence/replay/published-demo.jpg) 保留真实发布结果。
+
 尚未验证 spawn 中途 OOM 的所有分配深度、全部异常向量或所有 GPR 的独立 sentinel。init/shell 的异常仍明确 panic。没有把现有通过扩大成完整异常恢复、任意 ELF、POSIX 或其他宿主的资格；绝对 free 数值是每次客体观测，判据是同一次运行前后恢复。

@@ -1,0 +1,5 @@
+command=runtime/python/python.exe -I tools/desktop-launch.py --no-browser
+exit_code=1
+first_failure=RuntimeError: Guest disconnected:
+stack=desktop-launch.py:21 -> lab-server.py:28 -> lab_guest.py:79 -> lab_guest.py:188
+observed=2026-10-02T19:26:03.7617692+08:00
