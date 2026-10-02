@@ -36,4 +36,8 @@
 
 七种保护/异常探针分别运行，原始 #PF 加上 #UD/#GP/#DE；每轮仍要求任务 1 在故障之后计算、报告、退出，最终页数恢复。脚本最后重建普通映像并复验，检查没有持续客体、调试器或 1234 监听残留。完整 M0–M6 回归另用 `tools/closed-loop.ps1`，M6 已纳入七种异常。
 
-本轮工作区的全部反例已通过。精确修补提交与远端干净克隆结果在复验后追加，不把工作区通过直接升级为远端资格。这些实验覆盖列出的教学边界，不代表生产安全认证或穷尽所有硬件行为。
+修补源码固定在 `ae93e86f56592fd7b38732a5f664b6213b037c1a`，已推送并从 GitHub 干净克隆到 `C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002`。开始时没有 build，工作树干净；先运行完整 `closed-loop.ps1`，再运行 `counterexamples.ps1`，全部通过。后者包含 22 次 64/256 MiB 客体运行、一次 cld 指令修改拒绝、两次普通映像重新接管；最后工作树仍干净，没有客体/调试器或 1234 监听残留。
+
+精确 SHA、每个夹具的 ELF 哈希与载荷核对见 [汇总](evidence/counterexamples-ae93e86-summary.log)；客体现场、指令改前改后、两个进程的用户报告与物理页读回见 [实跑记录](evidence/counterexamples-ae93e86-witnesses.log)。M0–M6 回归与原有寄存器/别名反例也在同一个精确提交重跑，见 [回归记录](evidence/counterexamples-ae93e86-regression.log)。后续仅整理文档和保留记录，`git diff ae93e86 -- kernel include user tools boot linker.ld` 应为空。
+
+这些实验覆盖列出的教学边界，不代表生产安全认证或穷尽所有硬件行为。

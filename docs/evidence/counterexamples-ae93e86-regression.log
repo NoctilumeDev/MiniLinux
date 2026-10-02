@@ -1,0 +1,94 @@
+source=ae93e86f56592fd7b38732a5f664b6213b037c1a; fresh GitHub clone; Windows native D-drive pinned tools; tracked sources unchanged
+file=exact-closed-loop.log
+Checking M0 ...
+M0 passed.
+Checking M1 ...
+M1 passed.
+Checking M2 ...
+M2 passed.
+Checking M3 ...
+M3 passed.
+Checking M4 ...
+M4 passed.
+Checking M5 ...
+M5 passed.
+Checking M6 ...
+M6 passed.
+M0-M6 closed loop passed; no unresolved or dynamic runtime dependencies; no guest/debugger residue.
+file=M3-register-rejection.log
+0x000000000000fff0 in ?? ()
+Breakpoint 1 at 0xffffffff80001224: file C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002\kernel\main.c, line 117.
+
+Breakpoint 1, kernel_main () at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002\kernel\main.c:117
+117	    serial_init();
+rip            0xffffffff80001224  0xffffffff80001224 <kernel_main+4>
+cs             0x28                40
+Breakpoint 2 at 0xffffffff80003398: file C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002\kernel\cpu.c, line 37.
+
+Breakpoint 2, cpu_init () at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002\kernel\cpu.c:37
+37	    __asm__ volatile ("cli" : : : "memory");
+Breakpoint 3 at 0xffffffff80003878: file C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002\kernel\task.c, line 40.
+
+Breakpoint 3, task_start () at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002\kernel\task.c:40
+40	    for (unsigned i = 0; i < 2; i++) { tasks[i].id = i; tasks[i].alive = true; }
+Breakpoint 4 at 0xffffffff80003aec: file C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002\kernel\task.c, line 62.
+
+Breakpoint 4, task_tick (frame=0xffffffff80008030 <tasks+7984>) at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002\kernel\task.c:62
+62	    tasks[current].frame = frame;
+$1 = {r15 = 0, r14 = 0, r13 = 0, r12 = 3405643776, r11 = 0, r10 = 0, r9 = 0, r8 = 0, rdi = 0, rsi = 0, rbp = 18446744071562100992, rdx = 0, rcx = 46703, rbx = 0, rax = 3405643776, vector = 32, error = 0, rip = 18446744071562082809, cs = 8, rflags = 66054, rsp = 18446744071562100960, ss = 16}
+Breakpoint 5 at 0xffffffff800011ec: file C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002\kernel\main.c, line 106.
+
+Breakpoint 5, panic (message=0xffffffff80004825 "M3 register guard changed") at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002\kernel\main.c:106
+106	    __asm__ volatile ("cli" : : : "memory");
+#0  panic (message=0xffffffff80004825 "M3 register guard changed") at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002\kernel\main.c:106
+#1  0xffffffff80003a0b in count_forever () at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002\kernel\task.c:24
+#2  0x0000000000000000 in ?? ()
+[Inferior 1 (process 1) detached]
+
+MiniLinux M3: entered kernel_main
+M3 timer switch 0 -> 1; counters 0 / 0
+M3 timer switch 1 -> 0; counters 0 / 35767
+M3 timer switch 0 -> 1; counters 46703 / 35767
+M3 timer switch 1 -> 0; counters 46703 / 2505333
+MiniLinux PANIC: M3 register guard changed
+file=M6-alias-rejection.log
+0x000000000000fff0 in ?? ()
+Breakpoint 1 at 0xffffffff80001224: file C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002\kernel\main.c, line 117.
+
+Breakpoint 1, kernel_main () at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002\kernel\main.c:117
+117	    serial_init();
+rip            0xffffffff80001224  0xffffffff80001224 <kernel_main+4>
+cs             0x28                40
+Breakpoint 2 at 0xffffffff80003da3: file C:\\Users\\lenovo\\Desktop\\GitHubProjects\\tmp\\minilinux-counterexamples-ae93e86-20261002\\kernel\\entry.S, line 109.
+
+Breakpoint 2, cpu_enter_frame () at C:\\Users\\lenovo\\Desktop\\GitHubProjects\\tmp\\minilinux-counterexamples-ae93e86-20261002\\kernel\\entry.S:109
+109	    mov %rdi, %rsp
+The current OS ABI is "auto" (currently "Windows").
+The default OS ABI is "Windows".
+$1 = 0x8000000000094007
+$2 = 0x8000000000089007
+$3 = 0x89000
+$4 = 0x94000
+Breakpoint 3 at 0xffffffff800011ec: file C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002\kernel\main.c, line 106.
+
+Breakpoint 3, panic (message=0xffffffff80005b5f "user address space marker changed") at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002\kernel\main.c:106
+106	    __asm__ volatile ("cli" : : : "memory");
+#0  panic (message=0xffffffff80005b5f "user address space marker changed") at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002\kernel\main.c:106
+#1  0xffffffff80003bb3 in task_exit (frame=0xffffffff8000c0d0 <tasks+16336>, status=2) at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002\kernel\task.c:92
+#2  0xffffffff8000489f in syscall_dispatch (frame=0xffffffff8000c0d0 <tasks+16336>) at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002\kernel\syscall.c:36
+#3  0xffffffff80003713 in interrupt_dispatch (frame=0xffffffff8000c0d0 <tasks+16336>) at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002\kernel\interrupt.c:15
+#4  0xffffffff80003d83 in interrupt_common () at C:\\Users\\lenovo\\Desktop\\GitHubProjects\\tmp\\minilinux-counterexamples-ae93e86-20261002\\kernel\\entry.S:84
+#5  0x0000000000000000 in ?? ()
+[Inferior 1 (process 1) detached]
+
+MiniLinux M6: entered kernel_main
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+syscall from task 1 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+syscall from task 0 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+MiniLinux PANIC: user address space marker changed

@@ -4,9 +4,11 @@
 
 ## 当前坐标
 
-当前分支 `feat/teaching-os-closure`，受测源码固定在 `d296971d2b7be381d94c7a3cad544f3b296964f3`。M2 `1d2c894`，M3 `d2bae88`，M4 `a5615a5`，M5 `f72c2bf`，M6 与完整脚本 `d296971`。本机和 GitHub 精确提交干净克隆均完成 `tools/closed-loop.ps1`：全部正常链、M3 寄存器损坏、M6 数据别名拒绝与正常接管、ELF 依赖检查通过。
+当前分支 `feat/teaching-os-closure`，受测修补源码固定在 `ae93e86f56592fd7b38732a5f664b6213b037c1a`。从 GitHub 干净克隆，完整 `tools/closed-loop.ps1` 与 `tools/counterexamples.ps1` 全部通过；本轮的页表有效权限、七种用户异常、OOM 与入口现场范围见 [错题本](COUNTEREXAMPLES.md)。后续只整理文档和保留记录，不改变这个受测实现。
 
-候选已发布到 [PR #1](https://github.com/NoctilumeDev/MiniLinux/pull/1)，open、draft、未合入；创建时 base 精确为 `5e459b0e3f22a59924e78202ea5e331071c56e27`。此后提交只整理文档和证据，受测内核、用户程序、链接和工具脚本不变。没有宣称 GitHub CI、另一台宿主或 main 新版本已验证。
+原闭环的历史坐标是 `d296971d2b7be381d94c7a3cad544f3b296964f3`：M2 `1d2c894`，M3 `d2bae88`，M4 `a5615a5`，M5 `f72c2bf`，M6 与完整脚本 `d296971`。当时本机和 GitHub 精确提交干净克隆均完成 `tools/closed-loop.ps1`：全部正常链、M3 寄存器损坏、M6 数据别名拒绝与正常接管、ELF 依赖检查通过。这些旧记录保留，但不替代后来修补的复验。
+
+候选已发布到 [PR #1](https://github.com/NoctilumeDev/MiniLinux/pull/1)，open、draft、未合入；本轮读回的 base 仍精确为 `5e459b0e3f22a59924e78202ea5e331071c56e27`。原闭环到 `d5462b4` 之间只有文档与证据；本轮新增反例后修补了实现，并以 ae93e86 重新执行完整回归。没有宣称 GitHub CI、另一台宿主或 main 新版本已验证。
 
 ## 能证明什么
 
@@ -22,9 +24,9 @@
 
 每轮日志放在 build；有意义的首败与该轮实跑保留在 docs/evidence。后来的通过不覆盖编译错误、无中断、错误守卫、故障次序缺口或无效 GDB 注入。整理的文本统一换行并去除行尾空白，不宣称与原始进程输出逐字节等同。
 
-## 远端干净克隆
+## 原闭环的远端干净克隆
 
-从 GitHub 克隆候选分支，再 detached checkout 到上述完整 SHA，开跑前没有 build、工作树干净。目录是 `C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-closed-d296971-20261002`；工具继续使用 D 盘基线，没有借用原工作区的 ELF、用户二进制或生成源码。
+从 GitHub 克隆候选分支，再 detached checkout 到原闭环的 d296971 完整 SHA，开跑前没有 build、工作树干净。目录是 `C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-closed-d296971-20261002`；工具继续使用 D 盘基线，没有借用原工作区的 ELF、用户二进制或生成源码。
 
 | 观察 | 保留记录 |
 | --- | --- |
@@ -38,4 +40,10 @@
 
 坏 ISO 串口约 3.29 秒拒绝，GDB 的 3 秒观察限约 6.05 秒返回（含启动收尾）；端口冲突在启动客体前拒绝。失败后独立观察到零 QEMU/GDB 进程、零 1234 监听，然后正常 M6 通过。这是本轮观察，不把脚本观察限写成严格总时限，也不夸成每次清理瞬间都零残留。
 
-核对任意后续文档提交是否仍对应受测实现，可运行 `git diff d296971 -- kernel include user tools boot linker.ld`；本次闭环记录完成时差异为空。重新构建原工作区的 M6 并核对 ISO 载荷，避免 D 盘最后留下克隆目录的 ELF。M0–M6 的实现闭合到此停止，余下是 PR 评审与主线合入。
+原轮记录完成到 d5462b4 时，`git diff d296971 d5462b4 -- kernel include user tools boot linker.ld` 为空。本轮因真实反例修改了源码，不能继续用原坐标声明当前实现受测。
+
+## 本轮错题补充的远端干净克隆
+
+`ae93e86` 从 GitHub 精确克隆后，M0–M6 全部重跑，包括新增 #UD/#GP/#DE、原有 R12 损坏与数据别名拒绝。随后五组攻击夹具、七种保护/异常探针、cld 指令修改和普通映像重新接管通过；最终 ELF 无未解析符号或动态段，工作树干净，客体、调试器与调试端口没有持续残留。[回归](evidence/counterexamples-ae93e86-regression.log)、[攻击汇总](evidence/counterexamples-ae93e86-summary.log) 和 [现场](evidence/counterexamples-ae93e86-witnesses.log) 分别保留。
+
+核对后续文档提交是否仍对应本轮受测实现，使用 `git diff ae93e86 -- kernel include user tools boot linker.ld`。结束前已重新构建桌面工作区的普通 M6 映像并核对载荷、运行，D 盘没有留下克隆目录的 ELF 与桌面符号文件混配。M0 历史标签保持原坐标，主线合入状态仍由 PR 另行说明。
