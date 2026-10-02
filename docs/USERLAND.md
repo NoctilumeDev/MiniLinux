@@ -52,7 +52,7 @@
 
 克隆中依次运行完整 `closed-loop.ps1`、`counterexamples.ps1` 和 `check-lab.ps1`，所有入口通过。远端的 64/256 MiB 用户态结果、三份汇总和最后的工作树/客体/调试端口读回分别保留为 `remote-*`。[最后读回](evidence/userland-console/remote-receipt.txt)确认工作树干净，无 QEMU/GDB 和 1234 监听。最外层命令末尾的只读 `Get-Process` 因没有匹配进程而返回非零；另一次显式断言和读回成功，未把这个格式问题算作内核反例，也未仅凭输出最后一句升级通过。
 
-本轮候选在 [PR #2](https://github.com/NoctilumeDev/MiniLinux/pull/2)，基于尚未合入的 [PR #1](https://github.com/NoctilumeDev/MiniLinux/pull/1)。之后只补坐标和复验记录；用 `git diff ac3e5cb -- kernel include user tools boot linker.ld web` 核对实现没有变化。桌面预览重新构建自己的 LAB ELF/ISO 并验证载荷，再从该工作区运行。M0 历史标签与公开 main 不因候选通过而自动变化。
+本轮候选在 [PR #2](https://github.com/NoctilumeDev/MiniLinux/pull/2)，基于尚未合入的 [PR #1](https://github.com/NoctilumeDev/MiniLinux/pull/1)。内核、用户程序和构建桥接仍可用 `git diff ac3e5cb -- kernel include user tools boot linker.ld` 核对没有变化。之后的网页调整单独经过浏览器复验，不把旧源码的网页截图当成新布局的证明。桌面预览重新构建自己的 LAB ELF/ISO 并验证载荷，再从该工作区运行。M0 历史标签与公开 main 不因候选通过而自动变化。
 
 ## 首败与修补
 
@@ -60,6 +60,7 @@
 2. 用户代码的聚合零初始化让编译器生成了 `memset` 调用，freestanding 链接首次失败。将原有逐字节 helpers 单独编译到用户地址空间，仍无 libc；静态符号与运行库段检查通过。
 3. 第一次历史全回归各阶段已经通过，但最终残留检查发现仍在运行的 LAB 预览 QEMU。这是实验设置冲突。先停止自己的预览，原残留守卫保持不变，串行重跑后通过；没有把活着的 QEMU 当成内核错误，也没有掩盖这个失败。
 4. 视觉首轮有过多小框，后续字号放大、调度并入进程表、模式记录合并，手册不再固定高度截住全文。用户最终选定上下反转的 38.2:61.8 比例，并明确 PC 的问题是外框过长。复验发现长历史会撑高终端；限制上排外框为 520–640 px，在框内滚动，保留字号与舒适表格留白。移动端取消固定高度。
+5. 用户实际查看又发现整页仍需要滚动，下排被截住，右上观察区与左下日志留有大片空白。旧限制只覆盖上排，1366×768 视口中整页仍高 1184 px；此前视觉通过没有证明“一窗完整外框”。重新分配桌面视口的剩余高度，观察区改为进程/内存并排、syscall 在下，日志的时间/事件/地址分列；重复信息收紧，完整地址和正文大小保留。六档桌面视口均无整页溢出，390/700 两档仍为纵向长页面；记录、手册框内滚动，切换手册主题返回开头。新截图与几何读回见 [视觉复验](../design-qa.md)。这次只调整网页，不重开已验证的内核边界。
 
 ## 运行范围
 

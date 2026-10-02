@@ -18,7 +18,7 @@ Limine → kernel_main → 物理页 → 四级页表 → PIT/中断 → 数组�
 
 M0–M6 保留固定内嵌程序的两个实例和实验完成后的 intentional stop。其上新增独立 `LAB` 模式：真正的用户态 init/shell 创建、等待演示程序，再用浏览器连接同一台 QEMU 的输入输出与机制记录。没有任意 ELF 加载器。网络、磁盘恢复、SMP、客体 GUI、完整 POSIX、动态链接和生产 hardening 都不在目标内。
 
-![MiniLinux 真实客体控制台与观察窗](docs/evidence/userland-console/desktop.jpg)
+![MiniLinux 真实客体控制台与观察窗](docs/evidence/userland-console/viewport-desktop.jpg)
 
 ## 操作这个系统
 
@@ -38,7 +38,7 @@ PID 1 / init → PID 2 / shell → spawn → 用户程序
                            回收用户页 → shell 继续接受输入
 ```
 
-黑白页面以终端、观察窗、日志和手册为主体。桌面上方黑白宽度为 38.2:61.8，下方反转为 61.8:38.2；窄窗口改为上下排列。长记录滚动查看，手册随内容展开。浏览器是宿主观察工具，MiniLinux 客体仍是串口系统。
+黑白页面以终端、观察窗、日志和手册为主体。桌面上方黑白宽度为 38.2:61.8，下方反转为 61.8:38.2；四个外框、输入和页脚共同适应一个浏览器视口，整页不需要上下滚动。长记录与手册在各自框内滚动，保留可读字号；窄窗口改为上下排列的长页面。浏览器是宿主观察工具，MiniLinux 客体仍是串口系统。
 
 `LAB` 上层和宿主桥接的自动验证入口是 `./tools/check-lab.ps1`。请先停止当前预览再验证，以免同时改写同一构建目录、镜像和记录。本轮受测源码 `ac3e5cb` 已从 GitHub 干净克隆重跑所有入口，候选位于 [PR #2](https://github.com/NoctilumeDev/MiniLinux/pull/2)，基于尚未合入的 PR #1。薄用户态的证明、首败与限制见 [USERLAND](docs/USERLAND.md)，视觉和浏览器验证见 [design-qa](design-qa.md)。
 

@@ -24,6 +24,7 @@ function manual(topic = "help") {
     fragment.append(heading, paragraph);
   }
   $("manual").replaceChildren(fragment);
+  $("manual").parentElement.scrollTop = 0;
 }
 function error(message = "") { $("error").hidden = !message; $("error").textContent = message; }
 async function post(path, body) {
@@ -57,7 +58,6 @@ function renderProcesses() {
     if (!state.processes.some(p => p.pid === pid)) { tr.remove(); processRows.delete(pid); }
   }
   $("empty-processes").hidden = !!state.processes.length;
-  $("current-pid").textContent = state.processes.find(p => p.current)?.pid ?? "—";
 }
 function renderMaps() {
   const process = state.processes.find(p => p.pid === selectedPid);
@@ -70,7 +70,7 @@ function renderMaps() {
   });
   $("mappings").replaceChildren(fragment);
   const data = state.data[selectedPid];
-  $("data-marker").textContent = data ? `data ${data.va} → ${data.pa} · marker ${data.marker}` : "Waiting for mapped-page observations.";
+  $("data-marker").textContent = data ? `data marker ${data.marker}` : "Waiting for mapped-page observations.";
 }
 function describe(event) {
   const f = event.fields;
@@ -88,10 +88,30 @@ function describe(event) {
 function renderEvents() {
   const relevant = events.filter(e => e.id > eventStart && describe(e) && (view !== "fault" || e.kind === "fault")).slice(-80);
   const log = $("events"), follow = log.scrollTop + log.clientHeight >= log.scrollHeight - 30;
-  log.textContent = relevant.map(e => `[ ${String(e.tick).padStart(7)} ] ${describe(e)}`).join("\n");
+  const fragment = document.createDocumentFragment();
+  relevant.forEach(event => {
+    const line = document.createElement("div"), tick = document.createElement("span");
+    const message = document.createElement("span"), detail = document.createElement("span");
+    line.className = "event-row";
+    tick.textContent = String(event.tick).padStart(7);
+    const f = event.fields;
+    // Separate actual record fields so long lines use the whole log width.
+    switch (event.kind) {
+      case "schedule": message.textContent = `timer CPL${f[3]} · PID ${f[0]} → ${f[1]}`; detail.textContent = `CR3 ${f[2]}`; break;
+      case "memory": message.textContent = `frames ${f[0]}`; detail.textContent = `free ${f[1]}`; break;
+      case "exit": message.textContent = `exit PID ${f[0]} · status ${f[1]}`; detail.textContent = "release user pages"; break;
+      case "fault": message.textContent = `USER FAULT PID ${f[0]} · vector ${f[1]} · error ${f[2]} · CPL${f[5]}`; detail.textContent = f[3]; break;
+      default: message.textContent = describe(event);
+    }
+    detail.className = "event-detail"; line.append(tick, message, detail); fragment.append(line);
+  });
+  if (!relevant.length) {
+    const empty = document.createElement("p");
+    empty.textContent = view === "fault" ? "No user fault observed. Try: run fault" : "No events in this view.";
+    fragment.append(empty);
+  }
+  log.replaceChildren(fragment);
   if (follow) log.scrollTop = log.scrollHeight;
-  const lastSwitch = events.findLast ? events.findLast(e => e.kind === "schedule") : [...events].reverse().find(e => e.kind === "schedule");
-  if (lastSwitch) $("last-switch").textContent = `tick ${lastSwitch.tick}: ${lastSwitch.fields[0]} → ${lastSwitch.fields[1]}`;
 }
 function renderCalls() {
   if (paused) return;
@@ -119,7 +139,7 @@ function render() {
   $("connection").textContent = state.status.toUpperCase(); $("connection").className = state.status;
   $("coordinates").textContent = `QEMU TCG · 1 CPU · ${state.guest_memory} MiB · COM1 / COM2`;
   $("observation").textContent = `as of tick ${state.ticks}`;
-  $("ticks").textContent = state.ticks; $("free-pages").textContent = state.free || "—";
+  $("free-pages").textContent = state.free || "—";
   $("footer-state").textContent = `latest event #${state.sequence} · observed, not instantaneous`;
   $("command").disabled = state.status !== "running";
   renderProcesses(); renderMaps(); renderEvents(); renderCalls();
@@ -132,7 +152,7 @@ async function poll() {
     state = await response.json();
     if (state.epoch !== epoch) {
       epoch = state.epoch; cursor = 0; events = []; consoleStart = traceStart = eventStart = 0;
-      selectedPid = 2; $("last-switch").textContent = "No timer switch observed.";
+      selectedPid = 2;
       processRows.clear(); callRows.clear(); $("processes").replaceChildren(); $("syscalls").replaceChildren();
       $("syscall-detail").textContent = "Select a call to inspect its arguments.";
       $("mode-witness").textContent = "Awaiting a recorded user entry.";
@@ -179,12 +199,10 @@ document.querySelectorAll("[data-view]").forEach(button => {
     view = button.dataset.view;
     document.querySelectorAll("[data-view]").forEach(item => item.classList.toggle("active", item === button));
     document.querySelectorAll(".focused").forEach(item => item.classList.remove("focused"));
-    const panel = $(panels[button.dataset.view]); panel.classList.add("focused"); panel.scrollIntoView({behavior: "smooth", block: "nearest"});
+    const panel = $(panels[button.dataset.view]); panel.classList.add("focused");
+    if (matchMedia("(max-width: 999px)").matches) panel.scrollIntoView({behavior: "smooth", block: "nearest"});
     if (button.dataset.view === "console") $("command").focus();
-    if (button.dataset.view === "fault") {
-      const fault = [...events].reverse().find(e => e.kind === "fault");
-      $("events").textContent = fault ? `[ ${fault.tick} ] ${describe(fault)}` : "No user fault observed. Try: run fault";
-    }
+    renderEvents();
   };
 });
 $("about").onclick = () => $("about-dialog").showModal();

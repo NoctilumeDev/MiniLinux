@@ -41,10 +41,9 @@
         <div class="inspector-grid">
           <section class="sheet" id="process-panel">
             <div class="sheet-title"><h3>Process Table</h3><span>select a PID</span></div>
-            <div class="table-scroll"><table><thead><tr><th>PID</th><th>PPID</th><th>STATE</th><th>PROGRAM</th></tr></thead><tbody id="processes"></tbody></table></div>
+            <div class="table-scroll" tabindex="0" aria-label="Process records"><table><thead><tr><th>PID</th><th>PPID</th><th>STATE</th><th>PROGRAM</th></tr></thead><tbody id="processes"></tbody></table></div>
             <p id="empty-processes" class="empty">Waiting for process records.</p>
-            <div class="scheduler-summary"><span>round-robin · PIT ≈100 Hz</span><span>PID <b id="current-pid">—</b> · tick <b id="ticks">—</b> · free <b id="free-pages">—</b> pages</span></div>
-            <p id="last-switch" class="observation-line">No timer switch observed.</p>
+            <div class="scheduler-summary"><span>round-robin · PIT ≈100 Hz</span><span>free <b id="free-pages">—</b> pages</span></div>
           </section>
           <section class="sheet mappings" id="memory-panel">
             <div class="sheet-title"><h3>Memory Map <span id="map-pid"></span></h3><span id="map-root">CR3 —</span></div>
@@ -53,7 +52,7 @@
           </section>
           <section class="sheet syscalls" id="syscall-panel">
             <div class="sheet-title"><h3>Syscall Trace</h3><div><button id="pause-trace">pause</button><button id="clear-trace">clear</button></div></div>
-            <div class="trace-scroll"><table><thead><tr><th>TICK</th><th>PID</th><th>CALL</th><th>RET</th></tr></thead><tbody id="syscalls"></tbody></table></div>
+            <div class="trace-scroll" tabindex="0" aria-label="System call records"><table><thead><tr><th>TICK</th><th>PID</th><th>CALL</th><th>RET</th></tr></thead><tbody id="syscalls"></tbody></table></div>
             <p id="syscall-detail" class="observation-line">Select a call to inspect its arguments.</p>
             <p class="boundary-note"><span>CPL 3 → int 0x80 → CPL 0 → iretq</span><span id="mode-witness">Awaiting a recorded user entry.</span></p>
           </section>
@@ -63,11 +62,11 @@
     <div class="bottom-row">
       <section class="panel log-panel" id="trace-panel">
         <div class="panel-title"><h2>Serial Log / Kernel Events</h2><button id="clear-events">clear view</button></div>
-        <pre id="events" tabindex="0" aria-label="Kernel event log"></pre>
+        <div id="events" class="event-log" role="log" aria-live="off" tabindex="0" aria-label="Kernel event log"></div>
       </section>
       <section class="panel manual-panel" id="manual-panel">
         <div class="panel-title"><h2>Manual / Notes</h2><span id="manual-topic">MINILINUX(1)</span></div>
-        <div class="manual-content"><div id="manual"></div></div>
+        <div class="manual-content" tabindex="0" aria-label="Command manual"><div id="manual"></div></div>
         <div class="help-content">
           <button data-command="help"><strong>help</strong><span>show commands</span></button>
           <button data-command="ls"><strong>ls</strong><span>list RamFS files</span></button>
