@@ -176,7 +176,10 @@ function renderInspector() {
   $("observation").textContent = inspectorSnapshot ? `快照 tick ${observed.ticks} · ${source}` : `${connectionFailed || state.status !== "running" ? "末次记录" : "as of"} tick ${observed.ticks}`;
   $("free-pages").textContent = observed.free ?? "—";
   $("counter-snapshot").disabled = !counterSnapshot;
-  $("counter-snapshot").textContent = inspectorSnapshot ? (laboratory.mode === "replay" ? "回到当前回放" : "回到实时观察") : "查看最近 counter 快照";
+  let returnLabel = "回到实时观察";
+  if (laboratory.mode === "replay") returnLabel = "回到当前回放";
+  else if (connectionFailed || state.status !== "running") returnLabel = "回到末次记录";
+  $("counter-snapshot").textContent = inspectorSnapshot ? returnLabel : "查看最近 counter 快照";
   renderProcesses(); renderMaps(); renderCalls();
 }
 $("counter-snapshot").onclick = () => {
