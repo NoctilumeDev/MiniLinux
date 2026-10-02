@@ -1,0 +1,4 @@
+M0 tool digests and pycdlib version match the baseline.
+ld.lld: error: undefined symbol: memset
+>>> referenced by vm_test.c:12 (kernel\memory\vm_test.c:12)
+>>>               C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\build\vm_test.o:(vm_selftest)

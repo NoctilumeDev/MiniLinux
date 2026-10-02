@@ -1,0 +1,86 @@
+source=d1417c5e7134d0fccb5e6822263bb10821917746
+tracked sources unchanged; each image payload verified against this build; QEMU TCG single core 256 MiB
+case=parent-syscall
+ISO kernel, Limine config, and BIOS file match this build.
+
+MiniLinux M6: entered kernel_main
+counterexample: read-only parent with writable leaf installed
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+syscall from task 1 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+syscall from task 0 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+CPU exception vector=14 error=0x0000000000000003 RIP=0xffffffff80002649 CS=0x0000000000000008 CR2=0x0000000000a00000
+MiniLinux PANIC: unexpected CPU exception
+
+case=user-ud
+ISO kernel, Limine config, and BIOS file match this build.
+
+MiniLinux M6: entered kernel_main
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+syscall from task 1 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+syscall from task 0 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user report accepted: 0
+CPU exception vector=6 error=0x0000000000000000 RIP=0x00000000004001df CS=0x0000000000000023
+MiniLinux PANIC: unexpected CPU exception
+
+case=user-io
+ISO kernel, Limine config, and BIOS file match this build.
+
+MiniLinux M6: entered kernel_main
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+syscall from task 1 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+syscall from task 0 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user report accepted: 0
+CPU exception vector=13 error=0x0000000000000000 RIP=0x00000000004001e5 CS=0x0000000000000023
+MiniLinux PANIC: unexpected CPU exception
+
+case=user-divide
+ISO kernel, Limine config, and BIOS file match this build.
+
+MiniLinux M6: entered kernel_main
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+syscall from task 1 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+syscall from task 0 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user report accepted: 0
+CPU exception vector=0 error=0x0000000000000000 RIP=0x00000000004001e8 CS=0x0000000000000023
+MiniLinux PANIC: unexpected CPU exception
+
+case=parent-walk
+INVALID MATRIX FIXTURE: physical offset 0x17 != decimal 17. Do not count as a product failure.
+ISO kernel, Limine config, and BIOS file match this build.
+
+MiniLinux M6: entered kernel_main
+MiniLinux PANIC: counterexample: ancestor write restriction ignored

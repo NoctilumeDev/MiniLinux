@@ -1,4 +1,4 @@
-"""Make the small BIOS CD image used by M0."""
+"""Make the small BIOS CD image used by each mechanism experiment."""
 
 import sys
 from pathlib import Path
@@ -6,12 +6,12 @@ from pathlib import Path
 import pycdlib
 
 
-def main(project: Path, tool_root: Path) -> None:
+def main(project: Path, tool_root: Path, milestone: str) -> None:
     limine = tool_root / "limine-12.9.0" / "limine-binary"
     build = project / "build"
     iso = pycdlib.PyCdlib()
     iso.new(interchange_level=3, rock_ridge="1.09", joliet=3,
-            vol_ident="MINILINUX_M0")
+            vol_ident="MINILINUX_" + milestone)
     iso.add_directory(iso_path="/BOOT", rr_name="boot", joliet_path="/boot")
 
     files = (
@@ -32,7 +32,7 @@ def main(project: Path, tool_root: Path) -> None:
                      rr_bootcatname="boot.cat", joliet_bootcatfile="/boot.cat",
                      boot_load_size=4, boot_info_table=True,
                      media_name="noemul")
-    output = tool_root / "images" / "minilinux-m0.iso"
+    output = tool_root / "images" / ("minilinux-" + milestone.lower() + ".iso")
     output.parent.mkdir(parents=True, exist_ok=True)
     iso.write(str(output))
     iso.close()
@@ -44,4 +44,4 @@ def main(project: Path, tool_root: Path) -> None:
 
 
 if __name__ == "__main__":
-    main(Path(sys.argv[1]), Path(sys.argv[2]))
+    main(Path(sys.argv[1]), Path(sys.argv[2]), sys.argv[3] if len(sys.argv) > 3 else "M0")

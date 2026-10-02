@@ -1,0 +1,68 @@
+source=ae93e86f56592fd7b38732a5f664b6213b037c1a; fresh GitHub clone; Windows native D-drive pinned tools; tracked sources unchanged
+file=exact-counterexamples.log
+attack-1 passed (64 MiB).
+attack-1 passed (256 MiB).
+attack-2 passed (64 MiB).
+attack-2 passed (256 MiB).
+attack-3 passed (64 MiB).
+attack-3 passed (256 MiB).
+attack-4 passed (64 MiB).
+attack-4 passed (256 MiB).
+attack-5 passed (64 MiB).
+attack-5 passed (256 MiB).
+df-normal-retake passed (256 MiB).
+fault-2 passed (64 MiB).
+fault-2 passed (256 MiB).
+fault-3 passed (64 MiB).
+fault-3 passed (256 MiB).
+fault-4 passed (64 MiB).
+fault-4 passed (256 MiB).
+fault-5 passed (64 MiB).
+fault-5 passed (256 MiB).
+fault-6 passed (64 MiB).
+fault-6 passed (256 MiB).
+fault-7 passed (64 MiB).
+fault-7 passed (256 MiB).
+normal-restored passed (256 MiB).
+All counterexamples passed; normal image restored; no guest/debugger residue.
+file=counterexamples\summary.log
+source=ae93e86f56592fd7b38732a5f664b6213b037c1a
+working-tree-dirty=False
+attack-1 attack=1 fault=1 elf=16BF7E97D84B3CE0589F00B98515FA00CE7B9D2DB9FEE71F5F8BA836D46E393C payload=matched
+attack-1 memory=64 passed
+attack-1 memory=256 passed
+attack-2 attack=2 fault=1 elf=90DD879D0FEE38D14BEBBFACA7260AECA4137692699455BCB419BDC7F9266739 payload=matched
+attack-2 memory=64 passed
+attack-2 memory=256 passed
+attack-3 attack=3 fault=1 elf=D99D4271C8EEE3ABA169A3C583CF0424E5D876985E7D38A8377FB3163006F994 payload=matched
+attack-3 memory=64 passed
+attack-3 memory=256 passed
+attack-4 attack=4 fault=1 elf=80E6A18311D987945B50693480E16704931C726D8B0046327028167C83015863 payload=matched
+attack-4 memory=64 passed
+attack-4 memory=256 passed
+attack-5 attack=5 fault=1 elf=1C7864B502F6D829B4620F383ADF71937F6B3BE26DBF37DCCDF96F85C20557D9 payload=matched
+attack-5 memory=64 passed
+attack-5 memory=256 passed
+DF instruction mutation rejected by live C-entry guard
+df-normal-retake memory=256 passed
+fault-2 attack=0 fault=2 elf=C1FDA55D485D242B865F0B204FB40BCDCFB475312DA083F1AF12562EA6F0A0B7 payload=matched
+fault-2 memory=64 passed
+fault-2 memory=256 passed
+fault-3 attack=0 fault=3 elf=BB43EE373A5754BC7B2305560F08EEAF40175555EB194CDE2B8F6018F613FCC2 payload=matched
+fault-3 memory=64 passed
+fault-3 memory=256 passed
+fault-4 attack=0 fault=4 elf=16F6BBB7F8DD8E364655121DF37D048FAF13C767388043C8F4B8C2A1A3168487 payload=matched
+fault-4 memory=64 passed
+fault-4 memory=256 passed
+fault-5 attack=0 fault=5 elf=D03B5FB110CBEF5E01100DF02A7B0547EE8C7A49660460D12B3AB707A8D18DF3 payload=matched
+fault-5 memory=64 passed
+fault-5 memory=256 passed
+fault-6 attack=0 fault=6 elf=F6F7CB3264B799C7B5C807EE609099B5A0BD9AD4E0B0EBABCA20314DD273C736 payload=matched
+fault-6 memory=64 passed
+fault-6 memory=256 passed
+fault-7 attack=0 fault=7 elf=0DA960ACD032C9819CE829C3CCBEE2BD9EA5FAB0CF8FA92BDAEACEB590269A6C payload=matched
+fault-7 memory=64 passed
+fault-7 memory=256 passed
+normal-restored attack=0 fault=1 elf=BEF30269EB991112A31082A22F5875314A42C70567751F0248C26068C33F486E payload=matched
+normal-restored memory=256 passed
+All counterexamples passed; normal image restored; no guest/debugger residue.

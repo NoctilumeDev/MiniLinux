@@ -1,0 +1,23 @@
+source=ea27c00 (setup only; runtime qualification not established)
+parent-syscall/parent-walk: 3-second observation window, empty serial; not product failures
+file=parent-syscall-observer.log
+
+M6 serial evidence is missing. Check the image and bootloader.
+
+file=parent-walk-observer.log
+
+M6 serial evidence is missing. Check the image and bootloader.
+
+file=user-ud-build.log
+C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\kernel\user.c:103:13: error: no case matching constant switch condition '5' [-Werror]
+  103 |     switch (MINILINUX_PROBE) {
+      |             ^~~~~~~~~~~~~~~
+<command line>:2:25: note: expanded from macro 'MINILINUX_PROBE'
+    2 | #define MINILINUX_PROBE 5
+      |                         ^
+1 error generated.
+
+post-repair matrix fixture: hexadecimal 0x17 was compared with decimal 17; invalid product witness
+MiniLinux M6: entered kernel_main
+MiniLinux PANIC: counterexample: ancestor write restriction ignored
+

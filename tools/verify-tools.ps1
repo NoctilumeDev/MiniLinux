@@ -8,6 +8,8 @@ $checks = @(
     @('Clang', (Join-Path $llvmBin 'clang.exe'), 'D43B7FA07B5B77B716E60600AD2792CFB2EEB370AECB6144BF6C698F2C6D7467'),
     @('LLD', (Join-Path $llvmBin 'ld.lld.exe'), '09F880791C158E4784F603078AF102B2AEB0F18DE551255977B81343385EFC95'),
     @('ELF inspector', (Join-Path $llvmBin 'llvm-readelf.exe'), '7F51B89AB673FC89712D6E48C215E9B1CD8FF6B2B46DBBE11CD85574C6A61224'),
+    @('User image extractor', (Join-Path $llvmBin 'llvm-objcopy.exe'), '7B2786EC32D57346917D94A8BA2C512A41742F92637FA9D0BC487248488A2976'),
+    @('Runtime symbol inspector', (Join-Path $llvmBin 'llvm-nm.exe'), 'C35178258EFFAC4DC70430500513C44BBC456DEB614221D43A85A0A65323A356'),
     @('QEMU', (Join-Path $ToolRoot 'qemu-20260811\qemu-system-x86_64.exe'), '47D57A6072E0BB3BD98F87926EB129EB1736DFE818C67B3B81EF7CE4EDD0B3CD'),
     @('Limine', (Join-Path $ToolRoot 'limine-12.9.0\limine-binary\limine-tool-windows-x86\limine.exe'), '874D267CADFBE778F830D7A78C01E39AA3AF98D55D2D069882062ECFA464F5E6'),
     @('Limine BIOS CD', (Join-Path $ToolRoot 'limine-12.9.0\limine-binary\limine-bios-cd.bin'), '0A0F509CD2E8B0F7EA4CFCA6EAC5B88A4AC477CD102CC90FB7E2C21BA80B2A22'),
@@ -28,4 +30,4 @@ $version = & 'D:\python-3.10.6\python.exe' -c 'import importlib.metadata; print(
 if ($LASTEXITCODE -ne 0 -or $version.Trim() -ne '1.20.0') {
     throw 'pycdlib differs from the M0 baseline.'
 }
-Write-Host 'M0 tool digests and pycdlib version match the baseline.'
+Write-Host 'M0 tool baseline, added LLVM utilities, and pycdlib version match.'

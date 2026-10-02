@@ -1,0 +1,7 @@
+M1 failure checks on exact local clone ec57b70a110b241479d9f0075dba466928ef4c95
+Expected rejection: stale ISO payload; ISO payload differs from this build: kernel.elf; elapsed 0.13 seconds
+Expected rejection: invalid ISO serial; M1 serial evidence is missing. Check the image and bootloader.; elapsed 3.27 seconds
+Expected rejection: invalid ISO debugger; GDB exceeded the 3-second observation limit.; elapsed 6.51 seconds
+Independent observation after failure checks: 0 QEMU/GDB processes, 0 port 1234 listeners.
+Next normal 256 MiB M1 run passed after failure checks.
+Independent observation after retake: 0 QEMU/GDB processes, 0 port 1234 listeners.

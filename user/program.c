@@ -1,0 +1,174 @@
+#include <stddef.h>
+#include "abi.h"
+
+/* Our tiny ABI, not the Linux syscall ABI. All entry details stay here. */
+static int64_t call(uint64_t number, uint64_t a, uint64_t b, uint64_t c) {
+    __asm__ volatile ("int $0x80" : "+a"(number) : "D"(a), "S"(b), "d"(c) : "memory", "cc");
+    return (int64_t)number;
+}
+
+__attribute__((noreturn)) static void fail(void) {
+    call(SYS_EXIT, 1, 0, 0);
+    for (;;) { }
+}
+
+#if MINILINUX_LEVEL >= 5
+static void check(int condition) { if (!condition) { fail(); } }
+
+static uint64_t read_file(void) {
+    static const char name[] = "/hello.txt", missing[] = "/missing", empty[] = "/empty.txt";
+    static const char expected[] = "hello from ramfs\n";
+    char buffer[32];
+    uint64_t out = (uint64_t)(uintptr_t)buffer;
+    check(call(SYS_OPEN, (uint64_t)(uintptr_t)missing, sizeof(missing) - 1, 0) == -4);
+    int64_t first = call(SYS_OPEN, (uint64_t)(uintptr_t)name, sizeof(name) - 1, 0);
+    int64_t second = call(SYS_OPEN, (uint64_t)(uintptr_t)name, sizeof(name) - 1, 0);
+    check(first == 0 && second == 1);
+#if MINILINUX_ATTACK == 1
+    if (call(SYS_TASK_ID, 0, 0, 0) == 0) {
+        check(call(SYS_READ, first, 0xa00000, 1) == -2);
+        static const char passed[] = "counterexample: syscall parent permission rejected\n";
+        check(call(SYS_WRITE, (uint64_t)(uintptr_t)passed, sizeof(passed) - 1, 0) == (int64_t)(sizeof(passed) - 1));
+    }
+#endif
+    check(call(SYS_OPEN, (uint64_t)(uintptr_t)name, sizeof(name) - 1, 0) == -5);
+    check(call(SYS_READ, 99, out, 1) == -3);
+    check(call(SYS_CLOSE, 99, 0, 0) == -3);
+    check(call(SYS_READ, first, USER_CODE, 4) == -2);
+#if MINILINUX_ATTACK == 4
+    check(call(SYS_WRITE, 0, 0, 0) == 0);
+    check(call(SYS_READ, first, 0, 0) == 0);
+    check(call(SYS_WRITE, 0, 1, 0) == -2);
+    check(call(SYS_WRITE, UINT64_C(1) << 47, 1, 0) == -2);
+    check(call(SYS_WRITE, (UINT64_C(1) << 47) - 1, 2, 0) == -2);
+    check(call(SYS_WRITE, USER_DATA, COPY_LIMIT + 1, 0) == -2);
+    check(call(SYS_READ, 99, USER_DATA, COPY_LIMIT) == -3);
+    check(call(SYS_READ, 99, USER_DATA, COPY_LIMIT + 1) == -2);
+    check(call(SYS_READ, UINT64_MAX, USER_DATA, 1) == -3);
+    check(call(SYS_CLOSE, UINT64_MAX, 0, 0) == -3);
+    check(call(SYS_OPEN, 0, 0, 0) == -4);
+    check(call(SYS_OPEN, (uint64_t)(uintptr_t)name, sizeof(name), 0) == -4);
+    check(call(SYS_OPEN, USER_DATA + 4096 - 1, 2, 0) == -2);
+    check(call(SYS_READ, 99, USER_STACK + 4096 - 8, 16) == -3);
+    volatile uint8_t *last = (volatile uint8_t *)(uintptr_t)(USER_DATA + 4096 - 1);
+    *last = 'A';
+    check(call(SYS_WRITE, (uint64_t)(uintptr_t)last, 1, 0) == 1);
+    check(call(SYS_WRITE, (uint64_t)(uintptr_t)last, 2, 0) == -2);
+    static const char bounds_passed[] = "counterexample: pointer endpoints checked without consuming file bytes\n";
+    check(call(SYS_WRITE, (uint64_t)(uintptr_t)bounds_passed, sizeof(bounds_passed) - 1, 0) == (int64_t)(sizeof(bounds_passed) - 1));
+#endif
+    volatile uint8_t *edge = (volatile uint8_t *)(uintptr_t)(USER_DATA + 4096 - 8);
+    for (unsigned i = 0; i < 8; i++) { edge[i] = 0xa5; }
+    check(call(SYS_READ, first, (uint64_t)(uintptr_t)edge, 16) == -2);
+    for (unsigned i = 0; i < 8; i++) { check(edge[i] == 0xa5); }
+
+    check(call(SYS_READ, first, out, 5) == 5);
+    for (unsigned i = 0; i < 5; i++) { check(buffer[i] == expected[i]); }
+    check(call(SYS_WRITE, out, 5, 0) == 5);
+    check(call(SYS_READ, first, out, sizeof(buffer)) == 12);
+    for (unsigned i = 0; i < 12; i++) { check(buffer[i] == expected[5 + i]); }
+    check(call(SYS_WRITE, out, 12, 0) == 12);
+    check(call(SYS_READ, first, out, 1) == 0);
+    check(call(SYS_READ, second, out, 1) == 1 && buffer[0] == expected[0]);
+    check(call(SYS_CLOSE, first, 0, 0) == 0);
+    check(call(SYS_CLOSE, second, 0, 0) == 0);
+    check(call(SYS_CLOSE, second, 0, 0) == -3);
+    check(call(SYS_READ, second, out, 1) == -3);
+    int64_t blank = call(SYS_OPEN, (uint64_t)(uintptr_t)empty, sizeof(empty) - 1, 0);
+    check(blank == 0 && call(SYS_READ, blank, out, 1) == 0);
+    check(call(SYS_CLOSE, blank, 0, 0) == 0);
+    return sizeof(expected) - 1;
+}
+#endif
+
+#if MINILINUX_ATTACK == 5
+static void entry_probe(void) {
+    uint64_t result = 0, flags = 0;
+    uint64_t until = (uint64_t)call(SYS_TICKS, 0, 0, 0) + 4;
+    uint64_t expected_until = until;
+    register uint64_t a __asm__("r8") = 0x8888;
+    register uint64_t b __asm__("r9") = 0x9999;
+    register uint64_t c __asm__("r10") = 0xaaaa;
+    register uint64_t d __asm__("r11") = 0xbbbb;
+    register uint64_t e __asm__("r12") = 0xcccc;
+    register uint64_t f __asm__("r13") = 0xdddd;
+    register uint64_t g __asm__("r14") = 0xeeee;
+    register uint64_t h __asm__("r15") = 0xffff;
+    /* Keep DF and sentinels live through syscalls AND real timer switches.
+       Clear DF before returning to C, which requires forward string direction. */
+    __asm__ volatile ("std; 1: mov %[tick_number], %%eax; int $0x80; cmp %[until], %%rax;"
+                      " jb 1b; pushfq; popq %[flags]; cld"
+                      : "+a"(result), [until] "+b"(until), [flags] "=r"(flags),
+                        "+r"(a), "+r"(b), "+r"(c), "+r"(d),
+                        "+r"(e), "+r"(f), "+r"(g), "+r"(h)
+                      : [tick_number] "i"(SYS_TICKS) : "memory", "cc");
+    check(result >= expected_until && until == expected_until && (flags & (UINT64_C(1) << 10)));
+    check(a == 0x8888 && b == 0x9999 && c == 0xaaaa && d == 0xbbbb &&
+          e == 0xcccc && f == 0xdddd && g == 0xeeee && h == 0xffff);
+    static const char passed[] = "counterexample: DF and nine registers survived timer and syscall entry\n";
+    check(call(SYS_WRITE, (uint64_t)(uintptr_t)passed, sizeof(passed) - 1, 0) == (int64_t)(sizeof(passed) - 1));
+}
+#endif
+
+__attribute__((section(".text.entry"), noreturn)) void user_main(void) {
+    uint64_t id = (uint64_t)call(SYS_TASK_ID, 0, 0, 0);
+    static const char greeting[] = "user: syscall returned to CPL3\n";
+    if (call(SYS_WRITE, (uint64_t)(uintptr_t)greeting, sizeof(greeting) - 1, 0) !=
+        (int64_t)(sizeof(greeting) - 1)) { fail(); }
+    if (call(99, 0, 0, 0) != -1) { fail(); }
+    if (call(SYS_WRITE, KERNEL_PROBE, 1, 0) != -2) { fail(); }
+    if (call(SYS_WRITE, USER_DATA + 4096 - 8, 16, 0) != -2) { fail(); }
+    if (call(SYS_WRITE, UINT64_MAX - 3, 8, 0) != -2) { fail(); }
+
+    uint64_t file_length = 0;
+#if MINILINUX_LEVEL >= 5
+    file_length = read_file();
+#endif
+#if MINILINUX_ATTACK == 5
+    entry_probe();
+#endif
+
+    volatile uint64_t *data = (volatile uint64_t *)(uintptr_t)USER_DATA;
+#if MINILINUX_LEVEL >= 6
+    data[0] = UINT64_C(0xa110) + id;
+    unsigned counter_slot = 1;
+#else
+    unsigned counter_slot = 2 + (unsigned)id;
+#endif
+    uint64_t start = (uint64_t)call(SYS_TICKS, 0, 0, 0);
+    uint64_t duration = id == 0 ? 12 : 24;
+    while ((uint64_t)call(SYS_TICKS, 0, 0, 0) - start < duration) {
+#if MINILINUX_LEVEL >= 6
+        if (data[0] != UINT64_C(0xa110) + id) {
+            call(SYS_EXIT, 2, 0, 0);
+            fail();
+        }
+#endif
+        for (unsigned i = 0; i < 10000; i++) { data[counter_slot]++; }
+    }
+    if (call(SYS_REPORT, 0x4d0 + MINILINUX_LEVEL, file_length, 0) != 0) { fail(); }
+    if (id == 0) {
+        /* A real user load, not a kernel check pretending to be a fault. */
+#if MINILINUX_LEVEL >= 6 && MINILINUX_PROBE == 2
+        *(volatile uint8_t *)(uintptr_t)USER_CODE = 0x90;
+#elif MINILINUX_LEVEL >= 6 && MINILINUX_PROBE == 3
+        ((void (*)(void))(uintptr_t)USER_DATA)();
+#elif MINILINUX_LEVEL >= 6 && MINILINUX_PROBE == 4
+        volatile uint8_t denied = *(volatile uint8_t *)(uintptr_t)0x900000;
+        (void)denied;
+#elif MINILINUX_LEVEL >= 6 && MINILINUX_PROBE == 5
+        __asm__ volatile ("ud2");
+#elif MINILINUX_LEVEL >= 6 && MINILINUX_PROBE == 6
+        __asm__ volatile ("outb %0, %1" : : "a"((uint8_t)0), "Nd"((uint16_t)0x3f8));
+#elif MINILINUX_LEVEL >= 6 && MINILINUX_PROBE == 7
+        __asm__ volatile ("mov $1, %%eax; xor %%edx, %%edx; xor %%ecx, %%ecx; divq %%rcx"
+                          : : : "rax", "rdx", "rcx", "cc");
+#else
+        volatile uint8_t denied = *(volatile uint8_t *)(uintptr_t)KERNEL_PROBE;
+        (void)denied;
+#endif
+        fail();
+    }
+    call(SYS_EXIT, 0, 0, 0);
+    for (;;) { }
+}

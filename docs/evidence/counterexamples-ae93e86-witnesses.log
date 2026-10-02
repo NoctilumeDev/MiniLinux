@@ -1,0 +1,284 @@
+source=ae93e86f56592fd7b38732a5f664b6213b037c1a; fresh GitHub clone; Windows native D-drive pinned tools; tracked sources unchanged
+file=counterexamples\attack-1-256m-serial.log
+MiniLinux M6: entered kernel_main
+counterexample: read-only parent with writable leaf installed
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+syscall from task 1 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+syscall from task 0 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+counterexample: syscall parent permission rejected
+hello from ramfs
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user report accepted: 0
+user page fault: task=0 vector=14 error=0x0000000000000005 CS=0x0000000000000023 CR2=0xffffffff80000000 RIP=0x00000000004001e6
+task stopped: 0
+user timer task 1 -> 1 CS=0x0000000000000023 CR3=0x000000000008e000
+user timer task 1 -> 1 CS=0x0000000000000023 CR3=0x000000000008e000
+user report accepted: 1
+task stopped: 1
+M6 isolated VA 0x0000000000600000 root=0x0000000000083000 PA=0x0000000000089000 marker=0x000000000000a110 counter=13530000
+M6 isolated VA 0x0000000000600000 root=0x000000000008e000 PA=0x0000000000094000 marker=0x000000000000a111 counter=43150000
+MiniLinux M6: process isolation checks passed
+MiniLinux PANIC: M6 reached its intentional stop
+file=counterexamples\attack-2-256m-serial.log
+MiniLinux M6: entered kernel_main
+counterexample: all ancestor permissions checked; pages restored
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000088000
+syscall from task 1 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x0000000000093000
+syscall from task 0 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000088000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x0000000000093000
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000088000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x0000000000093000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x0000000000093000
+user report accepted: 0
+user page fault: task=0 vector=14 error=0x0000000000000005 CS=0x0000000000000023 CR2=0xffffffff80000000 RIP=0x00000000004001e6
+task stopped: 0
+user timer task 1 -> 1 CS=0x0000000000000023 CR3=0x0000000000093000
+user timer task 1 -> 1 CS=0x0000000000000023 CR3=0x0000000000093000
+user report accepted: 1
+task stopped: 1
+M6 isolated VA 0x0000000000600000 root=0x0000000000088000 PA=0x000000000008e000 marker=0x000000000000a110 counter=14520000
+M6 isolated VA 0x0000000000600000 root=0x0000000000093000 PA=0x0000000000099000 marker=0x000000000000a111 counter=41360000
+MiniLinux M6: process isolation checks passed
+MiniLinux PANIC: M6 reached its intentional stop
+file=counterexamples\attack-3-256m-serial.log
+MiniLinux M6: entered kernel_main
+counterexample: OOM with spare pages=0 rejected; partial ownership and recovery checked
+counterexample: OOM with spare pages=1 rejected; partial ownership and recovery checked
+counterexample: OOM with spare pages=2 rejected; partial ownership and recovery checked
+counterexample: table limit rejected new branch; existing branch and cleanup passed
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000104000
+syscall from task 1 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000010f000
+syscall from task 0 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000104000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000010f000
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000104000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000010f000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000010f000
+user report accepted: 0
+user page fault: task=0 vector=14 error=0x0000000000000005 CS=0x0000000000000023 CR2=0xffffffff80000000 RIP=0x00000000004001e6
+task stopped: 0
+user timer task 1 -> 1 CS=0x0000000000000023 CR3=0x000000000010f000
+user timer task 1 -> 1 CS=0x0000000000000023 CR3=0x000000000010f000
+user report accepted: 1
+task stopped: 1
+M6 isolated VA 0x0000000000600000 root=0x0000000000104000 PA=0x000000000010a000 marker=0x000000000000a110 counter=14270000
+M6 isolated VA 0x0000000000600000 root=0x000000000010f000 PA=0x0000000000115000 marker=0x000000000000a111 counter=41920000
+MiniLinux M6: process isolation checks passed
+MiniLinux PANIC: M6 reached its intentional stop
+file=counterexamples\attack-4-256m-serial.log
+MiniLinux M6: entered kernel_main
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+syscall from task 1 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+Acounterexample: pointer endpoints checked without consuming file bytes
+hello from ramfs
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+syscall from task 0 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+Acounterexample: pointer endpoints checked without consuming file bytes
+hello from ramfs
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user report accepted: 0
+user page fault: task=0 vector=14 error=0x0000000000000005 CS=0x0000000000000023 CR2=0xffffffff80000000 RIP=0x00000000004001e6
+task stopped: 0
+user timer task 1 -> 1 CS=0x0000000000000023 CR3=0x000000000008e000
+user timer task 1 -> 1 CS=0x0000000000000023 CR3=0x000000000008e000
+user report accepted: 1
+task stopped: 1
+M6 isolated VA 0x0000000000600000 root=0x0000000000083000 PA=0x0000000000089000 marker=0x000000000000a110 counter=11810000
+M6 isolated VA 0x0000000000600000 root=0x000000000008e000 PA=0x0000000000094000 marker=0x000000000000a111 counter=44910000
+MiniLinux M6: process isolation checks passed
+MiniLinux PANIC: M6 reached its intentional stop
+file=counterexamples\attack-5-256m-serial.log
+MiniLinux M6: entered kernel_main
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+syscall from task 1 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+syscall from task 0 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+counterexample: DF and nine registers survived timer and syscall entry
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+counterexample: DF and nine registers survived timer and syscall entry
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user report accepted: 0
+user page fault: task=0 vector=14 error=0x0000000000000005 CS=0x0000000000000023 CR2=0xffffffff80000000 RIP=0x00000000004001eb
+task stopped: 0
+user timer task 1 -> 1 CS=0x0000000000000023 CR3=0x000000000008e000
+user report accepted: 1
+task stopped: 1
+M6 isolated VA 0x0000000000600000 root=0x0000000000083000 PA=0x0000000000089000 marker=0x000000000000a110 counter=14390000
+M6 isolated VA 0x0000000000600000 root=0x000000000008e000 PA=0x0000000000094000 marker=0x000000000000a111 counter=43340000
+MiniLinux M6: process isolation checks passed
+MiniLinux PANIC: M6 reached its intentional stop
+file=counterexamples\df-mutation.log
+0x000000000000fff0 in ?? ()
+Breakpoint 1 at 0xffffffff80001224: file C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002\kernel\main.c, line 117.
+
+Breakpoint 1, kernel_main () at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002\kernel\main.c:117
+117	    serial_init();
+rip            0xffffffff80001224  0xffffffff80001224 <kernel_main+4>
+cs             0x28                40
+Breakpoint 2 at 0xffffffff80003de3: file C:\\Users\\lenovo\\Desktop\\GitHubProjects\\tmp\\minilinux-counterexamples-ae93e86-20261002\\kernel\\entry.S, line 109.
+
+Breakpoint 2, cpu_enter_frame () at C:\\Users\\lenovo\\Desktop\\GitHubProjects\\tmp\\minilinux-counterexamples-ae93e86-20261002\\kernel\\entry.S:109
+109	    mov %rdi, %rsp
+   0xffffffff80003db6 <interrupt_common+23>:	cld
+   0xffffffff80003db6 <interrupt_common+23>:	nop
+Breakpoint 3 at 0xffffffff800011ec: file C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002\kernel\main.c, line 106.
+
+Breakpoint 3, panic (message=0xffffffff800056fa "counterexample: C entry received DF") at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002\kernel\main.c:106
+106	    __asm__ volatile ("cli" : : : "memory");
+#0  panic (message=0xffffffff800056fa "counterexample: C entry received DF") at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002\kernel\main.c:106
+#1  0xffffffff8000373e in interrupt_dispatch (frame=0xffffffff8000c0d0 <tasks+16336>) at C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002\kernel\interrupt.c:12
+#2  0xffffffff80003dc3 in interrupt_common () at C:\\Users\\lenovo\\Desktop\\GitHubProjects\\tmp\\minilinux-counterexamples-ae93e86-20261002\\kernel\\entry.S:84
+#3  0x000000000000ffff in ?? ()
+#4  0x000000000000eeee in ?? ()
+#5  0x000000000000dddd in ?? ()
+#6  0x000000000000cccc in ?? ()
+#7  0x000000000000bbbb in ?? ()
+#8  0x000000000000aaaa in ?? ()
+#9  0x0000000000009999 in ?? ()
+#10 0x0000000000008888 in ?? ()
+#11 0x0000000000000000 in ?? ()
+[Inferior 1 (process 1) detached]
+
+MiniLinux M6: entered kernel_main
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+syscall from task 1 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+MiniLinux PANIC: counterexample: C entry received DF
+file=counterexamples\fault-5-256m-serial.log
+MiniLinux M6: entered kernel_main
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+syscall from task 1 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+syscall from task 0 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user report accepted: 0
+user exception: task=0 vector=6 error=0x0000000000000000 CS=0x0000000000000023 RIP=0x00000000004001df
+task stopped: 0
+user timer task 1 -> 1 CS=0x0000000000000023 CR3=0x000000000008e000
+user timer task 1 -> 1 CS=0x0000000000000023 CR3=0x000000000008e000
+user report accepted: 1
+task stopped: 1
+M6 isolated VA 0x0000000000600000 root=0x0000000000083000 PA=0x0000000000089000 marker=0x000000000000a110 counter=13000000
+M6 isolated VA 0x0000000000600000 root=0x000000000008e000 PA=0x0000000000094000 marker=0x000000000000a111 counter=40580000
+MiniLinux M6: process isolation checks passed
+MiniLinux PANIC: M6 reached its intentional stop
+file=counterexamples\fault-6-256m-serial.log
+MiniLinux M6: entered kernel_main
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+syscall from task 1 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+syscall from task 0 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user report accepted: 0
+user exception: task=0 vector=13 error=0x0000000000000000 CS=0x0000000000000023 RIP=0x00000000004001e5
+task stopped: 0
+user timer task 1 -> 1 CS=0x0000000000000023 CR3=0x000000000008e000
+user timer task 1 -> 1 CS=0x0000000000000023 CR3=0x000000000008e000
+user report accepted: 1
+task stopped: 1
+M6 isolated VA 0x0000000000600000 root=0x0000000000083000 PA=0x0000000000089000 marker=0x000000000000a110 counter=13900000
+M6 isolated VA 0x0000000000600000 root=0x000000000008e000 PA=0x0000000000094000 marker=0x000000000000a111 counter=40680000
+MiniLinux M6: process isolation checks passed
+MiniLinux PANIC: M6 reached its intentional stop
+file=counterexamples\fault-7-256m-serial.log
+MiniLinux M6: entered kernel_main
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+syscall from task 1 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+syscall from task 0 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user report accepted: 0
+user exception: task=0 vector=0 error=0x0000000000000000 CS=0x0000000000000023 RIP=0x00000000004001e8
+task stopped: 0
+user timer task 1 -> 1 CS=0x0000000000000023 CR3=0x000000000008e000
+user timer task 1 -> 1 CS=0x0000000000000023 CR3=0x000000000008e000
+user report accepted: 1
+task stopped: 1
+M6 isolated VA 0x0000000000600000 root=0x0000000000083000 PA=0x0000000000089000 marker=0x000000000000a110 counter=14900000
+M6 isolated VA 0x0000000000600000 root=0x000000000008e000 PA=0x0000000000094000 marker=0x000000000000a111 counter=39450000
+MiniLinux M6: process isolation checks passed
+MiniLinux PANIC: M6 reached its intentional stop
+file=counterexamples\normal-restored-256m-serial.log
+MiniLinux M6: entered kernel_main
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+syscall from task 1 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+syscall from task 0 CS=0x0000000000000023 user RSP=0x0000000000801f80
+user: syscall returned to CPL3
+hello from ramfs
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user timer task 0 -> 1 CS=0x0000000000000023 CR3=0x0000000000083000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user timer task 1 -> 0 CS=0x0000000000000023 CR3=0x000000000008e000
+user report accepted: 0
+user page fault: task=0 vector=14 error=0x0000000000000005 CS=0x0000000000000023 CR2=0xffffffff80000000 RIP=0x00000000004001e6
+task stopped: 0
+user timer task 1 -> 1 CS=0x0000000000000023 CR3=0x000000000008e000
+user timer task 1 -> 1 CS=0x0000000000000023 CR3=0x000000000008e000
+user report accepted: 1
+task stopped: 1
+M6 isolated VA 0x0000000000600000 root=0x0000000000083000 PA=0x0000000000089000 marker=0x000000000000a110 counter=11700000
+M6 isolated VA 0x0000000000600000 root=0x000000000008e000 PA=0x0000000000094000 marker=0x000000000000a111 counter=40140000
+MiniLinux M6: process isolation checks passed
+MiniLinux PANIC: M6 reached its intentional stop
