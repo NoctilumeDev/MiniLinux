@@ -51,14 +51,14 @@ static uint8_t inb(uint16_t port) {
     return value;
 }
 
-static void serial_init(void) {
-    outb(COM1 + 1, 0x00); /* Disable UART interrupts. */
-    outb(COM1 + 3, 0x80); /* Set the baud-rate divisor. */
-    outb(COM1 + 0, 0x01);
-    outb(COM1 + 1, 0x00);
-    outb(COM1 + 3, 0x03); /* 8 data bits, no parity, one stop bit. */
-    outb(COM1 + 2, 0x07); /* Enable and clear FIFO. */
-    outb(COM1 + 4, 0x0b); /* Assert RTS and DTR. */
+static void uart_init(uint16_t port) {
+    outb(port + 1, 0x00); /* Disable UART interrupts. */
+    outb(port + 3, 0x80); /* Set the baud-rate divisor. */
+    outb(port + 0, 0x01);
+    outb(port + 1, 0x00);
+    outb(port + 3, 0x03); /* 8 data bits, no parity, one stop bit. */
+    outb(port + 2, 0x07); /* Enable and clear FIFO. */
+    outb(port + 4, 0x0b); /* Assert RTS and DTR. */
 }
 
 static void serial_putc(char character) {
@@ -101,6 +101,32 @@ void serial_write_number(uint64_t value) {
     serial_write(&buffer[index]);
 }
 
+#if MINILINUX_LEVEL == 7
+/* Keep observations on COM2 so they never become shell input or output. */
+static void trace_char(char value) {
+    while ((inb(0x2f8 + 5) & 0x20) == 0) { }
+    outb(0x2f8, (uint8_t)value);
+}
+int serial_read_char(void) {
+    return (inb(COM1 + 5) & 1) ? inb(COM1) : -1;
+}
+void trace_text(const char *text) {
+    for (const char *p = text; *p; p++) { trace_char(*p); }
+}
+void trace_number(uint64_t value) {
+    char buffer[21];
+    unsigned i = 20;
+    buffer[i] = 0;
+    do { buffer[--i] = (char)('0' + value % 10); value /= 10; } while (value);
+    trace_text(&buffer[i]);
+}
+void trace_hex(uint64_t value) {
+    static const char digits[] = "0123456789abcdef";
+    trace_text("0x");
+    for (int i = 60; i >= 0; i -= 4) { trace_char(digits[(value >> i) & 15]); }
+}
+#endif
+
 __attribute__((noreturn))
 void panic(const char *message) {
     __asm__ volatile ("cli" : : : "memory");
@@ -114,13 +140,20 @@ void panic(const char *message) {
 
 __attribute__((noreturn))
 void kernel_main(void) {
-    serial_init();
+    uart_init(COM1);
+#if MINILINUX_LEVEL == 7
+    uart_init(0x2f8);
+#endif
     if (!LIMINE_BASE_REVISION_SUPPORTED(base_revision)) {
         panic("Limine base revision 6 is unavailable");
     }
 #if MINILINUX_LEVEL >= 1
+#if MINILINUX_LEVEL == 7
+    serial_write("MiniLinux LAB: entered kernel_main\n");
+#else
     serial_write("MiniLinux M"); serial_write_number(MINILINUX_LEVEL);
     serial_write(": entered kernel_main\n");
+#endif
     if (memory_map_request.response == 0 || hhdm_request.response == 0) {
         panic("Limine memory map or HHDM response is unavailable");
     }

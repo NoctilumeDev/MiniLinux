@@ -76,22 +76,6 @@ void user_prepare(void) {
 #endif
 }
 
-bool user_range(const struct task *task, uint64_t address, size_t length, bool writing) {
-    if (length > COPY_LIMIT || address >= (UINT64_C(1) << 47) ||
-        length > (UINT64_C(1) << 47) - address) { return false; }
-    size_t checked = 0;
-    while (checked < length) {
-        uint64_t physical = 0;
-        unsigned flags = 0;
-        if (!vm_lookup(task->space, address + checked, &physical, &flags) ||
-            !(flags & VM_USER) || (writing && !(flags & VM_WRITE))) { return false; }
-        size_t step = PAGE_SIZE - (address + checked) % PAGE_SIZE;
-        if (step > length - checked) { step = length - checked; }
-        checked += step;
-    }
-    return true;
-}
-
 struct interrupt_frame *user_fault(struct interrupt_frame *frame, uint64_t address) {
     struct task *task = task_current();
     serial_write(frame->vector == 14 ? "user page fault: task=" : "user exception: task=");

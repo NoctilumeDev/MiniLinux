@@ -16,7 +16,31 @@ Limine → kernel_main → 物理页 → 四级页表 → PIT/中断 → 数组�
                        用户逐字节核对 → 串口输出
 ```
 
-这是固定内嵌程序的两个实例，还没有任意 ELF 加载器或 shell。实验完成后的 intentional stop 是明确的停机点。网络、磁盘恢复、SMP、GUI、完整 POSIX、动态链接和生产 hardening 都不在目标内。
+M0–M6 保留固定内嵌程序的两个实例和实验完成后的 intentional stop。其上新增独立 `LAB` 模式：真正的用户态 init/shell 创建、等待演示程序，再用浏览器连接同一台 QEMU 的输入输出与机制记录。没有任意 ELF 加载器。网络、磁盘恢复、SMP、客体 GUI、完整 POSIX、动态链接和生产 hardening 都不在目标内。
+
+![MiniLinux 真实客体控制台与观察窗](docs/evidence/userland-console/desktop.jpg)
+
+## 操作这个系统
+
+已经准备好 M0 固定工具的 Windows PowerShell 中运行：
+
+```powershell
+.\tools\lab.ps1
+```
+
+打开 <http://127.0.0.1:8080/>。先输入 `help`，再试 `cat hello.txt`、`run reader`、`run counter-a counter-b`、`run fault`。前端发送实际串口输入；命令在 CPL3 shell 执行。右侧的 PID、CR3、地址映射、时钟切换和 syscall 来自 COM2，不是 JavaScript 模拟。
+
+```text
+PID 1 / init → PID 2 / shell → spawn → 用户程序
+                                       ↓ timer / syscall
+                           私有地址空间、CPU 时间、RamFS
+                                       ↓ exit / wait
+                           回收用户页 → shell 继续接受输入
+```
+
+黑白页面以终端、观察窗、日志和手册为主体。桌面上方黑白宽度为 38.2:61.8，下方反转为 61.8:38.2；窄窗口改为上下排列。长记录滚动查看，手册随内容展开。浏览器是宿主观察工具，MiniLinux 客体仍是串口系统。
+
+`LAB` 上层和宿主桥接的自动验证入口是 `./tools/check-lab.ps1`。请先停止当前预览再验证，以免同时改写同一构建目录、镜像和记录。薄用户态的证明、首败与限制见 [USERLAND](docs/USERLAND.md)，视觉和浏览器验证见 [design-qa](design-qa.md)。
 
 ## 里程碑
 
@@ -43,7 +67,7 @@ cd C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux
 .\tools\closed-loop.ps1
 ```
 
-只看最终机制可以用 `./tools/stage.ps1 -Milestone M6`。逐轮可以用 `tools/m0.ps1`、`tools/m1.ps1` 或 `tools/stage.ps1 -Milestone M2` 至 `M6`。构建和客体串行运行，单核 QEMU 使用 64/256 MiB；宿主工具额外预留约 1 GiB，Codex 与其他应用另计。
+只看最终机制可以用 `./tools/stage.ps1 -Milestone M6`。逐轮可以用 `tools/m0.ps1`、`tools/m1.ps1` 或 `tools/stage.ps1 -Milestone M2` 至 `M6`。构建和客体串行运行，单核 QEMU 使用 64/256 MiB。`LAB` 默认客体 64 MiB，另固定 32 MiB TCG 翻译缓存；宿主开销与客体内存分别记录，Codex、浏览器和其他应用另计，见 [运行范围](docs/USERLAND.md#运行范围)。
 
 从外部错题迁移回来的攻击实验使用 `./tools/counterexamples.ps1`，包含耗尽、权限、指针、异常和入口现场；首败保留，不与夹具设置失败混算。
 
@@ -63,6 +87,6 @@ MiniLinux M6: process isolation checks passed
 
 **能直写就直写，教学之外复用工具，教学之内亲手实现机制。** 普通字节状态数组、固定 task/文件槽数组、循环和 switch 就够了。页表位与 CPU 入口按硬件规则表达；少量汇编负责端口、控制寄存器、中断现场和 `iretq`，不把调度或文件规则藏在技巧里。
 
-内核与用户程序没有 libc、第三方运行库或外部内核组件依赖。`memset`/`memcpy` 是自己的逐字节实现；链接使用 `-nostdlib -static`，完整验证拒绝未解析符号和动态运行库段。整个实验工具链仍依赖 Clang/LLD、Limine、QEMU/GDB、Python/pycdlib；不能把这些启动与宿主依赖说成不存在。
+内核与用户程序没有 libc、第三方运行库或外部内核组件依赖。`memset`/`memcpy` 是自己的逐字节实现；链接使用 `-nostdlib -static`，完整验证拒绝未解析符号和动态运行库段。浏览器页面使用原生 HTML/CSS/JavaScript，宿主桥接只用 Python 标准库，无新增 npm/Python 包。整个实验工具链仍依赖 Clang/LLD、Limine、QEMU/GDB、Python/pycdlib；不能把这些启动与宿主依赖说成不存在。
 
 建议先读 [顺着程序读代码](docs/WALKTHROUGH.md)，再看每轮记录与 [闭环坐标](docs/CLOSURE.md)。工具版本和安装路径见 [M0 环境](docs/M0.md)；首败和接管的历史见 [M0 轮次](docs/M0-round-record.md)、[复审](docs/M0-re-audit.md)。Limine 协议头文件保留原有 0BSD 许可，外部源码用于核对机制和学习错题，没有复制外部内核实现。
