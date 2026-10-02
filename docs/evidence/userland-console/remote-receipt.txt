@@ -1,0 +1,8 @@
+source: ac3e5cb52ee78b68d13f722cd883ead34d628a24
+clone: GitHub detached checkout; build absent before run
+closed-loop.ps1: passed
+counterexamples.ps1: passed
+check-lab.ps1: passed
+worktree: clean
+QEMU/GDB: none
+debug port 1234: no listener

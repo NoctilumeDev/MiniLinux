@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MiniLinux — mechanism laboratory</title>
+  <link rel="icon" href="assets/tux-bw.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script src="live.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="masthead">
+    <div class="identity"><img src="assets/tux-bw.svg" alt="Tux penguin" width="56" height="66"><h1>MiniLinux</h1></div>
+    <div class="subtitle"><strong>mechanism laboratory</strong><span>x86_64 teaching kernel</span></div>
+    <p class="motto">A simple system<br>for deeper understanding.</p>
+    <div class="words">LEARN<br>EXPLORE<br>HACK<br>UNDERSTAND</div>
+  </header>
+  <nav aria-label="Laboratory views">
+    <div class="views">
+      <button class="active" data-view="console">CONSOLE</button>
+      <button data-view="process">PROCESS TABLE</button>
+      <button data-view="memory">MEMORY MAP</button>
+      <button data-view="syscall">SYSCALL</button>
+      <button data-view="trace">TRACE</button>
+      <button data-view="fault">FAULT</button>
+      <button data-view="manual">MANUAL</button>
+    </div>
+    <div class="project-links">
+      <a id="download-lab" href="https://github.com/NoctilumeDev/MiniLinux/releases/download/lab-preview-20261002.2/MiniLinux-LAB-Windows-x64.zip" hidden>下载 Windows 实时 LAB</a>
+      <a href="https://github.com/NoctilumeDev/MiniLinux" target="_blank" rel="noreferrer">SOURCE</a>
+    </div>
+  </nav>
+  <div class="connection"><span id="connection" role="status">CONNECTING</span><span id="coordinates">Waiting for the guest…</span><button id="stop">stop guest</button><button id="restart">restart guest</button></div>
+  <main>
+    <div class="workspace">
+      <section class="panel terminal-panel" id="console-panel" aria-labelledby="console-title">
+        <div class="panel-title"><h2 id="console-title">MiniLinux Console / COM1</h2><button id="clear-console">clear view</button></div>
+        <pre id="terminal" class="terminal" tabindex="0" aria-label="Guest terminal output"></pre>
+        <form id="command-form"><label for="command">mini$</label><input id="command" name="command" autocomplete="off" spellcheck="false" maxlength="95" placeholder="help" aria-label="Shell command"><button type="submit">send</button></form>
+        <p class="terminal-note">Commands run in the guest’s user mode. ↑ recalls your last command.</p>
+      </section>
+      <section class="panel inspector" aria-labelledby="inspector-title">
+        <div class="panel-title"><h2 id="inspector-title">Kernel Inspector / COM2</h2><div class="inspector-controls"><button id="counter-snapshot" disabled>查看最近 counter 快照</button><span id="observation">No observation yet</span></div></div>
+        <div class="inspector-grid">
+          <section class="sheet" id="process-panel">
+            <div class="sheet-title"><h3>Process Table</h3><span>select a PID</span></div>
+            <div class="table-scroll" tabindex="0" aria-label="Process records"><table><thead><tr><th>PID</th><th>PPID</th><th>STATE</th><th>PROGRAM</th></tr></thead><tbody id="processes"></tbody></table></div>
+            <p id="empty-processes" class="empty">Waiting for process records.</p>
+            <div class="scheduler-summary"><span>round-robin · PIT ≈100 Hz</span><span>free <b id="free-pages">—</b> pages</span></div>
+          </section>
+          <section class="sheet mappings" id="memory-panel">
+            <div class="sheet-title"><h3>Memory Map <span id="map-pid"></span></h3><span id="map-root">CR3 —</span></div>
+            <div class="table-scroll" tabindex="0" aria-label="Address mappings, scroll horizontally if needed"><table class="map-table"><thead><tr><th>VIRTUAL</th><th>PHYSICAL</th><th>PERM</th><th>PAGE</th></tr></thead><tbody id="mappings"></tbody></table></div>
+            <p id="data-marker" class="observation-line">Choose a process to inspect its mapped pages.</p>
+          </section>
+          <section class="sheet syscalls" id="syscall-panel">
+            <div class="sheet-title"><h3>Syscall Trace</h3><div><button id="pause-trace">pause</button><button id="clear-trace">clear</button></div></div>
+            <div class="trace-scroll" tabindex="0" aria-label="System call records"><table><thead><tr><th>TICK</th><th>PID</th><th>CALL</th><th>RET</th></tr></thead><tbody id="syscalls"></tbody></table></div>
+            <p id="syscall-detail" class="observation-line">Select a call to inspect its arguments.</p>
+            <p class="boundary-note"><span>CPL 3 → int 0x80 → CPL 0 → iretq</span><span id="mode-witness">Awaiting a user entry.</span></p>
+          </section>
+        </div>
+      </section>
+    </div>
+    <div class="bottom-row">
+      <section class="panel log-panel" id="trace-panel">
+        <div class="panel-title"><h2>Serial Log / Kernel Events</h2><button id="clear-events">clear view</button></div>
+        <div class="event-area">
+          <div id="events" class="event-log" role="log" aria-live="off" tabindex="0" aria-label="Kernel event log"></div>
+          <section class="event-info" tabindex="0" aria-label="Recorded event details">
+            <div class="event-title"><h3>Event Detail</h3><button id="follow-events" aria-pressed="true">latest</button></div>
+            <p id="event-meta">Waiting for an event.</p>
+            <dl id="event-fields" class="event-fields"></dl>
+          </section>
+        </div>
+      </section>
+      <section class="panel manual-panel" id="manual-panel">
+        <div class="panel-title"><h2>Manual / Notes</h2><span id="manual-actions">按钮执行命令</span><span id="manual-topic">MINILINUX(1)</span></div>
+        <div class="manual-content" tabindex="0" aria-label="Command manual"><div id="manual"></div></div>
+        <div class="help-content">
+          <button data-command="help"><strong>help</strong><span>show commands</span></button>
+          <button data-command="ls"><strong>ls</strong><span>list RamFS files</span></button>
+          <button data-command="cat hello.txt"><strong>cat hello.txt</strong><span>read file bytes</span></button>
+          <button data-command="ps"><strong>ps</strong><span>list processes</span></button>
+          <button data-command="run counter-a counter-b"><strong>run counter-a counter-b</strong><span>watch two instances</span></button>
+          <button data-command="run fault"><strong>run fault</strong><span>演示故障，shell 继续</span></button>
+        </div>
+      </section>
+    </div>
+    <p id="error" role="alert" hidden></p>
+  </main>
+  <footer><span>MiniLinux / LAB · x86_64 · mechanism laboratory</span><span id="footer-state">One guest. Real mechanisms.</span><button id="about">about / credits</button></footer>
+  <dialog id="about-dialog"><h2>MiniLinux</h2><p>A teaching kernel, written primarily in C. Linux-inspired, independently implemented.</p><p>The browser forwards commands to a real user-mode shell in QEMU. Observations come from its second serial port. Displays describe the latest observed event; they are not an instantaneous CPU probe.</p><p>Tux: original illustration by Larry Ewing using GIMP; vector redraw by Garrett LeSage, refinement by IFo Hancroft. <a href="assets/TUX-README.md">Asset credits and license</a>.</p><button id="close-about">close</button></dialog>
+</body>
+</html>

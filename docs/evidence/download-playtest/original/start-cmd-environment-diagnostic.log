@@ -1,0 +1,36 @@
+
+Major  Minor  Build  Revision
+-----  -----  -----  --------
+5      1      26100  9444    
+C:\Users\lenovo\Documents\PowerShell\Modules;C:\Program Files\PowerShell\Modules;c:\users\lenovo\.cache\codex-runtimes\codex-primary-runtime\dependencies\native\powershell\Modules;C:\Users\lenovo\Documents\WindowsPowerShell\Modules;C:\Program Files\WindowsPowerShell\Modules;C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules
+
+Name : Microsoft.PowerShell.Utility
+Path : C:\users\lenovo\.cache\codex-runtimes\codex-primary-runtime\dependencies\native\powershell\Modules\Microsoft.Pow
+       erShell.Utility\Microsoft.PowerShell.Utility.psd1
+
+Get-Command : The term 'Get-FileHash' is not recognized as the name of a cmdlet, function, script file, or operable pro
+gram. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+At line:1 char:150
++ ...  Name,Path; Get-Command Get-FileHash,Expand-Archive,Invoke-WebRequest ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (Get-FileHash:String) [Get-Command], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException,Microsoft.PowerShell.Commands.GetCommandCommand
+ 
+
+Name   : Expand-Archive
+Source : Microsoft.PowerShell.Archive
+
+
+Name   : Invoke-WebRequest
+Source : Microsoft.PowerShell.Utility
+
+Get-Command : The term 'Get-FileHash' is not recognized as the name of a cmdlet, function, script file, or operable pro
+gram. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+At line:1 char:325
++ ... tion Continue; Get-Command Get-FileHash -ErrorAction Continue | Selec ...
++                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (Get-FileHash:String) [Get-Command], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException,Microsoft.PowerShell.Commands.GetCommandCommand
+ 
+
+

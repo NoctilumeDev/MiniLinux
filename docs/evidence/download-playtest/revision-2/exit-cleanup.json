@@ -1,0 +1,18 @@
+{
+  "captured_at": "2026-10-02T21:08:37.2136935+08:00",
+  "closed_session": 42663,
+  "interrupt_exit_code": 1,
+  "remaining_owned_processes": [],
+  "known_ports": [
+    49396,
+    55077,
+    55078,
+    55310,
+    55311
+  ],
+  "remaining_known_listeners": [],
+  "remaining_owned_active_tcp": [],
+  "after_cache_final_captured_at": "2026-10-02T21:12:17.7695337+08:00",
+  "after_cache_remaining_owned_processes": [],
+  "after_cache_remaining_known_listeners": []
+}

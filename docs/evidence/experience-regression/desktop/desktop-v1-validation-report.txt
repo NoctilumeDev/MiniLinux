@@ -1,0 +1,56 @@
+MiniLinux Windows下载启动包 v1 独立验证
+
+结论：原v1 ZIP在中文+空格路径的联网准备通过，真实启动失败。父任务修后lab_guest.py在同一目录的launcher、HTTP真实命令、两档用户态和桥接探针全部通过。两者资格分别保留；最终新ZIP仍需从其自身不可变字节复验。
+
+原产物
+来源：C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\build\desktop-v1\MiniLinux-LAB-Windows-x64.zip。
+SHA256 D344A65DDE0514B9E3BF5C16FF354A022EBEB0C4D323DECCFC12EB14B967C23F；2,930,804字节。
+创建前不存在的独立根：C:\Users\lenovo\AppData\Local\Temp\MiniLinux desktop 独立验证 cc93731 20261002。
+保留原ZIP副本original.zip，解包到package/MiniLinux-LAB。
+包内manifest.source=762f05c209a98318f3cb606b8c4d566111771757；ISO SHA256 AA4CDB629DD5CB3C3C279B7387BB1FE7A633EE861B0625FC9187538EB753F231，与之前受测LAB相同。
+
+实际联网首启
+运行包内tools/prepare-desktop.ps1 -Proxy http://127.0.0.1:7897，19:23:05.5641681–19:24:16.2498429 +08:00，通过。
+初始没有runtime/downloads、runtime/python或runtime/qemu-20260811。没有复制D盘缓存；实际联网下载官方Python3.13.16 embedded amd64（11,439,094字节）和固定QEMU20260811安装档案（206,615,928字节），由包内7z只解包。
+Python archive SHA256 97DAE5274CC54867065E8D5A3226E48C35017ED332A0FDB0E27D5B5821961297，与官方Python3.13.16 release网页一致。
+QEMU archive SHA256 F98A8AEB5F7FAEA9765B6DEE28316C266CD179D80354A2FED8E50176F9A2E59F；包内QEMU exe SHA256 47D57A6072E0BB3BD98F87926EB129EB1736DFE818C67B3B81EF7CE4EDD0B3CD，与M0一致。
+没有执行NSIS安装器，没有Clang/GDB/WSL操作，没有PATH、代理环境变量或注册表写入命令。所有客体串行。
+
+原ZIP真实首败
+runtime/python/python.exe -I tools/desktop-launch.py --no-browser 返回1。
+RuntimeError: Guest disconnected；QEMU原stderr记录-cdrom中文绝对路径Could not open，系统找不到指定的路径。该ISO实际存在且哈希匹配。
+坐标desktop-launch.py:21 -> lab-server.py:28 -> lab_guest.py:79/188。客体未启动，分类为宿主文件路径集成问题，未更改内核判据。
+原lab_guest.py SHA256 B2C9434CC73AF3AD5585F8E9C229509693FCD4F93BDD587C4BC96C9872A2F9C6。
+首败目录02-launch-first-failure保留原Guest、QEMU原日志、空串口/trace以及清理读回；QEMU/GDB和package Python均为0。
+
+未运行修补候选的设置错误
+父任务初次薄修hash 88B11323B1F4BA6D152E2CCFF94CD55798C8887AB4430670A6713594A4917195，在runtime cwd使用-L share，但实际固件目录是runtime/qemu-20260811/share。静态核对后父任务纠正，没有运行这个候选，不计为客体失败。
+
+受修候选
+仅按明确授权将父任务修后tools/lab_guest.py复制到该同一解包目录。
+修后Guest SHA256 4901B21F29913D1412B49D9361F09204961B985F79E58853CF27C8FD808B8CC3。
+project/tool_root resolve；Popen cwd=runtime；-cdrom images/minilinux-lab.iso；-L qemu-20260811/share；exe路径由CreateProcess使用绝对路径。
+原v1包内网页保持原版本。这是v1 ZIP加修后Guest的诊断候选，不是原ZIP或未来v2资格。
+
+运行与覆盖
+包内Python 3.13.16以-I启动，sys.flags.isolated=1；sys.executable、sys.path均在包内runtime/python，std库来自python313.zip。CIM记录真实Python和QEMU路径均为包内runtime，没有使用D盘运行组件。
+launcher在原中文+空格路径成功启动，HTTP端口60657。
+自编HTTP探针通过help/ls/cat/ps/run hello/run reader/run counter-a counter-b/run fault/check/mem，以及fault后再次cat接管；双counter真实双向timer切换、相同VA/不同PA/不同marker；stop后input503，restart产生新epoch，清空旧输出，仅init/shell。
+这些命令的完整console与events状态保留在03-desktop-http-results.json。
+Ctrl+C关闭launcher，TTY外层PowerShell返回1，无Python traceback。没有将该外壳状态写成launcher Python exit0。19:32:56独立读回QEMU/GDB=0、package Python=0、60657/60658/60659 listener=0，实际清理成立。
+
+原回归探针
+从不可变cc93731工作区复制未修改的test-userland.py和test-lab-bridge.py到解包tools；它们不在原ZIP分发范围内。只用包内Python -I运行，--tool-root为包内runtime。
+小包装器仅把包内tools加入嵌入Python的sys.path，并在每个Guest.close时保存原始console/trace/QEMU日志；没有改变原测试断言。
+test-userland exit0，64/256 MiB各24次hello/reader复用、输入/指针/容量拒绝、真正init等待shell、双向抢占和地址隔离、fault142后接管、页数恢复且只剩init/shell。free_before_after实测分别15976/65116。
+test-lab-bridge exit0，16次HTTP请求覆盖实际输入/trace、非法请求拒绝、stop/restart新状态和自己创建的QEMU清理。
+每个客体的原始流在test-userland.py-guest-1-64m、guest-2-256m与test-lab-bridge.py-guest-*目录；总输出和结果JSON独立保留。
+
+ASCII对照准备
+曾从同一原ZIP建立MiniLinux desktop ASCII cc93731 20261002路径，复制本次联网已校验档案作为CACHE首启，prepare通过。父任务改为在同中文路径复验修补后，该ASCII对照没有启动过VM，也不计入功能资格。
+
+最终清理与边界
+19:35:32.9022016 +08:00独立CIM QEMU/GDB=0、package Python=0；包含1234/8080与17个测试采样端口在内的listener计数0。
+已告知父任务VM时段释放，之后只整理报告。
+没有改主仓或推送。未把本机独立解包验证扩展为另一台干净Windows机器或新的内核资格。
+原ZIP失败、未运行设置错误、修后通过各自保留。父任务最终v2 ZIP仍须独立解包复验，不能仅继承此手动替换文件的结果。

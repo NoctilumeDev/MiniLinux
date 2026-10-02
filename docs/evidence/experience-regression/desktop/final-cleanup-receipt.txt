@@ -1,0 +1,11 @@
+v2_original_zip_source=231fdd9a5bc2cc16f81e554d83f27ebc6b4b4182
+v2_original_zip_sha256=9210A0F44BE614A99AE898CF0C2AF370CA8822FA1FC00BA60A2086BC9B43D4F3
+all_original_tool_sources_unchanged=True
+v2_http_real_guest_check=passed
+shutdown_action=Ctrl+C to original launcher tty session 40277
+outer_shell_exit_code=1; no Python traceback; cleanup observed independently
+qemu_gdb_count=0
+package_python_count=0
+sampled_ports=1234,8080,58240,58241,58242,61050,61051
+sampled_listener_count=0
+observed=2026-10-02T19:42:47.0316960+08:00

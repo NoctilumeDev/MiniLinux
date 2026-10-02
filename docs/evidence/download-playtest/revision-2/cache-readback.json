@@ -1,0 +1,42 @@
+{
+  "captured_at": "2026-10-02T21:09:25.7134339+08:00",
+  "command": "Original prepare-desktop.ps1 -Proxy http://127.0.0.1:1",
+  "exit_code": 0,
+  "elapsed_seconds": 0.5566179,
+  "before": [
+    {
+      "FullName": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\MiniLinux 静默下载者 20261002.2 独立试玩\\全新静默解包\\MiniLinux-LAB\\runtime\\downloads\\qemu-w64-setup-20260811.exe",
+      "Length": 206615928,
+      "LastWriteTimeUtc": "2026-10-02T12:56:37.8177529Z"
+    }
+  ],
+  "archive_files": [
+    {
+      "FullName": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\MiniLinux 静默下载者 20261002.2 独立试玩\\全新静默解包\\MiniLinux-LAB\\runtime\\downloads\\python-3.13.16-embed-amd64.zip",
+      "Length": 11439094,
+      "LastWriteTimeUtc": "2026-10-02T12:55:06.628367Z"
+    },
+    {
+      "FullName": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\MiniLinux 静默下载者 20261002.2 独立试玩\\全新静默解包\\MiniLinux-LAB\\runtime\\downloads\\qemu-w64-setup-20260811.exe",
+      "Length": 206615928,
+      "LastWriteTimeUtc": "2026-10-02T12:56:37.8177529Z"
+    }
+  ],
+  "launcher_not_started": true,
+  "after_archive_hashes": [
+    {
+      "Path": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\MiniLinux 静默下载者 20261002.2 独立试玩\\全新静默解包\\MiniLinux-LAB\\runtime\\downloads\\python-3.13.16-embed-amd64.zip",
+      "Length": 11439094,
+      "LastWriteTimeUtc": "2026-10-02T12:55:06.628367Z",
+      "Hash": "97DAE5274CC54867065E8D5A3226E48C35017ED332A0FDB0E27D5B5821961297",
+      "MatchesColdDownloadHash": true
+    },
+    {
+      "Path": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\MiniLinux 静默下载者 20261002.2 独立试玩\\全新静默解包\\MiniLinux-LAB\\runtime\\downloads\\qemu-w64-setup-20260811.exe",
+      "Length": 206615928,
+      "LastWriteTimeUtc": "2026-10-02T12:56:37.8177529Z",
+      "Hash": "F98A8AEB5F7FAEA9765B6DEE28316C266CD179D80354A2FED8E50176F9A2E59F",
+      "MatchesColdDownloadHash": true
+    }
+  ]
+}

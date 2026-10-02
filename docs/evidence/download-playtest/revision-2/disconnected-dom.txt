@@ -1,0 +1,635 @@
+- banner:
+  - img "Tux penguin"
+  - heading "MiniLinux" [level=1]
+  - strong: mechanism laboratory
+  - generic: x86_64 teaching kernel
+  - paragraph:
+    - text: A simple system
+    - text: for deeper understanding.
+  - text: LEARN
+  - text: EXPLORE
+  - text: HACK
+  - text: UNDERSTAND
+- navigation "Laboratory views":
+  - button "CONSOLE"
+  - button "PROCESS TABLE"
+  - button "MEMORY MAP"
+  - button "SYSCALL"
+  - button "TRACE"
+  - button "FAULT"
+  - button "MANUAL"
+  - link "SOURCE":
+    - /url: https://github.com/NoctilumeDev/MiniLinux
+- status: DISCONNECTED
+- generic: QEMU TCG · 1 CPU · 64 MiB · COM1 / COM2
+- button "stop guest" [disabled]
+- button "restart guest" [disabled]
+- main:
+  - region "MiniLinux Console / COM1":
+    - heading "MiniLinux Console / COM1" [level=2]
+    - button "[clear view]"
+    - generic "Guest terminal output": "MiniLinux LAB: entered kernel_main init: PID 1 entered user mode; starting shell MiniLinux / x86_64 teaching kernel Type 'help' for commands. mini$ cat hello.txt hello from ramfs mini$ run counter-a counter-b counter-a pid=3 step=1 marker=0x000000000000a110 work=130180000 counter-b pid=4 step=1 marker=0x000000000000b220 work=136200000 counter-a pid=3 step=2 marker=0x000000000000a110 work=258010000 counter-b pid=4 step=2 marker=0x000000000000b220 work=265420000 counter-a pid=3 step=3 marker=0x000000000000a110 work=385510000 counter-b pid=4 step=3 marker=0x000000000000b220 work=399170000 counter-a pid=3 step=4 marker=0x000000000000a110 work=511470000 counter-b pid=4 step=4 marker=0x000000000000b220 work=532240000 counter-a pid=3 step=5 marker=0x000000000000a110 work=642310000 counter-b pid=4 step=5 marker=0x000000000000b220 work=661280000 run: pid 3 exited status 0 run: pid 4 exited status 0 mini$"
+    - generic: mini$
+    - textbox "Shell command" [disabled]:
+      - /placeholder: help
+    - button "send" [disabled]
+    - paragraph: 连接中断，客体当前状态未知。若已关闭启动窗口，请重开 LAB，并打开它显示的网址。
+  - region "Kernel Inspector / COM2":
+    - heading "Kernel Inspector / COM2" [level=2]
+    - button "[查看最近 counter 快照]" [active]
+    - generic: 末次记录 tick 23242
+    - heading "Process Table" [level=3]
+    - generic: select a PID
+    - generic "Process records":
+      - table:
+        - rowgroup:
+          - row "PID PPID STATE PROGRAM":
+            - columnheader "PID"
+            - columnheader "PPID"
+            - columnheader "STATE"
+            - columnheader "PROGRAM"
+        - rowgroup:
+          - row "Inspect PID 1, init 0 waiting init":
+            - cell "Inspect PID 1, init":
+              - button "Inspect PID 1, init": "1"
+            - cell "0"
+            - cell "waiting"
+            - cell "init"
+          - row "Inspect PID 2, shell 1 current shell":
+            - cell "Inspect PID 2, shell":
+              - button "Inspect PID 2, shell": "2"
+            - cell "1"
+            - cell "current"
+            - cell "shell"
+    - generic: round-robin · PIT ≈100 Hz
+    - generic: free 15976 pages
+    - heading "Memory Map (pid=2)" [level=3]
+    - generic: CR3 0x0000000000082000
+    - generic "Address mappings, scroll horizontally if needed":
+      - table:
+        - rowgroup:
+          - row "VIRTUAL PHYSICAL PERM PAGE":
+            - columnheader "VIRTUAL"
+            - columnheader "PHYSICAL"
+            - columnheader "PERM"
+            - columnheader "PAGE"
+        - rowgroup:
+          - row "0x0000000000400000 0x0000000000083000 r-x code":
+            - cell "0x0000000000400000"
+            - cell "0x0000000000083000"
+            - cell "r-x"
+            - cell "code"
+          - row "0x0000000000401000 0x0000000000087000 r-x code":
+            - cell "0x0000000000401000"
+            - cell "0x0000000000087000"
+            - cell "r-x"
+            - cell "code"
+          - row "0x0000000000600000 0x0000000000088000 rw- data":
+            - cell "0x0000000000600000"
+            - cell "0x0000000000088000"
+            - cell "rw-"
+            - cell "data"
+          - row "0x0000000000800000 0x000000000008a000 rw- stack":
+            - cell "0x0000000000800000"
+            - cell "0x000000000008a000"
+            - cell "rw-"
+            - cell "stack"
+          - row "0x0000000000801000 0x000000000008c000 rw- stack":
+            - cell "0x0000000000801000"
+            - cell "0x000000000008c000"
+            - cell "rw-"
+            - cell "stack"
+    - paragraph: data marker 0x0000000000000000
+    - heading "Syscall Trace" [level=3]
+    - button "[pause]"
+    - button "[clear]"
+    - generic "System call records":
+      - table:
+        - rowgroup:
+          - row "TICK PID CALL RET":
+            - columnheader "TICK"
+            - columnheader "PID"
+            - columnheader "CALL"
+            - columnheader "RET"
+        - rowgroup:
+          - row "2742 2 Inspect write call from PID 2 at tick 2742 6":
+            - cell "2742"
+            - cell "2"
+            - cell "Inspect write call from PID 2 at tick 2742":
+              - button "Inspect write call from PID 2 at tick 2742": write
+            - cell "6"
+          - row "2741 2 Inspect write call from PID 2 at tick 2741 27":
+            - cell "2741"
+            - cell "2"
+            - cell "Inspect write call from PID 2 at tick 2741":
+              - button "Inspect write call from PID 2 at tick 2741": write
+            - cell "27"
+          - row "2741 2 Inspect write call from PID 2 at tick 2741 27":
+            - cell "2741"
+            - cell "2"
+            - cell "Inspect write call from PID 2 at tick 2741":
+              - button "Inspect write call from PID 2 at tick 2741": write
+            - cell "27"
+          - row "2740 4 Inspect write call from PID 4 at tick 2740 64":
+            - cell "2740"
+            - cell "4"
+            - cell "Inspect write call from PID 4 at tick 2740":
+              - button "Inspect write call from PID 4 at tick 2740": write
+            - cell "64"
+          - row "2739 3 Inspect write call from PID 3 at tick 2739 64":
+            - cell "2739"
+            - cell "3"
+            - cell "Inspect write call from PID 3 at tick 2739":
+              - button "Inspect write call from PID 3 at tick 2739": write
+            - cell "64"
+          - row "2642 4 Inspect write call from PID 4 at tick 2642 64":
+            - cell "2642"
+            - cell "4"
+            - cell "Inspect write call from PID 4 at tick 2642":
+              - button "Inspect write call from PID 4 at tick 2642": write
+            - cell "64"
+          - row "2639 3 Inspect write call from PID 3 at tick 2639 64":
+            - cell "2639"
+            - cell "3"
+            - cell "Inspect write call from PID 3 at tick 2639":
+              - button "Inspect write call from PID 3 at tick 2639": write
+            - cell "64"
+          - row "2540 4 Inspect write call from PID 4 at tick 2540 64":
+            - cell "2540"
+            - cell "4"
+            - cell "Inspect write call from PID 4 at tick 2540":
+              - button "Inspect write call from PID 4 at tick 2540": write
+            - cell "64"
+          - row "2539 3 Inspect write call from PID 3 at tick 2539 64":
+            - cell "2539"
+            - cell "3"
+            - cell "Inspect write call from PID 3 at tick 2539":
+              - button "Inspect write call from PID 3 at tick 2539": write
+            - cell "64"
+          - row "2440 4 Inspect write call from PID 4 at tick 2440 64":
+            - cell "2440"
+            - cell "4"
+            - cell "Inspect write call from PID 4 at tick 2440":
+              - button "Inspect write call from PID 4 at tick 2440": write
+            - cell "64"
+          - row "2439 3 Inspect write call from PID 3 at tick 2439 64":
+            - cell "2439"
+            - cell "3"
+            - cell "Inspect write call from PID 3 at tick 2439":
+              - button "Inspect write call from PID 3 at tick 2439": write
+            - cell "64"
+          - row "2342 4 Inspect write call from PID 4 at tick 2342 64":
+            - cell "2342"
+            - cell "4"
+            - cell "Inspect write call from PID 4 at tick 2342":
+              - button "Inspect write call from PID 4 at tick 2342": write
+            - cell "64"
+          - row "2339 3 Inspect write call from PID 3 at tick 2339 64":
+            - cell "2339"
+            - cell "3"
+            - cell "Inspect write call from PID 3 at tick 2339":
+              - button "Inspect write call from PID 3 at tick 2339": write
+            - cell "64"
+          - row "2239 2 Inspect spawn call from PID 2 at tick 2239 4":
+            - cell "2239"
+            - cell "2"
+            - cell "Inspect spawn call from PID 2 at tick 2239":
+              - button "Inspect spawn call from PID 2 at tick 2239": spawn
+            - cell "4"
+          - row "2237 2 Inspect spawn call from PID 2 at tick 2237 3":
+            - cell "2237"
+            - cell "2"
+            - cell "Inspect spawn call from PID 2 at tick 2237":
+              - button "Inspect spawn call from PID 2 at tick 2237": spawn
+            - cell "3"
+          - row "2237 2 Inspect input call from PID 2 at tick 2237 1":
+            - cell "2237"
+            - cell "2"
+            - cell "Inspect input call from PID 2 at tick 2237":
+              - button "Inspect input call from PID 2 at tick 2237": input
+            - cell "1"
+          - row "2237 2 Inspect input call from PID 2 at tick 2237 1":
+            - cell "2237"
+            - cell "2"
+            - cell "Inspect input call from PID 2 at tick 2237":
+              - button "Inspect input call from PID 2 at tick 2237": input
+            - cell "1"
+          - row "2237 2 Inspect input call from PID 2 at tick 2237 1":
+            - cell "2237"
+            - cell "2"
+            - cell "Inspect input call from PID 2 at tick 2237":
+              - button "Inspect input call from PID 2 at tick 2237": input
+            - cell "1"
+          - row "2236 2 Inspect input call from PID 2 at tick 2236 1":
+            - cell "2236"
+            - cell "2"
+            - cell "Inspect input call from PID 2 at tick 2236":
+              - button "Inspect input call from PID 2 at tick 2236": input
+            - cell "1"
+          - row "2236 2 Inspect input call from PID 2 at tick 2236 1":
+            - cell "2236"
+            - cell "2"
+            - cell "Inspect input call from PID 2 at tick 2236":
+              - button "Inspect input call from PID 2 at tick 2236": input
+            - cell "1"
+          - row "2236 2 Inspect input call from PID 2 at tick 2236 1":
+            - cell "2236"
+            - cell "2"
+            - cell "Inspect input call from PID 2 at tick 2236":
+              - button "Inspect input call from PID 2 at tick 2236": input
+            - cell "1"
+          - row "2236 2 Inspect input call from PID 2 at tick 2236 1":
+            - cell "2236"
+            - cell "2"
+            - cell "Inspect input call from PID 2 at tick 2236":
+              - button "Inspect input call from PID 2 at tick 2236": input
+            - cell "1"
+          - row "2235 2 Inspect input call from PID 2 at tick 2235 1":
+            - cell "2235"
+            - cell "2"
+            - cell "Inspect input call from PID 2 at tick 2235":
+              - button "Inspect input call from PID 2 at tick 2235": input
+            - cell "1"
+          - row "2235 2 Inspect input call from PID 2 at tick 2235 1":
+            - cell "2235"
+            - cell "2"
+            - cell "Inspect input call from PID 2 at tick 2235":
+              - button "Inspect input call from PID 2 at tick 2235": input
+            - cell "1"
+          - row "2235 2 Inspect input call from PID 2 at tick 2235 1":
+            - cell "2235"
+            - cell "2"
+            - cell "Inspect input call from PID 2 at tick 2235":
+              - button "Inspect input call from PID 2 at tick 2235": input
+            - cell "1"
+          - row "2235 2 Inspect input call from PID 2 at tick 2235 1":
+            - cell "2235"
+            - cell "2"
+            - cell "Inspect input call from PID 2 at tick 2235":
+              - button "Inspect input call from PID 2 at tick 2235": input
+            - cell "1"
+          - row "2235 2 Inspect input call from PID 2 at tick 2235 1":
+            - cell "2235"
+            - cell "2"
+            - cell "Inspect input call from PID 2 at tick 2235":
+              - button "Inspect input call from PID 2 at tick 2235": input
+            - cell "1"
+          - row "2234 2 Inspect input call from PID 2 at tick 2234 1":
+            - cell "2234"
+            - cell "2"
+            - cell "Inspect input call from PID 2 at tick 2234":
+              - button "Inspect input call from PID 2 at tick 2234": input
+            - cell "1"
+          - row "2234 2 Inspect input call from PID 2 at tick 2234 1":
+            - cell "2234"
+            - cell "2"
+            - cell "Inspect input call from PID 2 at tick 2234":
+              - button "Inspect input call from PID 2 at tick 2234": input
+            - cell "1"
+          - row "2234 2 Inspect input call from PID 2 at tick 2234 1":
+            - cell "2234"
+            - cell "2"
+            - cell "Inspect input call from PID 2 at tick 2234":
+              - button "Inspect input call from PID 2 at tick 2234": input
+            - cell "1"
+          - row "2234 2 Inspect input call from PID 2 at tick 2234 1":
+            - cell "2234"
+            - cell "2"
+            - cell "Inspect input call from PID 2 at tick 2234":
+              - button "Inspect input call from PID 2 at tick 2234": input
+            - cell "1"
+          - row "2233 2 Inspect input call from PID 2 at tick 2233 1":
+            - cell "2233"
+            - cell "2"
+            - cell "Inspect input call from PID 2 at tick 2233":
+              - button "Inspect input call from PID 2 at tick 2233": input
+            - cell "1"
+          - row "2233 2 Inspect input call from PID 2 at tick 2233 1":
+            - cell "2233"
+            - cell "2"
+            - cell "Inspect input call from PID 2 at tick 2233":
+              - button "Inspect input call from PID 2 at tick 2233": input
+            - cell "1"
+          - row "2233 2 Inspect input call from PID 2 at tick 2233 1":
+            - cell "2233"
+            - cell "2"
+            - cell "Inspect input call from PID 2 at tick 2233":
+              - button "Inspect input call from PID 2 at tick 2233": input
+            - cell "1"
+          - row "2233 2 Inspect input call from PID 2 at tick 2233 1":
+            - cell "2233"
+            - cell "2"
+            - cell "Inspect input call from PID 2 at tick 2233":
+              - button "Inspect input call from PID 2 at tick 2233": input
+            - cell "1"
+          - row "2232 2 Inspect input call from PID 2 at tick 2232 1":
+            - cell "2232"
+            - cell "2"
+            - cell "Inspect input call from PID 2 at tick 2232":
+              - button "Inspect input call from PID 2 at tick 2232": input
+            - cell "1"
+          - row "2232 2 Inspect input call from PID 2 at tick 2232 1":
+            - cell "2232"
+            - cell "2"
+            - cell "Inspect input call from PID 2 at tick 2232":
+              - button "Inspect input call from PID 2 at tick 2232": input
+            - cell "1"
+          - row "2232 2 Inspect input call from PID 2 at tick 2232 1":
+            - cell "2232"
+            - cell "2"
+            - cell "Inspect input call from PID 2 at tick 2232":
+              - button "Inspect input call from PID 2 at tick 2232": input
+            - cell "1"
+          - row "2232 2 Inspect input call from PID 2 at tick 2232 1":
+            - cell "2232"
+            - cell "2"
+            - cell "Inspect input call from PID 2 at tick 2232":
+              - button "Inspect input call from PID 2 at tick 2232": input
+            - cell "1"
+          - row "1110 2 Inspect write call from PID 2 at tick 1110 6":
+            - cell "1110"
+            - cell "2"
+            - cell "Inspect write call from PID 2 at tick 1110":
+              - button "Inspect write call from PID 2 at tick 1110": write
+            - cell "6"
+    - paragraph: Select a call to inspect its arguments.
+    - paragraph:
+      - generic: CPL 3 → int 0x80 → CPL 0 → iretq
+      - generic: Observed CPL 3 entry · PID 2 · tick 2742
+  - heading "Serial Log / Kernel Events" [level=2]
+  - button "[clear view]"
+  - log "Kernel event log":
+    - button "Inspect schedule event 1559 at tick 2666":
+      - generic: "2666"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1560 at tick 2667":
+      - generic: "2667"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1561 at tick 2668":
+      - generic: "2668"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1562 at tick 2669":
+      - generic: "2669"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1563 at tick 2670":
+      - generic: "2670"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1564 at tick 2671":
+      - generic: "2671"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1565 at tick 2672":
+      - generic: "2672"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1566 at tick 2673":
+      - generic: "2673"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1567 at tick 2674":
+      - generic: "2674"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1568 at tick 2675":
+      - generic: "2675"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1569 at tick 2676":
+      - generic: "2676"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1570 at tick 2677":
+      - generic: "2677"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1571 at tick 2678":
+      - generic: "2678"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1572 at tick 2679":
+      - generic: "2679"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1573 at tick 2680":
+      - generic: "2680"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1574 at tick 2681":
+      - generic: "2681"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1575 at tick 2682":
+      - generic: "2682"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1576 at tick 2683":
+      - generic: "2683"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1577 at tick 2684":
+      - generic: "2684"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1578 at tick 2685":
+      - generic: "2685"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1579 at tick 2686":
+      - generic: "2686"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1580 at tick 2687":
+      - generic: "2687"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1581 at tick 2688":
+      - generic: "2688"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1582 at tick 2689":
+      - generic: "2689"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1583 at tick 2690":
+      - generic: "2690"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1584 at tick 2691":
+      - generic: "2691"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1585 at tick 2692":
+      - generic: "2692"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1586 at tick 2693":
+      - generic: "2693"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1587 at tick 2694":
+      - generic: "2694"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1588 at tick 2695":
+      - generic: "2695"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1589 at tick 2696":
+      - generic: "2696"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1590 at tick 2697":
+      - generic: "2697"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1591 at tick 2698":
+      - generic: "2698"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1592 at tick 2699":
+      - generic: "2699"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1593 at tick 2700":
+      - generic: "2700"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1594 at tick 2701":
+      - generic: "2701"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1595 at tick 2702":
+      - generic: "2702"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1596 at tick 2703":
+      - generic: "2703"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1597 at tick 2704":
+      - generic: "2704"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1598 at tick 2705":
+      - generic: "2705"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1599 at tick 2706":
+      - generic: "2706"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1600 at tick 2707":
+      - generic: "2707"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1601 at tick 2708":
+      - generic: "2708"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1602 at tick 2709":
+      - generic: "2709"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1603 at tick 2710":
+      - generic: "2710"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1604 at tick 2711":
+      - generic: "2711"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1605 at tick 2712":
+      - generic: "2712"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1606 at tick 2713":
+      - generic: "2713"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1607 at tick 2714":
+      - generic: "2714"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1608 at tick 2715":
+      - generic: "2715"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1609 at tick 2716":
+      - generic: "2716"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1610 at tick 2717":
+      - generic: "2717"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1611 at tick 2718":
+      - generic: "2718"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1612 at tick 2719":
+      - generic: "2719"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1613 at tick 2720":
+      - generic: "2720"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1614 at tick 2721":
+      - generic: "2721"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1615 at tick 2722":
+      - generic: "2722"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1616 at tick 2723":
+      - generic: "2723"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1617 at tick 2724":
+      - generic: "2724"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1618 at tick 2725":
+      - generic: "2725"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1619 at tick 2726":
+      - generic: "2726"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1620 at tick 2727":
+      - generic: "2727"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1621 at tick 2728":
+      - generic: "2728"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1622 at tick 2729":
+      - generic: "2729"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1623 at tick 2730":
+      - generic: "2730"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1624 at tick 2731":
+      - generic: "2731"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1625 at tick 2732":
+      - generic: "2732"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1626 at tick 2733":
+      - generic: "2733"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1627 at tick 2734":
+      - generic: "2734"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1628 at tick 2735":
+      - generic: "2735"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1629 at tick 2736":
+      - generic: "2736"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1630 at tick 2737":
+      - generic: "2737"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1631 at tick 2738":
+      - generic: "2738"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect schedule event 1632 at tick 2739":
+      - generic: "2739"
+      - generic: timer CPL3 · PID 4 → 3
+    - button "Inspect schedule event 1665 at tick 2740":
+      - generic: "2740"
+      - generic: timer CPL3 · PID 3 → 4
+    - button "Inspect exit event 1698 at tick 2740":
+      - generic: "2740"
+      - generic: exit PID 4 · status 0
+    - button "Inspect memory event 1700 at tick 2740":
+      - generic: "2740"
+      - generic: frames=16268 free=15965
+    - button "Inspect exit event 1701 at tick 2741":
+      - generic: "2741"
+      - generic: exit PID 3 · status 0
+    - button "Inspect memory event 1704 at tick 2741":
+      - generic: "2741"
+      - generic: frames=16268 free=15976
+    - button "Inspect wait event 1706 at tick 2741":
+      - generic: "2741"
+      - generic: wait pid=2 for child=4
+  - region "Observed event details":
+    - heading "Event Detail" [level=3]
+    - button "[latest]" [pressed]
+    - paragraph: "Latest #1706 · tick 2741 · wait"
+    - term: Parent PID
+    - definition: "2"
+    - term: Child PID
+    - definition: "4"
+  - heading "Manual / Notes" [level=2]
+  - generic: 按钮执行命令
+  - generic: RUN(1)
+  - generic "Command manual":
+    - heading "NAME" [level=3]
+    - paragraph: run — start one or two embedded user programs
+    - heading "MECHANISM" [level=3]
+    - paragraph: spawn → private address space → timer preemption → exit → wait run counter-a counter-b Both use data VA 0x600000, with different physical pages. run fault A forbidden read stops that process; the shell continues.
+  - button "help" [disabled]:
+    - strong: help
+  - button "ls" [disabled]:
+    - strong: ls
+  - button "cat hello.txt" [disabled]:
+    - strong: cat hello.txt
+  - button "ps" [disabled]:
+    - strong: ps
+  - button "run counter-a counter-b" [disabled]:
+    - strong: run counter-a counter-b
+  - button "run fault 演示故障，shell 继续" [disabled]:
+    - strong: run fault
+    - generic: 演示故障，shell 继续
+  - alert: "Cannot reach the laboratory bridge: Failed to fetch"
+- contentinfo:
+  - generic: MiniLinux / LAB · x86_64 · mechanism laboratory
+  - generic: "latest event #8713 · observed, not instantaneous"
+  - button "about / credits"

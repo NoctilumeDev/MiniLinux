@@ -1,0 +1,49 @@
+MiniLinux 当前候选独立运行验证
+
+受测候选：cc937317c7af9a99d8987059776654f0a85a57d8。
+独立工作区：C:\Users\lenovo\AppData\Local\Temp\MiniLinux-runtime-cc93731。
+创建前该路径不存在；git worktree add --detach 后 HEAD 固定、工作树干净、无 build。
+收到父任务 RUN 后才启动任何 QEMU/GDB。全部客体串行，无并行 VM。
+工具根：D:\DevTools\MiniLinux；Python D:\python-3.10.6\python.exe；GDB D:\GCC\mingw64\bin\gdb.exe。
+本候选没有 tools/config.ps1；上述路径来自实际 checked-in 脚本。verify-tools.ps1 的工具 SHA256 与 pycdlib 1.20.0 检查通过。
+
+结果
+1. tools/closed-loop.ps1 -ToolRoot D:\DevTools\MiniLinux：exit 0，18:52:21.8875703–18:53:34.7312552 +08:00。
+2. tools/counterexamples.ps1 -ToolRoot D:\DevTools\MiniLinux：exit 0，18:54:44.5759542–18:55:28.0075599 +08:00。
+3. tools/check-lab.ps1 -ToolRoot D:\DevTools\MiniLinux：exit 0，18:56:45.4150959–18:57:21.0634786 +08:00。
+三套检查均完整执行。没有非预期首败，没有修改核心源码、脚本判据或为报告造通过；没有推送。
+
+实际覆盖
+closed-loop：M0 256 MiB 启动串口与 GDB；M1–M6 各 64/256 MiB 串口，GDB 256 MiB。
+M1 物理页可用/保留区、4096 字节读写、耗尽/复用与计数恢复；M2 CR3、别名/HHDM 回读与映射清理；M3 时钟抢占与真实 R12 破坏拒绝；M4 CPL3/受控 syscall 与非法指针；M5 RamFS 17 字节、描述符/偏移/EOF 边界；M6 独立根和物理页、相同 VA 的不同标记、用户故障后的幸存者与回收。
+额外 M6 probe 2–7 在 256 MiB 覆盖写只读代码、NX、unmapped、#UD/#GP/#DE；默认 supervisor 读取故障形成七类保护/异常。M6 PTE 数据别名现场注入被 marker guard 拒绝，随后正常 M6 接管。内核/用户 ELF 无未解析符号、INTERP 或 DYNAMIC 段。
+counterexamples：AttackCase 1–5 各 64/256 MiB；真实 syscall 拒绝上层只读、三个祖先的 U/S/R/W/NX/non-present、OOM spare=0/1/2 与 16 表上限、零长/256 字节/跨页/noncanonical/溢出指针、DF 与九寄存器。FaultCase 2–7 各 64/256 MiB。live cld 改为 nop 被 C-entry guard 拒绝，随后原映像正常运行；最终重新构建普通 M6 并核验 ISO 载荷。
+LAB：64/256 MiB 真正 init/shell，help/ls/cat/ps/run/check/mem、未知命令/文件/程序、长行/多余参数/退格、新 syscall 指针与容量拒绝、24 次 hello/reader 连续执行与槽位复用；双 counter 双向时钟切换、相同 VA/不同 PA 与标记；fault status 142，shell 继续读文件，只剩 init/shell，页数恢复。
+本轮 userland free_before_after 实测：64 MiB=15982，256 MiB=65116。它们是当轮观测，判据是相同客体内的前后恢复；演示录制中的同一 64 MiB 映像观察为15976。因此不把某一绝对页数当成镜像容量合同。
+Python bridge：真实 loopback HTTP 输入和 COM2 syscall trace；非法 after、路径、Host、Origin、body、长度、非 ASCII 请求被拒绝；stop、停止后 input 503、restart 与新 epoch/干净状态；测试 finally 关闭所有自己创建的 QEMU 与 HTTP server。
+本轮没有浏览器视觉/布局验证，不扩大为任意 ELF、POSIX、SMP 或其他宿主资格。
+
+保留证据
+01-closed-loop.log、02-counterexamples.log、03-check-lab.log 为各完整入口的总输出，对应 status 文件保留开始/结束/实际结果。
+01-closed-loop-artifacts、02-counterexamples-artifacts、03-check-lab-artifacts 为每套结束后完整 build 快照；各 M0–M6 轮次、GDB、串口、probe、注入/正常接管、反例 build/image/payload/serial/observer/summary 均保留。
+LAB 两档结果与桥接16次请求结果在 03-check-lab-artifacts/userland-results.json、bridge-results.json。原测试共享 lab-console/trace 文件，LAB快照内这两份原始流是最后一次桥接重启客体；两档用户态判据证据来自原测试成功退出与结果 JSON，未宣称保留每个用户态命令的单独原始流。
+test-source-sha256.txt 记录实际执行的测试源；coordinates.txt、各清理 receipt 和 final-artifact-sha256.txt 固定来源与产物。
+
+演示录制补充（独立观察探针）
+父任务明确授权复制主仓新增 tools/record-demo.py 到工作区并使用已验证的 LAB 映像。探针 SHA256 00329F64C8CD1400CF111C6AAFF0C75B095C5D0221D27F750AF120CCA132E4D8。
+录制 exit 0，18:59:37.8284371–18:59:45.7022005 +08:00；原 JSON recorded_at=2026-10-02T10:59:45.681242+00:00。
+输出主仓 build/demo-recording.json，独立副本 04-demo-recording.json。11 clips=boot 加10条真实命令；counter约5.5秒；fault/check/mem 后shell仍运行。全部 clip 的终态状态为running；该录制是明确 recorded-replay，不是实时内核。
+录制 source 与受测候选一致，kernel/user/ISO 哈希与 check-lab 最终产物完全一致；没有重建或提高内核资格。
+录制前的工作树干净。复制探针后 git status 仅 ?? tools/record-demo.py；git diff HEAD -- kernel include user tools boot linker.ld 仍为空。
+
+最终产物 SHA256
+kernel.elf C8CC2FBAC696C10C6DC428345869F5CB8003B808D53AB6C5B80DFE51C4DD7AD8
+user.elf 818106D1A0598EB9A59A69B4673EC86487A1977EF1DA207060056B6E3459560E
+minilinux-lab.iso AA4CDB629DD5CB3C3C279B7387BB1FE7A633EE861B0625FC9187538EB753F231
+
+清理与后续
+各脚本 finally 清理自己创建的 VM/调试器。每套结束后独立 CIM 与监听读回均为0。
+18:58:31.9817716 +08:00：QEMU/GDB=0、该工作区 Python=0、8080/1234与已采样串口60420/60421 listener=0。
+录制结束后19:00:41.4342531 +08:00：QEMU/GDB=0、该工作区 Python=0、8080/1234 listener=0。未停止不属于本验证的 demo HTTP 进程。
+已经明确通知父任务 VM 时段释放，此后只整理报告，没有再启动 VM。
+没有本轮产品修复建议；现有入口覆盖内均通过。D盘共享 LAB ISO 当前来自本独立工作区；父任务若重新启动主仓带符号调试/预览，应按自己的正常入口重新构建并核验来源。

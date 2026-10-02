@@ -1,0 +1,17 @@
+{
+  "elapsed_seconds": 0.5614824,
+  "downloads": [
+    {
+      "Name": "python-3.13.16-embed-amd64.zip",
+      "Length": 11439094,
+      "LastWriteTime": "2026-10-02T20:36:55.1890666+08:00"
+    },
+    {
+      "Name": "qemu-w64-setup-20260811.exe",
+      "Length": 206615928,
+      "LastWriteTime": "2026-10-02T20:38:36.0611111+08:00"
+    }
+  ],
+  "proxy": "http://127.0.0.1:1",
+  "exit_code": 0
+}

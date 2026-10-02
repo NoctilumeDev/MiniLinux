@@ -1,0 +1,15 @@
+{
+  "active_owned_connection_count": 0,
+  "listener_count": 0,
+  "processes": null,
+  "known_ports": [
+    50742,
+    50743,
+    52654,
+    52655,
+    52656
+  ],
+  "listeners": null,
+  "checked_at": "2026-10-02T20:53:09.1582963+08:00",
+  "process_count": 0
+}

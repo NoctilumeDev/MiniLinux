@@ -1,0 +1,50 @@
+[
+  {
+    "memory_mib": 64,
+    "free_before_after": 15976,
+    "counter_pids": [
+      33,
+      34
+    ],
+    "data_a": [
+      "33",
+      "0x0000000000600000",
+      "0x000000000023e000",
+      "0x000000000000a110"
+    ],
+    "data_b": [
+      "34",
+      "0x0000000000600000",
+      "0x0000000000249000",
+      "0x000000000000b220"
+    ],
+    "timer_switched_both_directions": true,
+    "fault_status": 142,
+    "sequential_program_runs": 24,
+    "input_and_pointer_rejections": true
+  },
+  {
+    "memory_mib": 256,
+    "free_before_after": 65116,
+    "counter_pids": [
+      33,
+      34
+    ],
+    "data_a": [
+      "33",
+      "0x0000000000600000",
+      "0x000000000024a000",
+      "0x000000000000a110"
+    ],
+    "data_b": [
+      "34",
+      "0x0000000000600000",
+      "0x0000000000255000",
+      "0x000000000000b220"
+    ],
+    "timer_switched_both_directions": true,
+    "fault_status": 142,
+    "sequential_program_runs": 24,
+    "input_and_pointer_rejections": true
+  }
+]

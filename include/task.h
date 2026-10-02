@@ -14,6 +14,13 @@ struct task {
     bool alive, reported, fault_seen, user_seen;
     struct open_file files[OPEN_LIMIT];
     unsigned files_opened, bytes_read, eof_reads, file_errors;
+#if MINILINUX_LEVEL == 7
+    unsigned parent, program, state, waiting_for;
+    uint64_t status;
+    struct address_space private_space;
+    uint64_t pages[19]; /* 16 code pages, one data page, two stack pages. */
+    unsigned page_count;
+#endif
 };
 struct task *task_current(void);
 struct task *task_get(unsigned index);

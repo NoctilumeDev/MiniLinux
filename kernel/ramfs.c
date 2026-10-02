@@ -1,4 +1,5 @@
 #include "bytes.h"
+#include "abi.h"
 #include "ramfs.h"
 
 struct file { const char *name, *bytes; size_t name_length, size; };
@@ -7,6 +8,15 @@ static const struct file files[] = {
     { "/hello.txt", hello, 10, sizeof(hello) - 1 },
     { "/empty.txt", "", 10, 0 }
 };
+
+int64_t ramfs_file(unsigned index, struct file_info *info) {
+    if (index >= sizeof(files) / sizeof(files[0])) { return 0; }
+    const struct file *file = &files[index];
+    memset(info, 0, sizeof(*info));
+    memcpy(info->name, file->name, file->name_length);
+    info->size = file->size;
+    return 1;
+}
 
 int64_t ramfs_open(struct open_file *slots, const char *name, size_t length) {
     for (unsigned file = 0; file < sizeof(files) / sizeof(files[0]); file++) {

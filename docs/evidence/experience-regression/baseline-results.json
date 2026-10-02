@@ -1,0 +1,52 @@
+[
+  {
+    "memory_mib": 64,
+    "cases": [
+      {
+        "command": "run fault counter-a",
+        "fault_pid": 3,
+        "survivor_pid": 4,
+        "survivor_steps": 5,
+        "fault_status": 142,
+        "survivor_status": 0,
+        "free_before_after": 15975,
+        "shell_retook": true
+      },
+      {
+        "command": "run counter-a fault",
+        "fault_pid": 6,
+        "survivor_pid": 5,
+        "survivor_steps": 5,
+        "fault_status": 142,
+        "survivor_status": 0,
+        "free_before_after": 15975,
+        "shell_retook": true
+      }
+    ]
+  },
+  {
+    "memory_mib": 256,
+    "cases": [
+      {
+        "command": "run fault counter-a",
+        "fault_pid": 3,
+        "survivor_pid": 4,
+        "survivor_steps": 5,
+        "fault_status": 142,
+        "survivor_status": 0,
+        "free_before_after": 65119,
+        "shell_retook": true
+      },
+      {
+        "command": "run counter-a fault",
+        "fault_pid": 6,
+        "survivor_pid": 5,
+        "survivor_steps": 5,
+        "fault_status": 142,
+        "survivor_status": 0,
+        "free_before_after": 65119,
+        "shell_retook": true
+      }
+    ]
+  }
+]

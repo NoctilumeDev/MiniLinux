@@ -1,0 +1,4 @@
+Anonymous HTTPS download from the published GitHub release
+lab-preview-20261002; target 231fdd9a5bc2cc16f81e554d83f27ebc6b4b4182
+ZIP SHA256 9210A0F44BE614A99AE898CF0C2AF370CA8822FA1FC00BA60A2086BC9B43D4F3
+Bytes 2930931; matches the independently unpacked and tested v2 ZIP.

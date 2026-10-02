@@ -1,0 +1,781 @@
+{
+  "url": "http://127.0.0.1:8081/",
+  "method": "Actual exported page; normal wall clock; locator click/fill/Enter; DOM reads only; no injected scripts or routed page requests",
+  "clips": [
+    {
+      "command": "boot",
+      "frameCount": 1,
+      "sequence": 26,
+      "visible": 6,
+      "pinnedId": 1,
+      "pinMeta": "Latest #22 · tick 1 · wait",
+      "consoleBytes": 149
+    },
+    {
+      "command": "help",
+      "frameCount": 2,
+      "sequence": 52,
+      "visible": 6,
+      "pinnedId": 1,
+      "pinMeta": "Selected #1 · tick 0 · boot",
+      "consoleBytes": 280
+    },
+    {
+      "command": "ls",
+      "frameCount": 2,
+      "sequence": 78,
+      "visible": 6,
+      "pinnedId": 1,
+      "pinMeta": "Selected #1 · tick 0 · boot",
+      "consoleBytes": 330
+    },
+    {
+      "command": "cat hello.txt",
+      "frameCount": 2,
+      "sequence": 115,
+      "visible": 6,
+      "pinnedId": 1,
+      "pinMeta": "Selected #1 · tick 0 · boot",
+      "consoleBytes": 367
+    },
+    {
+      "command": "ps",
+      "frameCount": 2,
+      "sequence": 147,
+      "visible": 6,
+      "pinnedId": 1,
+      "pinMeta": "Selected #1 · tick 0 · boot",
+      "consoleBytes": 503
+    },
+    {
+      "command": "run hello",
+      "frameCount": 3,
+      "sequence": 227,
+      "visible": 12,
+      "pinnedId": 1,
+      "pinMeta": "Selected #1 · tick 0 · boot",
+      "consoleBytes": 567
+    },
+    {
+      "command": "run reader",
+      "frameCount": 3,
+      "sequence": 296,
+      "visible": 17,
+      "pinnedId": 1,
+      "pinMeta": "Selected #1 · tick 0 · boot",
+      "consoleBytes": 672
+    },
+    {
+      "command": "run counter-a counter-b",
+      "frameCount": 43,
+      "sequence": 1211,
+      "visible": 80,
+      "pinnedId": 1027,
+      "pinMeta": "Selected #1027 · tick 567 · schedule",
+      "consoleBytes": 1396
+    },
+    {
+      "command": "run fault",
+      "frameCount": 2,
+      "sequence": 1257,
+      "visible": 80,
+      "pinnedId": 1033,
+      "pinMeta": "Selected #1033 · tick 573 · schedule",
+      "consoleBytes": 1512
+    },
+    {
+      "command": "check",
+      "frameCount": 3,
+      "sequence": 1430,
+      "visible": 80,
+      "pinnedId": 1067,
+      "pinMeta": "Selected #1067 · tick 607 · schedule",
+      "consoleBytes": 1727
+    },
+    {
+      "command": "mem",
+      "frameCount": 2,
+      "sequence": 1471,
+      "visible": 80,
+      "pinnedId": 1067,
+      "pinMeta": "Selected #1067 · tick 607 · schedule",
+      "consoleBytes": 1761
+    }
+  ],
+  "failures": [
+    {
+      "name": "real click pin boot",
+      "data": {
+        "meta": "Latest #22 · tick 1 · wait",
+        "selectedRows": []
+      }
+    }
+  ],
+  "pageErrors": [],
+  "warnings": [],
+  "recordingSource": "cc937317c7af9a99d8987059776654f0a85a57d8",
+  "hashes": {
+    "recording": "41b40894dda0b47a937bfa21c85480e262de158983062ca7318e1a63e6b49ecc",
+    "app.js": "bd093a0b6bff9d22ad382ea69e5b61c367ef463082e75bd9de61a13959823fb7",
+    "replay.js": "4e0ce2a833d4d752b51738b942161779b64df3d913b45bb9284c34c41ba85416",
+    "index.html": "02ebb80103a694abd1522517af70c2e44ed72735fbee39449108fb8c567f9652",
+    "style.css": "68c398092e9d0bcf49541e25c520bb6a02505e82e91f88fd2d82f80d78b153ea"
+  },
+  "faultMouse": {
+    "clicked": {
+      "console": "MiniLinux LAB: entered kernel_main\ninit: PID 1 entered user mode; starting shell\nMiniLinux / x86_64 teaching kernel\nType 'help' for commands.\n\nmini$ help\nhelp | ls | cat FILE | ps | run PROGRAM [PROGRAM]\nprograms: hello reader counter-a counter-b fault\nobserve: mem | check\nmini$ ls\n/hello.txt  17 bytes\n/empty.txt  0 bytes\nmini$ cat hello.txt\nhello from ramfs\nmini$ ps\nPID  PPID  STATE    PROGRAM     CR3\n1    0     waiting  init  0x0000000000077000\n2    1     ready    shell  0x0000000000082000\nmini$ run hello\nhello from user mode\nrun: pid 3 exited status 0\nmini$ run reader\nreader: reading /hello.txt through syscalls\nhello from ramfs\nrun: pid 4 exited status 0\nmini$ run counter-a counter-b\ncounter-a pid=5 step=1 marker=0x000000000000a110 work=132170000\ncounter-b pid=6 step=1 marker=0x000000000000b220 work=133840000\ncounter-a pid=5 step=2 marker=0x000000000000a110 work=264220000\ncounter-b pid=6 step=2 marker=0x000000000000b220 work=270380000\ncounter-a pid=5 step=3 marker=0x000000000000a110 work=401630000\ncounter-b pid=6 step=3 marker=0x000000000000b220 work=403170000\ncounter-a pid=5 step=4 marker=0x000000000000a110 work=526800000\ncounter-b pid=6 step=4 marker=0x000000000000b220 work=529080000\ncounter-a pid=5 step=5 marker=0x000000000000a110 work=658490000\ncounter-b pid=6 step=5 marker=0x000000000000b220 work=659760000\nrun: pid 5 exited status 0\nrun: pid 6 exited status 0\nmini$ run fault\nfault: requesting a forbidden kernel read\n\nuser fault: pid=7 vector=14\nrun: pid 7 exited status 142\nmini$ ",
+      "coordinates": "Recorded 2026-10-02 · cc93731 · run fault · frame 2/2",
+      "connection": "REPLAY",
+      "footer": "latest event #1257 · observed, not instantaneous",
+      "meta": "Selected #1235 · tick 667 · fault",
+      "latestPressed": "false",
+      "eventIds": [
+        1235
+      ],
+      "selectedRows": [
+        "Inspect fault event 1235 at tick 667"
+      ],
+      "processRows": [
+        [
+          "1",
+          "0",
+          "waiting",
+          "init"
+        ],
+        [
+          "2",
+          "1",
+          "current",
+          "shell"
+        ]
+      ],
+      "callRows": [
+        [
+          "667",
+          "2",
+          "write",
+          "29"
+        ],
+        [
+          "667",
+          "7",
+          "write",
+          "42"
+        ],
+        [
+          "667",
+          "2",
+          "spawn",
+          "7"
+        ],
+        [
+          "666",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "665",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "663",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "662",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "660",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "659",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "657",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "656",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "654",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "653",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "642",
+          "2",
+          "write",
+          "6"
+        ],
+        [
+          "641",
+          "2",
+          "write",
+          "27"
+        ],
+        [
+          "641",
+          "2",
+          "write",
+          "27"
+        ],
+        [
+          "640",
+          "6",
+          "write",
+          "64"
+        ],
+        [
+          "639",
+          "5",
+          "write",
+          "64"
+        ],
+        [
+          "540",
+          "6",
+          "write",
+          "64"
+        ],
+        [
+          "539",
+          "5",
+          "write",
+          "64"
+        ],
+        [
+          "440",
+          "6",
+          "write",
+          "64"
+        ],
+        [
+          "439",
+          "5",
+          "write",
+          "64"
+        ],
+        [
+          "340",
+          "6",
+          "write",
+          "64"
+        ],
+        [
+          "339",
+          "5",
+          "write",
+          "64"
+        ],
+        [
+          "240",
+          "6",
+          "write",
+          "64"
+        ],
+        [
+          "239",
+          "5",
+          "write",
+          "64"
+        ],
+        [
+          "138",
+          "2",
+          "spawn",
+          "6"
+        ],
+        [
+          "138",
+          "2",
+          "spawn",
+          "5"
+        ],
+        [
+          "138",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "137",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "135",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "133",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "132",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "130",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "129",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "127",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "126",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "124",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "122",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "121",
+          "2",
+          "input",
+          "1"
+        ]
+      ],
+      "fieldTexts": [
+        "PID",
+        "7",
+        "Vector",
+        "14",
+        "Error",
+        "5",
+        "Address",
+        "0xffffffff80000000",
+        "RIP",
+        "0x00000000004000ea",
+        "Saved CPL",
+        "3"
+      ],
+      "inputDisabled": false,
+      "error": "",
+      "errorHidden": true,
+      "focus": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": "Inspect fault event 1235 at tick 667"
+      }
+    },
+    "held": {
+      "console": "MiniLinux LAB: entered kernel_main\ninit: PID 1 entered user mode; starting shell\nMiniLinux / x86_64 teaching kernel\nType 'help' for commands.\n\nmini$ help\nhelp | ls | cat FILE | ps | run PROGRAM [PROGRAM]\nprograms: hello reader counter-a counter-b fault\nobserve: mem | check\nmini$ ls\n/hello.txt  17 bytes\n/empty.txt  0 bytes\nmini$ cat hello.txt\nhello from ramfs\nmini$ ps\nPID  PPID  STATE    PROGRAM     CR3\n1    0     waiting  init  0x0000000000077000\n2    1     ready    shell  0x0000000000082000\nmini$ run hello\nhello from user mode\nrun: pid 3 exited status 0\nmini$ run reader\nreader: reading /hello.txt through syscalls\nhello from ramfs\nrun: pid 4 exited status 0\nmini$ run counter-a counter-b\ncounter-a pid=5 step=1 marker=0x000000000000a110 work=132170000\ncounter-b pid=6 step=1 marker=0x000000000000b220 work=133840000\ncounter-a pid=5 step=2 marker=0x000000000000a110 work=264220000\ncounter-b pid=6 step=2 marker=0x000000000000b220 work=270380000\ncounter-a pid=5 step=3 marker=0x000000000000a110 work=401630000\ncounter-b pid=6 step=3 marker=0x000000000000b220 work=403170000\ncounter-a pid=5 step=4 marker=0x000000000000a110 work=526800000\ncounter-b pid=6 step=4 marker=0x000000000000b220 work=529080000\ncounter-a pid=5 step=5 marker=0x000000000000a110 work=658490000\ncounter-b pid=6 step=5 marker=0x000000000000b220 work=659760000\nrun: pid 5 exited status 0\nrun: pid 6 exited status 0\nmini$ run fault\nfault: requesting a forbidden kernel read\n\nuser fault: pid=7 vector=14\nrun: pid 7 exited status 142\nmini$ ",
+      "coordinates": "Recorded 2026-10-02 · cc93731 · run fault · frame 2/2",
+      "connection": "REPLAY",
+      "footer": "latest event #1257 · observed, not instantaneous",
+      "meta": "Selected #1235 · tick 667 · fault",
+      "latestPressed": "false",
+      "eventIds": [
+        1235
+      ],
+      "selectedRows": [
+        "Inspect fault event 1235 at tick 667"
+      ],
+      "processRows": [
+        [
+          "1",
+          "0",
+          "waiting",
+          "init"
+        ],
+        [
+          "2",
+          "1",
+          "current",
+          "shell"
+        ]
+      ],
+      "callRows": [
+        [
+          "667",
+          "2",
+          "write",
+          "29"
+        ],
+        [
+          "667",
+          "7",
+          "write",
+          "42"
+        ],
+        [
+          "667",
+          "2",
+          "spawn",
+          "7"
+        ],
+        [
+          "666",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "665",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "663",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "662",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "660",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "659",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "657",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "656",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "654",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "653",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "642",
+          "2",
+          "write",
+          "6"
+        ],
+        [
+          "641",
+          "2",
+          "write",
+          "27"
+        ],
+        [
+          "641",
+          "2",
+          "write",
+          "27"
+        ],
+        [
+          "640",
+          "6",
+          "write",
+          "64"
+        ],
+        [
+          "639",
+          "5",
+          "write",
+          "64"
+        ],
+        [
+          "540",
+          "6",
+          "write",
+          "64"
+        ],
+        [
+          "539",
+          "5",
+          "write",
+          "64"
+        ],
+        [
+          "440",
+          "6",
+          "write",
+          "64"
+        ],
+        [
+          "439",
+          "5",
+          "write",
+          "64"
+        ],
+        [
+          "340",
+          "6",
+          "write",
+          "64"
+        ],
+        [
+          "339",
+          "5",
+          "write",
+          "64"
+        ],
+        [
+          "240",
+          "6",
+          "write",
+          "64"
+        ],
+        [
+          "239",
+          "5",
+          "write",
+          "64"
+        ],
+        [
+          "138",
+          "2",
+          "spawn",
+          "6"
+        ],
+        [
+          "138",
+          "2",
+          "spawn",
+          "5"
+        ],
+        [
+          "138",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "137",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "135",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "133",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "132",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "130",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "129",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "127",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "126",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "124",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "122",
+          "2",
+          "input",
+          "1"
+        ],
+        [
+          "121",
+          "2",
+          "input",
+          "1"
+        ]
+      ],
+      "fieldTexts": [
+        "PID",
+        "7",
+        "Vector",
+        "14",
+        "Error",
+        "5",
+        "Address",
+        "0xffffffff80000000",
+        "RIP",
+        "0x00000000004000ea",
+        "Saved CPL",
+        "3"
+      ],
+      "inputDisabled": false,
+      "error": "",
+      "errorHidden": true,
+      "focus": {
+        "tag": "BUTTON",
+        "id": "",
+        "label": "Inspect fault event 1235 at tick 667"
+      }
+    }
+  },
+  "faultKeyboard": {
+    "meta": "Selected #1235 · tick 667 · fault",
+    "selectedRows": [
+      "Inspect fault event 1235 at tick 667"
+    ],
+    "focus": {
+      "tag": "BUTTON",
+      "id": "",
+      "label": "Inspect fault event 1235 at tick 667"
+    }
+  },
+  "pause": {
+    "before": "Recorded 2026-10-02 · cc93731 · run counter-a counter-b · frame 2/43",
+    "after": "Recorded 2026-10-02 · cc93731 · run counter-a counter-b · frame 2/43",
+    "inputDisabled": false,
+    "pids": [
+      [
+        "1",
+        "0",
+        "waiting",
+        "init"
+      ],
+      [
+        "2",
+        "1",
+        "ready",
+        "shell"
+      ],
+      [
+        "5",
+        "2",
+        "ready",
+        "counter-a"
+      ],
+      [
+        "6",
+        "2",
+        "current",
+        "counter-b"
+      ]
+    ]
+  },
+  "historical": {
+    "id": 1,
+    "meta": "Selected #1 · tick 0 · boot",
+    "focus": {
+      "tag": "DIV",
+      "id": "events",
+      "label": "Kernel event log"
+    }
+  },
+  "latestScroll": {
+    "top": 1609,
+    "height": 126,
+    "total": 1735
+  },
+  "unknown": {
+    "error": "This replay contains: help, ls, cat hello.txt, ps, run hello, run reader, run counter-a counter-b, run fault, check, mem. Download LAB to execute other commands.",
+    "connection": "REPLAY PAUSED"
+  },
+  "pausedClipSwitch": {
+    "connection": "REPLAY",
+    "coordinates": "Recorded 2026-10-02 · cc93731 · cat hello.txt · frame 2/2",
+    "meta": "Latest #22 · tick 1 · wait"
+  },
+  "reset": {
+    "coordinates": "Recorded 2026-10-02 · cc93731 · boot · frame 1/1",
+    "sequence": "latest event #26 · observed, not instantaneous",
+    "meta": "Latest #22 · tick 1 · wait"
+  },
+  "transientClassification": "Previous root IAB transient was not reproduced by normal locator mouse click or Enter; cause unestablished; no claim of tool fault."
+}

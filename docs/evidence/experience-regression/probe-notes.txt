@@ -1,0 +1,13 @@
+The baseline ISO was built at exact cc937317 before the independent fixture commit.
+The fixture changes only user/laboratory.c plus two new host probe scripts; kernel and ABI remain identical.
+Both ToolRoots keep separate private images and borrow fixed dependency directories via junctions.
+No main checkout file or shared D:\DevTools\MiniLinux\images ISO was changed.
+Four total guest boots: baseline 64/256 MiB and fixture 64/256 MiB.
+Baseline: run fault counter-a and run counter-a fault; five survivor steps, CPL3 #PF trace, exit 142/0, shell cat retake, pages restored.
+Fixture: PROCESS/FILE/MEMORY outputs crossing USER_DATA page end return -2 and preserve all eight mapped sentinel bytes.
+Control: the same output structs succeed across the two mapped user stack pages.
+Fixture: wait PID 1, current PID, and already-reaped child returns -3; child first wait succeeds; pages restore.
+Fixture: host sends Z after visible readiness; one-second tick delay lets it queue before the invalid INPUT call; valid INPUT then retrieves Z.
+No first failure occurred; raw COM1/COM2/QEMU output and final snapshots are retained per guest boot.
+Free counts are per build and per boot; only before/after equality is asserted, not equality with older images.
+Not tested here: spawn partial-OOM injection, other exception vectors, init/shell recovery, remaining GPR sentinels.

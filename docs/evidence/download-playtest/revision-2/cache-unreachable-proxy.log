@@ -1,0 +1,9 @@
+First start downloads about 220 MB of official archives; later starts use this folder cache.
+Runtime stays in this package. No system installation or global proxy setting is changed.
+[1/4] Checking the packaged kernel image
+[2/4] Preparing the embedded Python runtime
+Using this package Python runtime.
+[3/4] Preparing QEMU (download, verify, then unpack)
+Using this package QEMU runtime.
+[4/4] Checking the QEMU runtime; LAB will open next
+LAB runtime ready. Keep Start.cmd open; Ctrl+C closes LAB and its QEMU.

@@ -1,0 +1,41 @@
+MiniLinux Windows LAB 最终v2 ZIP独立验证：通过
+
+受测原始ZIP：C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\build\desktop-v2\MiniLinux-LAB-Windows-x64.zip。
+SHA256 9210A0F44BE614A99AE898CF0C2AF370CA8822FA1FC00BA60A2086BC9B43D4F3，2,930,931字节。
+manifest.source=231fdd9a5bc2cc16f81e554d83f27ebc6b4b4182。
+独立根：C:\Users\lenovo\AppData\Local\Temp\MiniLinux desktop 最终 v2 231fdd9 20261002；创建前不存在，包含中文与空格。
+测试原v2 ZIP解包内容，没有替换或修补包内源码。结束前逐一复核原tools源码SHA256均未变。
+
+核验坐标
+app.js BD093A0B6BFF9D22AD382EA69E5B61C367EF463082E75BD9DE61A13959823FB7。
+lab_guest.py 4901B21F29913D1412B49D9361F09204961B985F79E58853CF27C8FD808B8CC3。
+minilinux-lab.iso AA4CDB629DD5CB3C3C279B7387BB1FE7A633EE861B0625FC9187538EB753F231。
+以上都与约定的最终坐标和包内manifest匹配。原ZIP副本original-v2.zip保留。
+
+准备与实际运行
+CACHE首启：将此前v1独立NETWORK首启实际下载且哈希验证的Python3.13.16/QEMU20260811官方档案复制到该包自己的runtime/downloads。19:38:34.2609145–19:38:47.1952038 +08:00运行原prepare-desktop.ps1，通过；没有重复联网下载。NETWORK首启资格仍来自此前v1证据，不混成v2重新联网。
+包内runtime/python/python.exe -I tools/desktop-launch.py --no-browser实际启动真实64MiB客体。Python isolated=1，sys.executable与sys.path均在包内。QEMU路径与CIM命令也在包内runtime。
+读回运行中Python/QEMU共216个已加载模块，D盘模块为0。启动链不依赖D盘Python/QEMU/Clang/GDB/WSL。泛用lab-server.py/lab_guest.py直接CLI的旧默认D:/字符串仍在源码，但桌面launcher显式传入包内runtime，未执行那些__main__默认入口。
+外部stdlib HTTP探针19:41:08.2418121–19:41:15.8269404 +08:00，exit0；探针仅保存在evidence，不修改v2。
+通过help/ls/cat/ps/run hello/run reader/run counter-a counter-b/run fault，以及fault后再次cat、check/mem。双counter真实双向timer切换、相同VA/不同PA和marker；fault状态142后shell继续接管。stop后input返回503；restart新epoch、旧console清空，仅init/shell。
+该轮完整状态和观察事件在03-desktop-http-results.json，原console/trace/QEMU日志保留。
+
+关闭与最终清理
+Ctrl+C关闭原launcher。TTY外层PowerShell返回1、无Python traceback；这个控制器状态不被写成Python exit0。
+19:42:47.0316960 +08:00独立CIM：QEMU/GDB=0，package Python=0。1234/8080与58240/58241/58242/61050/61051全部采样端口listener=0。
+已明确通知父任务VM时段释放；其后只整理报告，没有再启动VM。
+没有改主仓、推送、NSIS正常安装、PATH/注册表写入命令。
+
+资格分开
+原v1 ZIP：NETWORK prepare通过；中文路径QEMU绝对ISO文件参数导致启动失败，首败保留。
+受修v1：授权替换Guest4901B...后，同一中文+空格路径的HTTP、64/256MiB原USERLAND和完整BRIDGE探针通过；属于修后候选，不覆写原v1。
+最终v2：新原ZIP9210A...、source231fdd9...原样解包，CACHE准备和真实launcher/HTTP/重启/清理通过。
+本轮v2没有重复两档原USERLAND探针或浏览器视觉验证；两档原USERLAND和BRIDGE完整probe在受修v1保留，Guest/ISO与v2坐标一致。没有升级其他宿主或新的内核资格。
+
+归档入口
+coordinates.txt、package-manifest-original.json：不可变来源。
+final-artifact-sha256.json：ZIP/网页/原tools/运行时/档案/ISO哈希。
+final-cleanup-receipt.txt：清理读回。
+01-prepare-cache-status.txt、03-desktop-http-status.txt和总输出：实际结果。
+02-live-processes.json、02-live-loaded-modules.json、02-runtime-dependency-readback.txt、启动与重启listener：运行路径与宿主观察。
+原v1首败/受修v1报告位于 C:\Users\lenovo\AppData\Local\Temp\MiniLinux desktop 独立验证 cc93731 20261002\evidence\desktop-v1-validation-report.txt。

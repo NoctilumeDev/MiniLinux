@@ -1,0 +1,13 @@
+Get-FileHash : The term 'Get-FileHash' is not recognized as the name of a cmdle
+t, function, script file, or operable program. Check the spelling of the name, 
+or if a path was included, verify that the path is correct and try again.
+At C:\Users\lenovo\AppData\Local\Temp\MiniLinux 陌生下载者 20261002 独立试玩\原始解包\MiniLi
+nux-LAB\tools\prepare-desktop.ps1:8 char:10
++     if ((Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash -ne  ...
++          ~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (Get-FileHash:String) [], Parent 
+   ContainsErrorRecordException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 
+LAB could not start. Keep this message for troubleshooting.
+Press any key to continue . . . 

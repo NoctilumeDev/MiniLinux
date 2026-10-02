@@ -1,0 +1,182 @@
+{
+  "independentLeft": {
+    "fields": "PID\n7\nVector\n14\nError\n5\nAddress\n0xffffffff80000000\nRIP\n0x00000000004000ea\nSaved CPL\n3",
+    "left": 0,
+    "right": 64.66666412353516
+  },
+  "independentRight": {
+    "fields": "PID\n7\nVector\n14\nError\n5\nAddress\n0xffffffff80000000\nRIP\n0x00000000004000ea\nSaved CPL\n3",
+    "left": 0,
+    "right": 0
+  },
+  "layouts": [
+    {
+      "detail": [
+        214,
+        214,
+        "ltr"
+      ],
+      "log": [
+        214,
+        1736,
+        10,
+        "rtl",
+        "ltr"
+      ],
+      "manual": [
+        149,
+        "13px",
+        "20.8px"
+      ],
+      "page": [
+        1920,
+        1920,
+        1080
+      ],
+      "viewport": [
+        1920,
+        1080
+      ]
+    },
+    {
+      "detail": [
+        127,
+        162,
+        "ltr"
+      ],
+      "log": [
+        127,
+        1736,
+        10,
+        "rtl",
+        "ltr"
+      ],
+      "manual": [
+        61,
+        "13px",
+        "20.8px"
+      ],
+      "page": [
+        1366,
+        1366,
+        768
+      ],
+      "viewport": [
+        1366,
+        768
+      ]
+    },
+    {
+      "detail": [
+        82,
+        162,
+        "ltr"
+      ],
+      "log": [
+        82,
+        1736,
+        10,
+        "rtl",
+        "ltr"
+      ],
+      "manual": [
+        48,
+        "13px",
+        "20.8px"
+      ],
+      "page": [
+        1152,
+        1152,
+        640
+      ],
+      "viewport": [
+        1152,
+        640
+      ]
+    },
+    {
+      "detail": [
+        97,
+        162,
+        "ltr"
+      ],
+      "log": [
+        97,
+        1757,
+        10,
+        "rtl",
+        "ltr"
+      ],
+      "manual": [
+        48,
+        "13px",
+        "20.8px"
+      ],
+      "page": [
+        1024,
+        1024,
+        700
+      ],
+      "viewport": [
+        1024,
+        700
+      ]
+    },
+    {
+      "detail": [
+        260,
+        260,
+        "ltr"
+      ],
+      "log": [
+        260,
+        1736,
+        10,
+        "rtl",
+        "ltr"
+      ],
+      "manual": [
+        263,
+        "13px",
+        "20.8px"
+      ],
+      "page": [
+        685,
+        685,
+        2207
+      ],
+      "viewport": [
+        700,
+        1000
+      ]
+    },
+    {
+      "detail": [
+        162,
+        162,
+        "ltr"
+      ],
+      "log": [
+        260,
+        1736,
+        10,
+        "rtl",
+        "ltr"
+      ],
+      "manual": [
+        346,
+        "13px",
+        "20.8px"
+      ],
+      "page": [
+        375,
+        375,
+        2660
+      ],
+      "viewport": [
+        390,
+        844
+      ]
+    }
+  ]
+}

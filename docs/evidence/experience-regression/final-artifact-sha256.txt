@@ -1,0 +1,13 @@
+
+Algorithm : SHA256
+Hash      : C8CC2FBAC696C10C6DC428345869F5CB8003B808D53AB6C5B80DFE51C4DD7AD8
+Path      : C:\Users\lenovo\AppData\Local\Temp\MiniLinux-runtime-cc93731\build\kernel.elf
+
+Algorithm : SHA256
+Hash      : 818106D1A0598EB9A59A69B4673EC86487A1977EF1DA207060056B6E3459560E
+Path      : C:\Users\lenovo\AppData\Local\Temp\MiniLinux-runtime-cc93731\build\user.elf
+
+Algorithm : SHA256
+Hash      : AA4CDB629DD5CB3C3C279B7387BB1FE7A633EE861B0625FC9187538EB753F231
+Path      : D:\DevTools\MiniLinux\images\minilinux-lab.iso
+

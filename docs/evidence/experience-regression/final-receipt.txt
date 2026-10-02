@@ -1,0 +1,8 @@
+qemu_gdb_count=0
+worktree_python_count=0
+listeners_8080_1234_60420_60421=0
+sampled_owned_listener_count=0
+observed=2026-10-02T18:58:31.9817716+08:00
+candidate=cc937317c7af9a99d8987059776654f0a85a57d8
+worktree_status_follows:
+cc937317c7af9a99d8987059776654f0a85a57d8
