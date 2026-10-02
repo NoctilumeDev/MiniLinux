@@ -1,5 +1,15 @@
 # 体验入口与独立复验
 
+## 主线状态与合并复验
+
+2026-10-02，[PR #1](https://github.com/NoctilumeDev/MiniLinux/pull/1) 先合并到 `e1822e4ae4193e3f63d7bc973e2d6dbca3a7ac17`，再将 [PR #2](https://github.com/NoctilumeDev/MiniLinux/pull/2) 的 base 改为 `main` 并合并到 `1c938a267995c62ce1be60c6d132cd68a83b15ec`。两次冲突均仅为 README；保留新版试玩主页，运行源码与已复验的 `2e9279c` 没有差异。主线现在包含 M0–M6、真实用户态上层、前端与体验工具。
+
+该合并坐标在本机干净工作区顺序执行 `tools/closed-loop.ps1`、`tools/counterexamples.ps1`、`tools/check-lab.ps1`，每轮重新构建 ELF/ISO 并核对载荷，全部通过。涵盖 M0–M6、64/256 MiB、寄存器/别名/DF 拒绝、权限与指针边界、异常接管、用户程序容量/回收以及真实 HTTP 桥接 stop/restart。结束工作树干净，QEMU/GDB 和 1234 监听均为 0。[总输出](evidence/main-1c938a2/all-checks.log)、[反例摘要](evidence/main-1c938a2/counterexamples-summary.log)、[用户态结果](evidence/main-1c938a2/userland-results.json)、[桥接结果](evidence/main-1c938a2/bridge-results.json) 与 [坐标及清理读回](evidence/main-1c938a2/receipt.json) 保留本轮事实；随后只更新主页、文档与这些证据。
+
+在线回放和 `.2` 下载包保持原来经过独立试玩的字节及坐标，未重新发布或移动标签。以下是开发与交付期间的历史记录；合并复验不把同机结果升级成另一台 Windows 或 GitHub CI 的资格。
+
+## 体验方式
+
 在线演示是 **实录交互回放**：页面标注 REPLAY、录制日期、源码和片段进度。输入只选择已有片段，不在网页里执行新内核。console、PID、页映射和事件来自同一次真实 QEMU 录制；不会用预设故事生成假状态。可以暂停/继续、选择 PID 或事件、查看系统调用参数、清空视图和重置。
 
 录制来自 `cc937317c7af9a99d8987059776654f0a85a57d8`，boot 加十条命令；原始快照在 [recording.json](evidence/replay/recording.json)。内核、用户 ELF 和 ISO 哈希均与本轮 LAB 载荷核验结果一致。用 `tools/export-demo.py --recording docs/evidence/replay/recording.json --output build/demo` 导出纯静态 HTML/CSS/JavaScript；没有浏览器 CPU 模拟器或远端执行服务。

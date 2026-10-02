@@ -1,5 +1,7 @@
 # 薄用户态上层
 
+本实现已于 2026-10-02 经 [PR #2](https://github.com/NoctilumeDev/MiniLinux/pull/2) 合入 `main`，合并后的三条完整验证入口通过。[当前主线记录](EXPERIENCE.md#主线状态与合并复验) 绑定合并坐标；以下保留开发时的证明条件、结果与首败。
+
 本轮从 `747952c` 的 M0–M6 候选出发，先把人能操作的用户态入口做实，再接黑白前端。历史实验仍使用原来的构建入口。
 
 ## 边界与顺序
@@ -52,7 +54,7 @@
 
 克隆中依次运行完整 `closed-loop.ps1`、`counterexamples.ps1` 和 `check-lab.ps1`，所有入口通过。远端的 64/256 MiB 用户态结果、三份汇总和最后的工作树/客体/调试端口读回分别保留为 `remote-*`。[最后读回](evidence/userland-console/remote-receipt.txt)确认工作树干净，无 QEMU/GDB 和 1234 监听。最外层命令末尾的只读 `Get-Process` 因没有匹配进程而返回非零；另一次显式断言和读回成功，未把这个格式问题算作内核反例，也未仅凭输出最后一句升级通过。
 
-本轮候选在 [PR #2](https://github.com/NoctilumeDev/MiniLinux/pull/2)，基于尚未合入的 [PR #1](https://github.com/NoctilumeDev/MiniLinux/pull/1)。内核、用户程序可用 `git diff ac3e5cb -- kernel include user boot linker.ld` 核对没有变化，原构建和 HTTP 桥接规则保留。之后新增的录制、静态导出和下载启动工具是体验交付层；下载包暴露中文绝对路径被 QEMU 文件参数拒绝，客体启动改用运行目录下的相对镜像/固件路径并单独复验。网页调整单独经过浏览器复验，不把旧源码的网页截图当成新布局的证明。桌面预览重新构建自己的 LAB ELF/ISO 并验证载荷，再从该工作区运行。M0 历史标签与主线内核不因候选通过而自动变化。最新独立验证与实录范围见 [EXPERIENCE](EXPERIENCE.md)。
+当时 [PR #2](https://github.com/NoctilumeDev/MiniLinux/pull/2) 基于尚未合入的 [PR #1](https://github.com/NoctilumeDev/MiniLinux/pull/1)；现在二者已依次合并。内核、用户程序可用 `git diff ac3e5cb -- kernel include user boot linker.ld` 核对没有变化，原构建和 HTTP 桥接规则保留。之后新增的录制、静态导出和下载启动工具是体验交付层；下载包暴露中文绝对路径被 QEMU 文件参数拒绝，客体启动改用运行目录下的相对镜像/固件路径并单独复验。网页调整单独经过浏览器复验，不把旧源码的网页截图当成新布局的证明。桌面预览重新构建自己的 LAB ELF/ISO 并验证载荷，再从该工作区运行。M0 历史标签保持不变，主线通过本次显式合并更新。最新独立验证与实录范围见 [EXPERIENCE](EXPERIENCE.md)。
 
 ## 首败与修补
 

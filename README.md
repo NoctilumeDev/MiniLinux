@@ -4,9 +4,11 @@
 
 Linux-inspired, independently implemented. 本项目没有使用 Linux 内核源码，不是 Linux 发行版、fork 或兼容实现。核心机制自己写，教学之外复用工具；代码以普通循环、数组和 switch 为主，少量汇编处理 CPU 入口。
 
-**[在线实录交互回放](https://noctilumedev.github.io/MiniLinux/)** · **[下载 Windows 实时 LAB ZIP](https://github.com/NoctilumeDev/MiniLinux/releases/download/lab-preview-20261002.2/MiniLinux-LAB-Windows-x64.zip)** · **[顺着程序读代码](https://github.com/NoctilumeDev/MiniLinux/blob/feat/userland-console/docs/WALKTHROUGH.md)**
+**[在线实录交互回放](https://noctilumedev.github.io/MiniLinux/)** · **[下载 Windows 实时 LAB ZIP](https://github.com/NoctilumeDev/MiniLinux/releases/download/lab-preview-20261002.2/MiniLinux-LAB-Windows-x64.zip)** · **[顺着程序读代码](docs/WALKTHROUGH.md)**
 
-![Windows LAB：故障被隔离，日志与详情分别滚动](https://raw.githubusercontent.com/NoctilumeDev/MiniLinux/feat/userland-console/docs/evidence/download-playtest/revision-2/fault-right-scrolled-left-stable.jpg)
+**当前主线：M0–M6、用户态 init/shell、实时 LAB 与体验工具已合入 `main`。** 可以先在线试玩、下载运行，或直接克隆主线读代码。
+
+![Windows LAB：故障被隔离，日志与详情分别滚动](docs/evidence/download-playtest/revision-2/fault-right-scrolled-left-stable.jpg)
 
 ## 先玩一次
 
@@ -46,16 +48,18 @@ Limine → kernel_main → 物理页 → 四级页表 → PIT / 中断 → 轮�
 | M6 进程声明 | 相同虚拟地址能否存不同数据？ | 不同页表根与物理页、独立标记、七种保护/异常探针、坏别名拒绝。 |
 | LAB 薄上层 | 人怎样操作这条机制链？ | 用户态 init/shell、spawn/wait、hello/reader/counter/fault，故障接管与页回收。 |
 
-M0–M6 和 LAB 候选已从精确提交干净工作区重跑完整验证。本轮另有独立智能体执行反例、64/256 MiB 回归、前端 11 段回放和产品评审，修补日志顺序、重启增量、焦点/连接恢复与中文路径启动问题；首败保留。再从公开下载重新试玩，发现并修补启动模块环境、命令名称、counter 观察与停止/断连标注。最终 `.2` 原始 ZIP 在本机全新中文加空格目录用包内 `Start.cmd --no-browser` 冷启动，另一位智能体实际操作浏览器；两栏独立滚动、所有命令、三态快照、stop/restart 与退出清理通过，下载哈希相符。范围与限制见 [体验与独立复验](https://github.com/NoctilumeDev/MiniLinux/blob/feat/userland-console/docs/EXPERIENCE.md)。
+合并后的主线 `1c938a267995c62ce1be60c6d132cd68a83b15ec` 已在干净工作区顺序重跑 `closed-loop.ps1`、`counterexamples.ps1`、`check-lab.ps1`，全部通过：M0–M6、64/256 MiB、寄存器/别名/DF 反例、用户异常、页回收及真实桥接 stop/restart。结束无 QEMU/GDB 或调试端口残留；之后仅更新主页、文档与证据。见 [主线复验记录](docs/EXPERIENCE.md#主线状态与合并复验)。
 
-**主线与候选分开：**`main` 保留 M0 源码；M0–M6 在 [PR #1](https://github.com/NoctilumeDev/MiniLinux/pull/1)，LAB/页面/下载工具在 [PR #2](https://github.com/NoctilumeDev/MiniLinux/pull/2)，尚未合入。下载标签 `lab-preview-20261002.2` 固定在 `6964b15`，不会随候选分支移动；旧版本与首败保留。当前首页更新只涉及 README。
+独立智能体此前完成机制反例、前端 11 段回放、产品评审与公开下载试玩，发现的问题已修补，首败保留。最终 `.2` 原始 ZIP 在本机全新中文加空格目录冷启动，另一位智能体实际操作浏览器，确认所有命令、两栏独立滚动、快照三态和退出清理；下载哈希相符。这是同机独立复验，范围与限制见 [体验记录](docs/EXPERIENCE.md)。
+
+[PR #1](https://github.com/NoctilumeDev/MiniLinux/pull/1) 与 [PR #2](https://github.com/NoctilumeDev/MiniLinux/pull/2) 已依次合并。下载标签 `lab-preview-20261002.2` 仍固定在经过试玩的 `6964b15`；在线回放仍是原录制，不会因主线合并变成实时运行。旧版本、首败与 M0 历史标签保留。
 
 ## 从源码运行
 
-完整候选需要检出对应分支：
+直接克隆默认的 `main`：
 
 ```powershell
-git clone --branch feat/userland-console https://github.com/NoctilumeDev/MiniLinux.git
+git clone https://github.com/NoctilumeDev/MiniLinux.git
 cd MiniLinux
 # 先按下面的 M0 环境记录准备固定工具
 .\tools\lab.ps1
@@ -65,6 +69,6 @@ cd MiniLinux
 
 内核和用户程序没有 libc 或第三方运行库；页面使用原生 HTML/CSS/JavaScript，桥接只用 Python 标准库。构建/启动工具仍依赖 Clang/LLD、Limine、QEMU/GDB、Python/pycdlib；“零运行库依赖”不等于这些工具不存在。
 
-[M0 环境](docs/M0.md) · [M0 远端记录](docs/M0-remote-round-record.md) · [闭环坐标](https://github.com/NoctilumeDev/MiniLinux/blob/feat/userland-console/docs/CLOSURE.md) · [错题本](https://github.com/NoctilumeDev/MiniLinux/blob/feat/userland-console/docs/COUNTEREXAMPLES.md) · [薄用户态](https://github.com/NoctilumeDev/MiniLinux/blob/feat/userland-console/docs/USERLAND.md) · [网页验证](https://github.com/NoctilumeDev/MiniLinux/blob/feat/userland-console/design-qa.md)
+[M0 环境](docs/M0.md) · [M0 远端记录](docs/M0-remote-round-record.md) · [闭环坐标](docs/CLOSURE.md) · [错题本](docs/COUNTEREXAMPLES.md) · [薄用户态](docs/USERLAND.md) · [网页验证](design-qa.md)
 
 M5 关闭主教学问题，M6 实证隔离后才升级 process 声明。网络、磁盘恢复、SMP、客体 GUI、完整 POSIX、动态链接与生产 hardening 不在目标内。学习 Linux/xv6 的机制与修复经验，没有复制外部内核实现。

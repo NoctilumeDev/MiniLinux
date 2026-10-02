@@ -1,0 +1,40 @@
+source=1c938a267995c62ce1be60c6d132cd68a83b15ec
+working-tree-dirty=False
+attack-1 attack=1 fault=1 elf=2F64F44E58265680B1E16084717D6D9C3E8099ED8D9AB30A05EA94118DB6B045 payload=matched
+attack-1 memory=64 passed
+attack-1 memory=256 passed
+attack-2 attack=2 fault=1 elf=E1BF54B4CDB5E819EB21510FF174AD6E3D6648CC640DC6EB04F98D32A6AADA58 payload=matched
+attack-2 memory=64 passed
+attack-2 memory=256 passed
+attack-3 attack=3 fault=1 elf=6318832FBB36F7F63F282598231EE67233D77868E9176298F2D1CE1BE825B80C payload=matched
+attack-3 memory=64 passed
+attack-3 memory=256 passed
+attack-4 attack=4 fault=1 elf=4EAB3FF3258C310BA94F386EB9EBD904CF1A073EF39323D43B5D9E6723B5947E payload=matched
+attack-4 memory=64 passed
+attack-4 memory=256 passed
+attack-5 attack=5 fault=1 elf=9186FBB1D6CE7421786AFA486E5C7AA66EE646FC0FA46B93B1399EAD5A2BCC1B payload=matched
+attack-5 memory=64 passed
+attack-5 memory=256 passed
+DF instruction mutation rejected by live C-entry guard
+df-normal-retake memory=256 passed
+fault-2 attack=0 fault=2 elf=6551D77D0BFFC7C8CCE50A1F807F354E9CFDFAAFB3F46B3DB4AC82F811701E89 payload=matched
+fault-2 memory=64 passed
+fault-2 memory=256 passed
+fault-3 attack=0 fault=3 elf=91287653EB1BEF9812B69336C3EE7D8C30B034B82EB41285F8E9A5C56A92FEAC payload=matched
+fault-3 memory=64 passed
+fault-3 memory=256 passed
+fault-4 attack=0 fault=4 elf=9A5440D715DA1C233A555549FDDF3102425DF90EF0FC8840BE3C50E2D7D30404 payload=matched
+fault-4 memory=64 passed
+fault-4 memory=256 passed
+fault-5 attack=0 fault=5 elf=5F49E1D14FCA0D06822167537BBEE3A7D38F2916CFC7D490ACD8565BDE0B67F1 payload=matched
+fault-5 memory=64 passed
+fault-5 memory=256 passed
+fault-6 attack=0 fault=6 elf=8AB56BCCD5DD705D9174FB13DAADD5BAE50AEBD751BF20977EE5A3042BD5F29F payload=matched
+fault-6 memory=64 passed
+fault-6 memory=256 passed
+fault-7 attack=0 fault=7 elf=F0B0333E36957FC72F14B1257CC22AE6484E7AB0E69A6350040194ABD066074A payload=matched
+fault-7 memory=64 passed
+fault-7 memory=256 passed
+normal-restored attack=0 fault=1 elf=AD9015C7FB1961C12BFCEDE2448F22B67258AAAB52822A7C51B63A3E5DC0CD6A payload=matched
+normal-restored memory=256 passed
+All counterexamples passed; normal image restored; no guest/debugger residue.

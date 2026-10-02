@@ -1,0 +1,66 @@
+[
+  {
+    "path": "/",
+    "status": 200
+  },
+  {
+    "path": "/api/state",
+    "status": 200
+  },
+  {
+    "path": "/api/state?after=invalid",
+    "status": 400
+  },
+  {
+    "path": "/../README.md",
+    "status": 404
+  },
+  {
+    "path": "/api/state",
+    "status": 403
+  },
+  {
+    "path": "/api/input",
+    "status": 403
+  },
+  {
+    "path": "/api/input",
+    "status": 400
+  },
+  {
+    "path": "/api/input",
+    "status": 400
+  },
+  {
+    "path": "/api/input",
+    "status": 400
+  },
+  {
+    "path": "/api/input",
+    "status": 200
+  },
+  {
+    "path": "/api/state",
+    "status": 200
+  },
+  {
+    "path": "/api/stop",
+    "status": 200
+  },
+  {
+    "path": "/api/state",
+    "status": 200
+  },
+  {
+    "path": "/api/input",
+    "status": 503
+  },
+  {
+    "path": "/api/restart",
+    "status": 200
+  },
+  {
+    "path": "/api/state",
+    "status": 200
+  }
+]

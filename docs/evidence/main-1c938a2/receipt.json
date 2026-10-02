@@ -1,0 +1,30 @@
+{
+  "source": "1c938a267995c62ce1be60c6d132cd68a83b15ec",
+  "observed_at": "2026-10-02T13:29:33.3891703Z",
+  "worktree_dirty_after_checks": false,
+  "merge_pr_1": "e1822e4ae4193e3f63d7bc973e2d6dbca3a7ac17",
+  "merge_pr_2": "1c938a267995c62ce1be60c6d132cd68a83b15ec",
+  "checks": [
+    "tools/closed-loop.ps1",
+    "tools/counterexamples.ps1",
+    "tools/check-lab.ps1"
+  ],
+  "checks_passed": true,
+  "runtime_diff_from_tested_feature_head": [],
+  "guest_debugger_count": 0,
+  "debug_listener_count": 0,
+  "old_m0_commit": "45b160f4ff92e5577c6bc55abaff0b8c3d408f62",
+  "published_zip_source": "6964b15c601bb69fa7886340645b5b295d3aa9bf",
+  "published_zip_sha256": "9532d9e39d8eb710c0fca11a69d3938ba1811cea129f71ac0783215fc29bc840",
+  "frontend": {
+    "replay.js": "681a521475258004efa0c30863abe7946eacf1bfa0b44c52fccaa93565583cf9",
+    "style.css": "d3c6861b5d6ac75111bfaef8d4cd99309c4184682cbb01e1182478e5913bf005",
+    "app.js": "a04b661d8f03865aa5d98d704ced7547ec73798c11f73b984a3b8e26bd0accbb"
+  },
+  "new_lab_artifacts": {
+    "kernel.elf": "620dd2c03e77b13155df95e30023ff5a4eba1996cada26d7ab2a6a4b98474994",
+    "lab.iso": "3de23b9c8fbc5d3096a8252445d341e164e416b2dd07535d4e2c81654873fef5",
+    "user.elf": "5fdfaf8a2a2e21b2edb0e2510e7103b5282b12e53249a29239d9be9477b95389"
+  },
+  "scope": "Clean worktree on the same Windows host; serial rebuild and payload verification. No CI or second-host claim. Published ZIP and replay are unchanged."
+}

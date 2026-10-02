@@ -1,0 +1,108 @@
+**********************
+PowerShell transcript start
+Start time: 20261002212600
+Username: LAPTOP-A5SU7IDU\lenovo
+RunAs User: LAPTOP-A5SU7IDU\lenovo
+Configuration Name:
+Machine: LAPTOP-A5SU7IDU (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Users\lenovo\.cache\codex-runtimes\codex-primary-runtime\dependencies\native\powershell\pwsh.dll -Command try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}
+$ErrorActionPreference='Stop'
+New-Item -ItemType Directory -Path build\merge-validation -Force | Out-Null
+Start-Transcript -LiteralPath build\merge-validation\all-checks.log
+Write-Host ('source=' + (git rev-parse HEAD))
+Write-Host ('working-tree-dirty=' + [bool](git status --porcelain))
+try {
+    .\tools\closed-loop.ps1
+    .\tools\counterexamples.ps1
+    .\tools\check-lab.ps1
+    Write-Host 'Merged main: all three validation commands passed.'
+} finally {
+    Stop-Transcript
+}
+Process ID: 1892
+PSVersion: 7.6.5
+PSEdition: Core
+GitCommitId: 7.6.5
+OS: Microsoft Windows 10.0.26200
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.4
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+Transcript started, output file is build\merge-validation\all-checks.log
+source=1c938a267995c62ce1be60c6d132cd68a83b15ec
+working-tree-dirty=False
+Checking M0 ...
+M0 passed.
+Checking M1 ...
+M1 passed.
+Checking M2 ...
+M2 passed.
+Checking M3 ...
+M3 passed.
+Checking M4 ...
+M4 passed.
+Checking M5 ...
+M5 passed.
+Checking M6 ...
+M6 passed.
+M0-M6 closed loop passed; no unresolved or dynamic runtime dependencies; no guest/debugger residue.
+attack-1 passed (64 MiB).
+attack-1 passed (256 MiB).
+attack-2 passed (64 MiB).
+attack-2 passed (256 MiB).
+attack-3 passed (64 MiB).
+attack-3 passed (256 MiB).
+attack-4 passed (64 MiB).
+attack-4 passed (256 MiB).
+attack-5 passed (64 MiB).
+attack-5 passed (256 MiB).
+df-normal-retake passed (256 MiB).
+fault-2 passed (64 MiB).
+fault-2 passed (256 MiB).
+fault-3 passed (64 MiB).
+fault-3 passed (256 MiB).
+fault-4 passed (64 MiB).
+fault-4 passed (256 MiB).
+fault-5 passed (64 MiB).
+fault-5 passed (256 MiB).
+fault-6 passed (64 MiB).
+fault-6 passed (256 MiB).
+fault-7 passed (64 MiB).
+fault-7 passed (256 MiB).
+normal-restored passed (256 MiB).
+All counterexamples passed; normal image restored; no guest/debugger residue.
+M0 tool baseline, added LLVM utilities, and pycdlib version match.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Built C:\Users\lenovo\AppData\Local\Temp\MiniLinux-homepage-20261002\build\kernel.elf
+
+Created D:\DevTools\MiniLinux\images\minilinux-lab.iso
+
+ISO kernel, Limine config, and BIOS file match this build.
+
+
+LAB closed loop passed; no unresolved or dynamic runtime dependencies.
+Merged main: all three validation commands passed.
+**********************
+PowerShell transcript end
+End time: 20261002212843
+**********************

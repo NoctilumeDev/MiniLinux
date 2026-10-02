@@ -1,14 +1,16 @@
-# 教学闭环：当前候选与证据范围
+# 教学闭环：主线与历史证据范围
+
+2026-10-02，[PR #1](https://github.com/NoctilumeDev/MiniLinux/pull/1) 与 [PR #2](https://github.com/NoctilumeDev/MiniLinux/pull/2) 已依次合入 `main`。合并坐标 `1c938a267995c62ce1be60c6d132cd68a83b15ec` 在干净工作区完成 M0–M6、错题本与 LAB 三条验证入口，随后只更新文档和证据；当前运行代码与受测主线一致。[合并复验](EXPERIENCE.md#主线状态与合并复验) 给出新记录。以下保留开发期间的坐标与当时状态，不覆盖旧轮次。
 
 用户在 2026-10-02 授权长任务：按 M0–M6 形成教学闭环，用简单、可读的实现，不照搬外部内核，内核与用户程序不依赖运行库。本轮从本机 M1 候选 `36ab4e5` 继续，公开 main 的起点仍为 `5e459b0e3f22a59924e78202ea5e331071c56e27`。历史 M0 标签不移动。
 
-## 当前坐标
+## 开发轮次的历史坐标
 
-当前分支 `feat/teaching-os-closure`，受测修补源码固定在 `ae93e86f56592fd7b38732a5f664b6213b037c1a`。从 GitHub 干净克隆，完整 `tools/closed-loop.ps1` 与 `tools/counterexamples.ps1` 全部通过；本轮的页表有效权限、七种用户异常、OOM 与入口现场范围见 [错题本](COUNTEREXAMPLES.md)。后续只整理文档和保留记录，不改变这个受测实现。
+当时分支为 `feat/teaching-os-closure`，受测修补源码固定在 `ae93e86f56592fd7b38732a5f664b6213b037c1a`。从 GitHub 干净克隆，完整 `tools/closed-loop.ps1` 与 `tools/counterexamples.ps1` 全部通过；本轮的页表有效权限、七种用户异常、OOM 与入口现场范围见 [错题本](COUNTEREXAMPLES.md)。该轮后续只整理文档和保留记录，不改变这个受测实现。
 
 原闭环的历史坐标是 `d296971d2b7be381d94c7a3cad544f3b296964f3`：M2 `1d2c894`，M3 `d2bae88`，M4 `a5615a5`，M5 `f72c2bf`，M6 与完整脚本 `d296971`。当时本机和 GitHub 精确提交干净克隆均完成 `tools/closed-loop.ps1`：全部正常链、M3 寄存器损坏、M6 数据别名拒绝与正常接管、ELF 依赖检查通过。这些旧记录保留，但不替代后来修补的复验。
 
-候选已发布到 [PR #1](https://github.com/NoctilumeDev/MiniLinux/pull/1)，open、draft、未合入；本轮读回的 base 仍精确为 `5e459b0e3f22a59924e78202ea5e331071c56e27`。原闭环到 `d5462b4` 之间只有文档与证据；本轮新增反例后修补了实现，并以 ae93e86 重新执行完整回归。没有宣称 GitHub CI、另一台宿主或 main 新版本已验证。
+该轮读回时 [PR #1](https://github.com/NoctilumeDev/MiniLinux/pull/1) 仍 open、draft、未合入，base 精确为 `5e459b0e3f22a59924e78202ea5e331071c56e27`；当前合入状态见文首。原闭环到 `d5462b4` 之间只有文档与证据；该轮新增反例后修补了实现，并以 ae93e86 重新执行完整回归。当时没有宣称 GitHub CI、另一台宿主或 main 新版本已验证。
 
 ## 能证明什么
 
