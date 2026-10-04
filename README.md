@@ -48,11 +48,9 @@ Limine → kernel_main → 物理页 → 四级页表 → PIT / 中断 → 轮�
 | M6 进程声明 | 相同虚拟地址能否存不同数据？ | 不同页表根与物理页、独立标记、七种保护/异常探针、坏别名拒绝。 |
 | LAB 薄上层 | 人怎样操作这条机制链？ | 用户态 init/shell、spawn/wait、hello/reader/counter/fault，故障接管与页回收。 |
 
-合并后的主线 `1c938a267995c62ce1be60c6d132cd68a83b15ec` 已在干净工作区顺序重跑 `closed-loop.ps1`、`counterexamples.ps1`、`check-lab.ps1`，全部通过：M0–M6、64/256 MiB、寄存器/别名/DF 反例、用户异常、页回收及真实桥接 stop/restart。结束无 QEMU/GDB 或调试端口残留；之后仅更新主页、文档与证据。见 [主线复验记录](docs/EXPERIENCE.md#主线状态与合并复验)。
+M0–M6、机制反例、用户态与桥接已在合并后的干净主线重跑。独立公开下载试玩还覆盖全部命令、两栏独立滚动、快照三态与退出清理，发现的问题及首败见 [体验记录](docs/EXPERIENCE.md)。这是同一 Windows 宿主的验证，不代表其他机器或 GitHub CI。
 
-独立智能体此前完成机制反例、前端 11 段回放、产品评审与公开下载试玩，发现的问题已修补，首败保留。最终 `.2` 原始 ZIP 在本机全新中文加空格目录冷启动，另一位智能体实际操作浏览器，确认所有命令、两栏独立滚动、快照三态和退出清理；下载哈希相符。这是同机独立复验，范围与限制见 [体验记录](docs/EXPERIENCE.md)。
-
-[PR #1](https://github.com/NoctilumeDev/MiniLinux/pull/1) 与 [PR #2](https://github.com/NoctilumeDev/MiniLinux/pull/2) 已依次合并。下载标签 `lab-preview-20261002.2` 仍固定在经过试玩的 `6964b15`；在线回放仍是原录制，不会因主线合并变成实时运行。旧版本、首败与 M0 历史标签保留。
+下载包与在线回放保留各自原来的受测版本；主线维护不会移动历史标签或把 REPLAY 变成实时运行。
 
 ## 从源码运行
 
@@ -65,10 +63,16 @@ cd MiniLinux
 .\tools\lab.ps1
 ```
 
-在 <http://127.0.0.1:8080/> 操作真实 CPL3 shell。已有实验台上，`./tools/closed-loop.ps1` 验证 M0–M6，`./tools/counterexamples.ps1` 运行迁移来的错题，`./tools/check-lab.ps1` 验证上层及桥接。先停止预览，构建和客体串行运行。
+在 <http://127.0.0.1:8080/> 操作真实 CPL3 shell。已有实验台上，`./tools/closed-loop.ps1` 验证 M0–M6，`./tools/counterexamples.ps1` 运行迁移来的错题，`./tools/check-lab.ps1` 验证上层、桥接及补充 LAB 边界。先停止预览，构建和客体串行运行。
 
 内核和用户程序没有 libc 或第三方运行库；页面使用原生 HTML/CSS/JavaScript，桥接只用 Python 标准库。构建/启动工具仍依赖 Clang/LLD、Limine、QEMU/GDB、Python/pycdlib；“零运行库依赖”不等于这些工具不存在。
 
 [M0 环境](docs/M0.md) · [M0 远端记录](docs/M0-remote-round-record.md) · [闭环坐标](docs/CLOSURE.md) · [错题本](docs/COUNTEREXAMPLES.md) · [薄用户态](docs/USERLAND.md) · [网页验证](design-qa.md)
 
 M5 关闭主教学问题，M6 实证隔离后才升级 process 声明。网络、磁盘恢复、SMP、客体 GUI、完整 POSIX、动态链接与生产 hardening 不在目标内。学习 Linux/xv6 的机制与修复经验，没有复制外部内核实现。
+
+## 阶段退出时收口
+
+保留首败、关键反例、当前体验截图和可重跑的见证；回收失去职责的过程截图、构建副本与临时环境。先整理引用，再清理，验证后再回收验证产物，最后核对 [遗留物收口门禁](docs/HYGIENE.md)。
+
+补充跨页、wait、INPUT 与故障幸存者探针已加入 LAB 检查；也可单独运行 `./tools/check-lab-boundaries.ps1`。引用和本仓库 build/cache 清理后，用 `D:\python-3.10.6\python.exe tools/check-hygiene.py` 做最后检查。门禁不生成新的哈希册或截图档案。
