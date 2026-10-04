@@ -44,63 +44,8 @@ ISO 检查在 finally 中移除自己的解包目录。补充 LAB 探针借用�
 
 ## 本次收口：2026-10-05
 
-状态：**待本地清理，门禁未通过**。引用整理和验证完成，不把这些通过等同于施工残留已经删除。
+**遗留物收口门禁：PASS。** 操作者按已批准清单执行清理，移除 32 个临时目录中的 131.41 MiB 内容，并解除八个工具 junction；随后读回确认这些目录、链接和一次性脚本均已不存在，没有遗留 MiniLinux 运行进程。D 盘固定工具哈希与 pycdlib 版本仍匹配基线；104 个本地行内 Markdown 文件链接通过检查，主仓和维护工作区的 build/cache 已收口。维护源码工作区继续用于本次 PR 审阅。
 
-删除 10 张被后续见证覆盖的成功截图，保留首败、当前体验和独立滚动等关键证据；当前 LAB 完整检查及补充探针通过，见两份小结果：[普通 LAB](evidence/experience-regression/baseline-20261005-results.json)、[用户夹具](evidence/experience-regression/fixture-20261005-results.json)。坏 ISO、旧 ELF 载荷、不适用的用户补丁均被拒绝并清理各自的临时目录；断链、build 和 cache 反例也被门禁检查拒绝。没有改内核/用户实现、前端运行资源、旧发布包或历史判据。
+本分支删除 10 张被后续见证覆盖的成功截图，保留首败、当前体验和关键交互。清理前的完整 LAB 检查及 64/256 MiB 补充探针通过，见 [普通 LAB](evidence/experience-regression/baseline-20261005-results.json) 与 [用户夹具](evidence/experience-regression/fixture-20261005-results.json)。坏 ISO、旧 ELF 载荷、不适用的用户补丁均被拒绝，临时目录已收口；门禁反例拒绝断链、build 和 cache。清理后的文档改动只复查引用与残留，没有为此重建实验产物。内核、用户实现、前端运行资源、旧发布包和原始 fixture.patch 未改。
 
-原探针提交 e6746766 的 Git 身份已保留为 `lab-boundary-fixture-20261002`，其 patch 仍可用。首次启动失败的唯一 v1 ZIP 已核对原哈希，保留在本机 `D:\DevTools\MiniLinux\evidence\desktop-v1-first-failure.zip`，没有当作可重建缓存丢弃。M3 原始诊断补入已有证据位置；新验证只额外保留上述两个结果文件。
-
-自动安全审核先后拒绝批量递归删除和单独删除主仓 build，只返回 `blocked by policy`，没有更具体原因。用户明确授权删除后再次尝试，批量和单目录命令仍在进程创建前被拒绝；32 个目录和八个 junction 均未删除，不再向用户重复索要授权。
-
-供本机操作者使用的一次性脚本为 `D:\DevTools\MiniLinux\cleanup-approved-20261005.ps1`，已做语法检查，未由 agent 执行。它默认只预览，带 `-Execute` 才按下面的固定清单删除；会复查路径、原始 ZIP、历史提交、保留见证、运行进程与工具链接，遇到变动停止。成功清理并通过只读检查后移除脚本自身，不成为项目的永久清理系统。操作者执行后仍须重新核对实际结果，才能将门禁改为通过。待清理范围如下：
-
-| 明确范围 | 本次盘点 |
-| --- | --- |
-| `C:\Users\lenovo\Desktop\GitHubProjects\MiniLinux\build` | 72.28 MiB，可重建产物；有职责的首败已另存。 |
-| 同仓 `tools\__pycache__` | 可重建 Python 缓存。 |
-| 工作区 tmp 下的九个旧 MiniLinux 验证目录 | 合计 48.76 MiB；源码已入历史或保留 patch/tag。仅 M0 无 Git 副本中的三份未提交草稿是已被当前实现取代的过程材料，不承接现行证明。 |
-| Windows Temp 中先前盘点的 19 个 MiniLinux 临时目录 | 当前 17 个已空，其余是 7-Zip 解包副本和旧 Pages 对象，共约 9.66 MiB；正式工具档案、许可和发布仍有归属。先前数 GB runtime 已不在原路径，不计作本轮回收。 |
-| 本次维护工作区的 build 与 tools/__pycache__ | 核对结果后回收；源码工作区仍用于审阅本次改动。 |
-
-九个旧验证目录均位于 `C:\Users\lenovo\Desktop\GitHubProjects\tmp`：
-
-- minilinux-closed-d296971-20261002
-- minilinux-counterexamples-ae93e86-20261002
-- minilinux-m0-checkout-f3843abb
-- minilinux-m0-reaudit-d16dcbb9
-- minilinux-m0-remote-45b160f-20260916
-- minilinux-m0-verify-934080e1
-- minilinux-m1-ec57b70-20261002
-- minilinux-supplemental-cc937317-20261002-185828
-- minilinux-userland-ac3e5cb-20261002
-
-补充探针旧目录中的八个 junction 指向 D 盘工具：只解除链接，不递归其目标。残留全部收口后再运行检查、核对四项并将状态改为通过；本次不提前写 PASS，也没有为清理再造一套证据目录。
-
-<details>
-<summary>Windows Temp 的明确目录名（只限这些路径）</summary>
-
-根为 `C:\Users\lenovo\AppData\Local\Temp`：
-
-- MiniLinux desktop ASCII cc93731 20261002
-- MiniLinux desktop 最终 v2 231fdd9 20261002
-- MiniLinux desktop 独立验证 cc93731 20261002
-- MiniLinux 新版下载者 20261002.1 独立试玩
-- MiniLinux 新版浏览器 20261002.1 独立试玩
-- MiniLinux 新版浏览器 20261002.2 独立试玩
-- MiniLinux 陌生下载者 20261002 独立试玩
-- MiniLinux 静默下载者 20261002.2 独立试玩
-- MiniLinux-download-feasibility-cc93731-20261002
-- MiniLinux-homepage-20261002
-- MiniLinux-merge-20261002
-- MiniLinux-pages-20261002
-- MiniLinux-pages-readback-20261002
-- MiniLinux-payload-check-20261002-new
-- minilinux-product-audit
-- MiniLinux-public-delivery-20261002.2
-- MiniLinux-release-readback-20261002
-- minilinux-review-cc93731
-- MiniLinux-runtime-cc93731
-
-本次维护工作区为 `C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-hygiene-20261005`，只清其中的 build 与 tools/__pycache__；PR 源码和当前审阅文件保留。
-
-</details>
+原探针提交 e6746766 由远端标签 lab-boundary-fixture-20261002 保留；唯一的失败 v1 ZIP 保留在本机 D:\DevTools\MiniLinux\evidence\desktop-v1-first-failure.zip，读回大小及原 SHA256 一致。M3 原始诊断也已补入既有证据位置。自动执行层此前拒绝删除，因此本次删除由操作者完成；这不改变原始失败和历史结果的身份。临时环境、唯一状态和证明职责已人工核对，不把只读检查器输出当作全部门禁。
