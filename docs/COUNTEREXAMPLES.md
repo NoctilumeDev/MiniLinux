@@ -38,6 +38,6 @@
 
 修补源码固定在 `ae93e86f56592fd7b38732a5f664b6213b037c1a`，已推送并从 GitHub 干净克隆到 `C:\Users\lenovo\Desktop\GitHubProjects\tmp\minilinux-counterexamples-ae93e86-20261002`。开始时没有 build，工作树干净；先运行完整 `closed-loop.ps1`，再运行 `counterexamples.ps1`，全部通过。后者包含 22 次 64/256 MiB 客体运行、一次 cld 指令修改拒绝、两次普通映像重新接管；最后工作树仍干净，没有客体/调试器或 1234 监听残留。
 
-精确 SHA、每个夹具的 ELF 哈希与载荷核对见 [汇总](evidence/counterexamples-ae93e86-summary.log)；客体现场、指令改前改后、两个进程的用户报告与物理页读回见 [实跑记录](evidence/counterexamples-ae93e86-witnesses.log)。M0–M6 回归与原有寄存器/别名反例也在同一个精确提交重跑，见 [回归记录](evidence/counterexamples-ae93e86-regression.log)。后续仅整理文档和保留记录，`git diff ae93e86 -- kernel include user tools boot linker.ld` 应为空。
+精确 SHA、每个夹具的 ELF 哈希与载荷核对见 [汇总](evidence/counterexamples-ae93e86-summary.log)；客体现场、指令改前改后、两个进程的用户报告与物理页读回见 [实跑记录](evidence/counterexamples-ae93e86-witnesses.log)。M0–M6 回归与原有寄存器/别名反例也在同一个精确提交重跑，见 [回归记录](evidence/counterexamples-ae93e86-regression.log)。该轮结束时的后续提交只整理文档和记录，与 `ae93e86` 的运行源码一致；这描述当时的复验范围，不约束以后明确记录的维护改动。
 
 这些实验覆盖列出的教学边界，不代表生产安全认证或穷尽所有硬件行为。

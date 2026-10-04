@@ -1,0 +1,34 @@
+[
+  {
+    "memory_mib": 64,
+    "cases": [
+      {
+        "struct_cross_page_rejected_intact": [
+          "process",
+          "file",
+          "memory"
+        ],
+        "mapped_cross_page_success": true,
+        "wait_non_child_self_reaped": -3,
+        "bad_input_pointer_preserved_queued_byte": "Z",
+        "free_before_after": 15971
+      }
+    ]
+  },
+  {
+    "memory_mib": 256,
+    "cases": [
+      {
+        "struct_cross_page_rejected_intact": [
+          "process",
+          "file",
+          "memory"
+        ],
+        "mapped_cross_page_success": true,
+        "wait_non_child_self_reaped": -3,
+        "bad_input_pointer_preserved_queued_byte": "Z",
+        "free_before_after": 65111
+      }
+    ]
+  }
+]

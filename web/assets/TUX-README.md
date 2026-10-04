@@ -2,7 +2,7 @@
 
 Tux, the Linux penguin
 
-![Tux](./tux-large.png)
+![Tux](./tux-bw.svg)
 
 
 ## About

@@ -16,4 +16,5 @@ foreach ($test in @('test-userland.py', 'test-lab-bridge.py')) {
     & 'D:\python-3.10.6\python.exe' (Join-Path $PSScriptRoot $test) --tool-root $ToolRoot
     if ($LASTEXITCODE -ne 0) { throw "LAB check failed: $test" }
 }
-Write-Host 'LAB closed loop passed; no unresolved or dynamic runtime dependencies.'
+& (Join-Path $PSScriptRoot 'check-lab-boundaries.ps1') -ToolRoot $ToolRoot
+Write-Host 'LAB closed loop and supplemental boundaries passed; no unresolved or dynamic runtime dependencies.'
