@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import copy
+import os
+import shutil
 import socket
 import subprocess
 import threading
@@ -12,6 +14,17 @@ PROGRAMS = ["init", "shell", "hello", "reader", "counter-a", "counter-b", "fault
 SYSCALLS = ["pid", "write", "ticks", "report", "exit", "open", "read", "close",
             "program", "spawn", "wait", "input", "process", "file", "memory", "inspect"]
 STATES = ["unused", "ready", "waiting", "exited"]
+
+
+def qemu_command(tool_root: Path) -> list[str]:
+    if os.name == "nt":
+        return [str(tool_root / "qemu-20260811/qemu-system-x86_64.exe"),
+                "-L", "qemu-20260811/share"]
+    executable = shutil.which("qemu-system-x86_64")
+    if not executable:
+        raise RuntimeError("Missing qemu-system-x86_64 on PATH; see docs/LINUX.md")
+    # Distribution QEMU uses its installed firmware search path.
+    return [executable]
 
 
 def available_port() -> int:
@@ -46,20 +59,21 @@ class Guest:
             trace_port = available_port()
         build = self.project / "build"
         build.mkdir(exist_ok=True)
-        self.stderr = (build / "lab-qemu.log").open("wb")
-        args = [str(self.tool_root / "qemu-20260811/qemu-system-x86_64.exe"),
+        args = qemu_command(self.tool_root) + [
                 "-machine", "pc", "-m", str(self.memory), "-smp", "1", "-accel", "tcg,tb-size=32",
                 "-display", "none", "-monitor", "none", "-no-reboot",
                 "-chardev", f"socket,id=tty,host=127.0.0.1,port={tty_port},server=on,wait=on",
                 "-serial", "chardev:tty",
                 "-chardev", f"socket,id=observe,host=127.0.0.1,port={trace_port},server=on,wait=on",
                 "-serial", "chardev:observe", "-boot", "d", "-cdrom",
-                "images/minilinux-lab.iso", "-L", "qemu-20260811/share"]
+                "images/minilinux-lab.iso"]
+        self.stderr = (build / "lab-qemu.log").open("wb")
         try:
             # QEMU's Windows file arguments may lose non-ASCII absolute paths.
             # Keep its working directory at the runtime root and use relative assets.
             self.process = subprocess.Popen(args, cwd=self.tool_root, stdout=self.stderr,
-                                            stderr=self.stderr, creationflags=0x08000000)
+                                            stderr=self.stderr,
+                                            creationflags=0x08000000 if os.name == "nt" else 0)
             for port in (tty_port, trace_port):
                 deadline = time.monotonic() + 10
                 while True:
@@ -216,8 +230,9 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("--tool-root", type=Path, default=Path("D:/DevTools/MiniLinux"))
+    parser.add_argument("--memory", type=int, choices=(64, 256), default=64)
     args = parser.parse_args()
-    guest = Guest(Path(__file__).resolve().parents[1], args.tool_root)
+    guest = Guest(Path(__file__).resolve().parents[1], args.tool_root, args.memory)
     try:
         guest.start()
         for command in ("help", "ls", "cat hello.txt", "ps", "run hello", "run reader",

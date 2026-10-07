@@ -6,6 +6,8 @@ Linux-inspired, independently implemented. 本项目没有使用 Linux 内核源
 
 **[在线实录交互回放](https://noctilumedev.github.io/MiniLinux/)** · **[下载 Windows 实时 LAB ZIP](https://github.com/NoctilumeDev/MiniLinux/releases/download/lab-preview-20261002.2/MiniLinux-LAB-Windows-x64.zip)** · **[顺着程序读代码](docs/WALKTHROUGH.md)**
 
+Linux 宿主可按 [源码复现入口](docs/LINUX.md) 准备工具、构建并运行同一个 QEMU 客体；这一版 Linux 全流程仍待实跑复验，Windows ZIP 的支持平台不变。
+
 **当前主线：M0–M6、用户态 init/shell、实时 LAB 与体验工具已合入 `main`。** 可以先在线试玩、下载运行，或直接克隆主线读代码。
 
 ![Windows LAB：故障被隔离，日志与详情分别滚动](docs/evidence/download-playtest/revision-2/fault-right-scrolled-left-stable.jpg)
@@ -66,6 +68,8 @@ cd MiniLinux
 在 <http://127.0.0.1:8080/> 操作真实 CPL3 shell。已有实验台上，`./tools/closed-loop.ps1` 验证 M0–M6，`./tools/counterexamples.ps1` 运行迁移来的错题，`./tools/check-lab.ps1` 验证上层、桥接及补充 LAB 边界。先停止预览，构建和客体串行运行。
 
 内核和用户程序没有 libc 或第三方运行库；页面使用原生 HTML/CSS/JavaScript，桥接只用 Python 标准库。构建/启动工具仍依赖 Clang/LLD、Limine、QEMU/GDB、Python/pycdlib；“零运行库依赖”不等于这些工具不存在。
+
+Linux 从源码进入同一条用户态闭环，详见 [Linux 准备、运行和检查](docs/LINUX.md)。它使用 PATH 中的 LLVM/QEMU、固定 Limine 与 pycdlib，并复用现有 LAB 测试；不是运行 Windows 体验 ZIP，也不替代历史 Windows/GDB 资格。
 
 [M0 环境](docs/M0.md) · [M0 远端记录](docs/M0-remote-round-record.md) · [闭环坐标](docs/CLOSURE.md) · [错题本](docs/COUNTEREXAMPLES.md) · [薄用户态](docs/USERLAND.md) · [网页验证](design-qa.md)
 
