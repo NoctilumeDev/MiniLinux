@@ -1,0 +1,26 @@
+2026-10-07: local Windows host regression; NOT a Linux full-flow result.
+Base source: 900f96c1b5404fabfa41167a179f6b8637e6fe80; candidate was uncommitted.
+Python 3.10.6; LLVM 23.1.1; QEMU 11.1.0 (Windows 20260811); pycdlib 1.20.0.
+tools/linux.py sha256=d9105b4cdfb96459d8102534c452176c769bbc7a81dfdcd826229da7cb11b79f
+tools/lab_guest.py sha256=ced498e6024a5794997aef40ec8cbd80f79bb0bace04d8cd3a7dad5cbdf4b5d8
+M0 at 64 MiB: SERIAL PASS; ISO payload matched.
+M1-M6 at 64 MiB: SERIAL PASS; ISO payloads matched.
+LAB compiled with Python recipe: PASS; no undefined or dynamic runtime dependencies.
+Python vs PowerShell LAB recipe: user.bin and loaded kernel bytes identical.
+Shared test-userland.py: PASS at 64/256 MiB.
+Shared test-lab-bridge.py: PASS (its existing 64 MiB setup).
+Shared test-lab-boundaries.py baseline: PASS at 64/256 MiB.
+  64 MiB: {"command": "run fault counter-a", "fault_pid": 3, "fault_status": 142, "free_before_after": 15980, "shell_retook": true, "survivor_pid": 4, "survivor_status": 0, "survivor_steps": 5}
+  64 MiB: {"command": "run counter-a fault", "fault_pid": 6, "fault_status": 142, "free_before_after": 15980, "shell_retook": true, "survivor_pid": 5, "survivor_status": 0, "survivor_steps": 5}
+  256 MiB: {"command": "run fault counter-a", "fault_pid": 3, "fault_status": 142, "free_before_after": 65120, "shell_retook": true, "survivor_pid": 4, "survivor_status": 0, "survivor_steps": 5}
+  256 MiB: {"command": "run counter-a fault", "fault_pid": 6, "fault_status": 142, "free_before_after": 65120, "shell_retook": true, "survivor_pid": 5, "survivor_status": 0, "survivor_steps": 5}
+Shared test-lab-boundaries.py fixture: PASS at 64/256 MiB.
+  64 MiB: {"bad_input_pointer_preserved_queued_byte": "Z", "free_before_after": 15971, "mapped_cross_page_success": true, "struct_cross_page_rejected_intact": ["process", "file", "memory"], "wait_non_child_self_reaped": -3}
+  256 MiB: {"bad_input_pointer_preserved_queued_byte": "Z", "free_before_after": 65115, "mapped_cross_page_success": true, "struct_cross_page_rejected_intact": ["process", "file", "memory"], "wait_non_child_self_reaped": -3}
+Source kernel/include/user/boot/linker.ld diff from base: empty.
+Syntax and simulated Linux QEMU path selection: PASS; not actual Linux execution.
+First fixture setup failure: git apply in repository subdirectory returned 0 but changed no file.
+Observed: fixture patch applied=False; probe command=False; assertion failed.
+Retake: git apply from project root with --directory=<private fixture>; actual change checked.
+Original userland remained unchanged; temporary fixture directories removed.
+Linux new entry full-flow, GDB mutation checks, external monitor: NOT_RUN in this local round.
