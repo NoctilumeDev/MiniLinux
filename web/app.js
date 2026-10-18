@@ -300,7 +300,7 @@ if (laboratory.mode === "replay") {
   $("manual-actions").textContent = "按钮选择实录";
   $("stop").textContent = "pause replay"; $("restart").textContent = "reset replay";
   document.querySelector(".terminal-note").textContent = "Recorded clips only. Commands select a recording; no kernel runs in this browser.";
-  $("about-dialog").querySelectorAll("p")[1].textContent = "This is an interactive replay of real QEMU runs. Console, processes, mappings and events come from recorded snapshots. Commands select clips; they do not execute a new guest. The Windows LAB download runs the actual kernel.";
+  $("about-dialog").querySelectorAll("p")[1].textContent = "This is an interactive replay of real QEMU runs. Console, processes, mappings and events come from recorded snapshots. Commands select clips; they do not execute a new guest. The Windows and Linux LAB downloads run the actual kernel on their documented hosts.";
   document.querySelector("footer > span").textContent = "MiniLinux / REPLAY · actual recorded mechanisms";
 }
 else document.querySelector(".event-info").setAttribute("aria-label", "Observed event details");

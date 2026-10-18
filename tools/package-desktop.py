@@ -26,7 +26,7 @@ def package(output, iso, extractor, extractor_source, limine_license):
     (root / "runtime/extractor").mkdir()
     (root / "tools").mkdir()
     shutil.copytree(PROJECT / "web", root / "web")
-    for name in ("lab_guest.py", "lab-server.py", "desktop-launch.py", "prepare-desktop.ps1"):
+    for name in ("qemu_host.py", "lab_guest.py", "lab-server.py", "desktop-launch.py", "prepare-desktop.ps1"):
         shutil.copy2(PROJECT / "tools" / name, root / "tools" / name)
     shutil.copy2(iso, root / "runtime/images/minilinux-lab.iso")
     for name in ("7z.exe", "7z.dll", "License.txt"):

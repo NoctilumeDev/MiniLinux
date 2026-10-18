@@ -4,9 +4,9 @@
 
 Linux-inspired, independently implemented. 本项目没有使用 Linux 内核源码，不是 Linux 发行版、fork 或兼容实现。核心机制自己写，教学之外复用工具；代码以普通循环、数组和 switch 为主，少量汇编处理 CPU 入口。
 
-**[在线实录交互回放](https://noctilumedev.github.io/MiniLinux/)** · **[下载 Windows 实时 LAB ZIP](https://github.com/NoctilumeDev/MiniLinux/releases/download/lab-preview-20261002.2/MiniLinux-LAB-Windows-x64.zip)** · **[顺着程序读代码](docs/WALKTHROUGH.md)**
+**[在线实录交互回放](https://noctilumedev.github.io/MiniLinux/)** · **[Windows 实时 LAB](https://github.com/NoctilumeDev/MiniLinux/releases/download/lab-preview-20261002.2/MiniLinux-LAB-Windows-x64.zip)** · **[Linux 免编译 LAB](https://github.com/NoctilumeDev/MiniLinux/releases/download/lab-linux-preview-20261018/MiniLinux-LAB-Linux-x86_64.tar.gz)** · **[顺着程序读代码](docs/WALKTHROUGH.md)**
 
-Linux 宿主可按 [源码复现入口](docs/LINUX.md) 构建并运行真实客体。`4eac29a` 已在一份 Linux / QEMU 9.2.2 环境通过官方检查及 LAB HTTP 操作；QEMU 6.2 曾在双 counter 命令超时。当前入口要求 QEMU ≥ 9.0，并在启动前检查；版本达标仍需实跑确认。Linux 目前走源码路径，Windows ZIP 的支持平台不变。
+Linux 现在分为 [免编译试玩与源码开发](docs/LINUX.md)：试玩包已有启动映像，只需发行版的 Python 3.10+、QEMU 6.2+ 和 SeaBIOS；开发入口用 `setup` 准备私有 venv 与启动文件。两条路径统一指定单核 PIC/PIT 虚拟硬件，不再要求新人先编译 QEMU 9。
 
 **当前主线：M0–M6、用户态 init/shell、实时 LAB 与体验工具已合入 `main`。** 可以先在线试玩、下载运行，或直接克隆主线读代码。
 
@@ -22,6 +22,8 @@ Linux 宿主可按 [源码复现入口](docs/LINUX.md) 构建并运行真实客�
 4. 点击 `resume replay` 继续，或 `reset replay` 回到启动记录。
 
 想输入命令、实时运行客体，就下载 Windows 包（[版本说明](https://github.com/NoctilumeDev/MiniLinux/releases/tag/lab-preview-20261002.2)）。Windows 10/11 x64 下解压整个 ZIP，打开 `Start.cmd`；首次联网下载约 220 MB 的官方 Python/QEMU 档案，只解包到包内 `runtime`，后续使用缓存。无需编译器、GDB、WSL 或预装 Python/QEMU。启动窗口保持打开，Ctrl+C 关闭桥接和它自己的 QEMU。中文开始、代理与重试说明见包内 `READ-ME.txt`。不想自动打开默认浏览器时，运行 `Start.cmd --no-browser`，手动打开它打印的网址。
+
+Linux x86_64 用户下载上面的免编译包，解压后运行 `sh Start.sh`，打开终端显示的网址。Ubuntu/Debian 首次只需 `sudo apt-get install --no-install-recommends python3 qemu-system-x86 seabios`（已有可跳过）；不需要 Clang、LLD、pip 或 venv。包内已带 ISO，启动不下载东西；自动选择空闲回环端口，不自动弹浏览器，Ctrl+C 关闭 LAB 与其 QEMU。源码开发、云主机端口转发及已测环境见 [Linux 上手说明](docs/LINUX.md)。
 
 counter 结束后可以查看最近的双实例快照：观察窗固定同一帧，客体与日志继续运行。日志的滚动条在左，详情的滚动条在右，中间竖线分区，各自滚动。stop 保留末次记录；断连时提示重开 LAB 并使用新网址，避免把旧记录看作当前状态。
 
@@ -50,13 +52,13 @@ Limine → kernel_main → 物理页 → 四级页表 → PIT / 中断 → 轮�
 | M6 进程声明 | 相同虚拟地址能否存不同数据？ | 不同页表根与物理页、独立标记、七种保护/异常探针、坏别名拒绝。 |
 | LAB 薄上层 | 人怎样操作这条机制链？ | 用户态 init/shell、spawn/wait、hello/reader/counter/fault，故障接管与页回收。 |
 
-M0–M6、机制反例、用户态与桥接已在合并后的干净主线重跑。独立公开下载试玩还覆盖全部命令、两栏独立滚动、快照三态与退出清理，发现的问题及首败见 [体验记录](docs/EXPERIENCE.md)。这是同一 Windows 宿主的验证，不代表其他机器或 GitHub CI。
+M0–M6、机制反例、用户态与桥接已在合并后的干净主线重跑。独立公开下载试玩还覆盖全部命令、两栏独立滚动、快照三态与退出清理，发现的问题及首败见 [体验记录](docs/EXPERIENCE.md)。这些原闭环记录来自同一 Windows 宿主；Linux 发行版工具、免编译包与 CI 的新增验证范围见 [Linux 说明](docs/LINUX.md)，不替代 Windows/GDB 的原有资格。
 
 下载包与在线回放保留各自原来的受测版本；主线维护不会移动历史标签或把 REPLAY 变成实时运行。
 
 ## 从源码运行
 
-直接克隆默认的 `main`：
+Windows 固定开发工具入口，克隆默认的 `main`：
 
 ```powershell
 git clone https://github.com/NoctilumeDev/MiniLinux.git
@@ -69,7 +71,16 @@ cd MiniLinux
 
 内核和用户程序没有 libc 或第三方运行库；页面使用原生 HTML/CSS/JavaScript，桥接只用 Python 标准库。构建/启动工具仍依赖 Clang/LLD、Limine、QEMU/GDB、Python/pycdlib；“零运行库依赖”不等于这些工具不存在。
 
-Linux 从源码进入同一条用户态闭环，详见 [Linux 准备、运行和检查](docs/LINUX.md)。它使用 PATH 中的 LLVM/QEMU、固定 Limine 与 pycdlib，并复用现有 LAB 测试；不是运行 Windows 体验 ZIP，也不替代历史 Windows/GDB 资格。
+Linux 源码开发先按 [Linux 上手说明](docs/LINUX.md)安装系统工具，然后：
+
+```bash
+git clone https://github.com/NoctilumeDev/MiniLinux.git
+cd MiniLinux
+python3 -B tools/linux.py setup
+.tools/linux/venv/bin/python -B tools/linux.py lab
+```
+
+`setup` 复用本机工具，自动准备项目私有 venv、pycdlib、固定 Limine 并运行 doctor；不改全局 Python 或 PATH，不自动 sudo。`lab` 构建真实客体并打印本次网址。想核对机制时再运行 `run`、`check`，不要求普通试玩者先跑完整验收。Linux 路径不替代历史 Windows/GDB 资格。
 
 [M0 环境](docs/M0.md) · [M0 远端记录](docs/M0-remote-round-record.md) · [闭环坐标](docs/CLOSURE.md) · [错题本](docs/COUNTEREXAMPLES.md) · [薄用户态](docs/USERLAND.md) · [网页验证](design-qa.md)
 

@@ -7,7 +7,6 @@ import importlib.metadata
 import io
 import os
 from pathlib import Path
-import re
 import shutil
 import subprocess
 import sys
@@ -16,7 +15,7 @@ import time
 import urllib.request
 import zipfile
 
-from lab_guest import qemu_command
+from qemu_host import check_qemu, qemu_command
 
 PROJECT = Path(__file__).resolve().parents[1]
 LIMINE_SHA256 = "04f922a9265d2f02756417254eb746e7687692ff3f42c8a354b8dcfbda9ef571"
@@ -71,28 +70,26 @@ def prepare(root, archive):
     print(f"Limine 12.9.0 prepared at {root}")
 
 
-def check_qemu(root):
-    executable = qemu_command(root)[0]
-    print("qemu=" + str(Path(executable).resolve()), flush=True)
-    try:
-        result = subprocess.run([executable, "--version"], check=True, text=True,
-                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=5)
-    except subprocess.TimeoutExpired as exc:
-        raise RuntimeError("QEMU --version timed out after 5 seconds; no guest started") from exc
-    print(result.stdout.strip(), flush=True)
-    match = re.search(r"^QEMU emulator version (\d+)\.(\d+)\.(\d+)(?:\s|[-(]|$)",
-                      result.stdout, re.MULTILINE)
-    if not match:
-        raise RuntimeError("Cannot identify the QEMU version; see docs/LINUX.md")
-    version = tuple(int(part) for part in match.groups())
-    # Conservative prerequisite based on the upstream PIC/APIC fix, not a test result.
-    if version < (9, 0, 0):
-        raise RuntimeError("This Linux entry requires QEMU >= 9.0.0. QEMU 6.2 timed out "
-                           "with no observed timer ticks; select a newer QEMU on PATH. "
-                           "See docs/LINUX.md; no guest started")
-    print("QEMU version prerequisite met; this does not verify guest execution. "
-          "The retained Linux run used one QEMU 9.2.2 binary; run/check test this machine.",
-          flush=True)
+def setup(root, llvm_bin, archive):
+    if sys.version_info < (3, 10):
+        raise RuntimeError("Use Python 3.10 or newer to create the Linux environment")
+    check_qemu(root)
+    for name in ("clang", "ld.lld", "llvm-objcopy", "llvm-readelf", "llvm-nm"):
+        tool(name, llvm_bin)
+    environment = root / "venv"
+    run([sys.executable, "-m", "venv", environment])
+    python = environment / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+    run([python, "-m", "pip", "install", "pycdlib==1.20.0"])
+    assets = root / "limine-12.9.0/limine-binary"
+    cached = (assets / "LICENSE").is_file() and all(
+        (assets / name).is_file() and hashlib.sha256((assets / name).read_bytes()).hexdigest() == digest
+        for name, digest in LIMINE_FILES.items())
+    if archive or not cached: prepare(root, archive)
+    else: print("Reusing verified Limine BIOS assets.", flush=True)
+    args = [python, "-B", PROJECT / "tools/linux.py", "doctor", "--tool-root", root]
+    if llvm_bin: args += ["--llvm-bin", llvm_bin]
+    run(args)
+    print(f"Ready. Start LAB with: {python} -B tools/linux.py lab --tool-root {root}", flush=True)
 
 
 def doctor(root, llvm_bin):
@@ -292,7 +289,7 @@ def check(root, llvm_bin):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("prepare", "doctor", "build", "run", "lab", "check"))
+    parser.add_argument("command", choices=("setup", "prepare", "doctor", "build", "run", "lab", "check"))
     parser.add_argument("--tool-root", type=Path, default=PROJECT / ".tools/linux")
     parser.add_argument("--llvm-bin", type=Path)
     parser.add_argument("--limine-zip", type=Path, help="Offline prepare with the same verified archive")
@@ -300,10 +297,13 @@ def main():
     parser.add_argument("--fault", type=int, choices=range(1, 8), default=1)
     parser.add_argument("--attack", type=int, choices=range(6), default=0)
     parser.add_argument("--memory", type=int, choices=(64, 256), default=64)
-    parser.add_argument("--port", type=int, default=8080)
+    parser.add_argument("--port", type=int, default=0, help="LAB port; 0 chooses a free loopback port")
     args = parser.parse_args()
     root = args.tool_root.resolve()
-    if args.command == "prepare": prepare(root, args.limine_zip)
+    if not 0 <= args.port <= 65535: parser.error("--port must be between 0 and 65535")
+    if args.command == "lab" and args.stage != "LAB": parser.error("The browser LAB needs --stage LAB")
+    if args.command == "setup": setup(root, args.llvm_bin, args.limine_zip)
+    elif args.command == "prepare": prepare(root, args.limine_zip)
     elif args.command == "doctor": doctor(root, args.llvm_bin)
     elif args.command == "check": check(root, args.llvm_bin)
     else:
