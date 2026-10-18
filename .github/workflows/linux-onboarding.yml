@@ -1,0 +1,62 @@
+name: Linux onboarding check
+on:
+  push:
+    branches: [feat/linux-onboarding-20261018]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  linux:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Distribution tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends python3-venv clang lld llvm qemu-system-x86 seabios
+          python3 -m venv .tools/linux/venv
+          .tools/linux/venv/bin/python -m pip install pycdlib==1.20.0
+          mkdir -p logs/baseline logs/candidate
+          { git rev-parse HEAD; uname -a; qemu-system-x86_64 --version; clang --version; } > logs/environment.txt
+      - name: Build one guest for the CPU comparison
+        run: |
+          .tools/linux/venv/bin/python -B tools/linux.py prepare | tee logs/prepare.log
+          .tools/linux/venv/bin/python -B tools/linux.py build | tee logs/build.log
+      - name: Original CPU profile observation
+        run: |
+          .tools/linux/venv/bin/python -B - <<'PY'
+          import json, shutil, sys
+          from pathlib import Path
+          sys.path.insert(0, 'tools')
+          import lab_guest
+          candidate = lab_guest.qemu_command
+          lab_guest.qemu_command = lambda root: candidate(root)[:1]
+          guest = lab_guest.Guest(Path.cwd(), Path('.tools/linux'))
+          try:
+              guest.start()
+              try:
+                  guest.command('run counter-a counter-b')
+                  outcome = 'returned prompt'
+              except TimeoutError as exc:
+                  outcome = str(exc)
+              snapshot = guest.snapshot()
+              Path('logs/baseline/observation.json').write_text(json.dumps({'outcome': outcome, 'snapshot': snapshot}, indent=2))
+              print(outcome, 'ticks=', snapshot['ticks'])
+          finally:
+              guest.close()
+              for name in ('lab-console.log', 'lab-trace.log', 'lab-qemu.log'):
+                  if (Path('build')/name).exists(): shutil.copyfile(Path('build')/name, Path('logs/baseline')/name)
+          PY
+      - name: Explicit PIC CPU profile experiment
+        run: |
+          .tools/linux/venv/bin/python -B tools/lab_guest.py --tool-root .tools/linux | tee logs/candidate/run.log
+          cp build/lab-{console,trace,qemu}.log logs/candidate/
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: linux-onboarding-observations
+          path: logs/
+          retention-days: 7

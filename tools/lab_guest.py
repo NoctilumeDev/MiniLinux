@@ -19,12 +19,13 @@ STATES = ["unused", "ready", "waiting", "exited"]
 def qemu_command(tool_root: Path) -> list[str]:
     if os.name == "nt":
         return [str(tool_root / "qemu-20260811/qemu-system-x86_64.exe"),
-                "-L", "qemu-20260811/share"]
+                "-L", "qemu-20260811/share", "-cpu", "qemu64,-apic"]
     executable = shutil.which("qemu-system-x86_64")
     if not executable:
         raise RuntimeError("Missing qemu-system-x86_64 on PATH; see docs/LINUX.md")
+    # This single-core kernel teaches PIC/PIT, so expose a CPU without LAPIC.
     # Distribution QEMU uses its installed firmware search path.
-    return [executable]
+    return [executable, "-cpu", "qemu64,-apic"]
 
 
 def available_port() -> int:
