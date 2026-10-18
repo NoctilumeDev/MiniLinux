@@ -6,8 +6,13 @@ from pathlib import Path
 import subprocess
 import socket
 import sys
+import json
+import runpy
+import threading
 import unittest
 from unittest.mock import patch
+from urllib.error import HTTPError
+from urllib.request import urlopen
 
 import linux
 import qemu_host
@@ -97,6 +102,27 @@ class QemuPreflight(unittest.TestCase):
                     patch.object(qemu_host.shutil, "which", return_value="qemu"):
                 command = qemu_host.qemu_command(root)
                 self.assertEqual(command[command.index("-cpu") + 1], "qemu64,-apic")
+
+    def test_missing_manual_returns_json_and_keeps_serving(self):
+        module = runpy.run_path(str(linux.PROJECT / "tools/lab-server.py"))
+        server = module["create_server"](0)
+        thread = threading.Thread(target=server.serve_forever)
+        thread.start()
+        base = f"http://127.0.0.1:{server.server_port}"
+        try:
+            with patch.object(Path, "read_text", side_effect=FileNotFoundError):
+                with self.assertRaises(HTTPError) as error:
+                    urlopen(base + "/api/manual", timeout=5)
+                with error.exception as response:
+                    self.assertEqual(response.code, 404)
+                    self.assertIn("Manual is missing", json.load(response)["error"])
+            with urlopen(base + "/api/manual", timeout=5) as response:
+                self.assertEqual(json.load(response)["text"],
+                                 (linux.PROJECT / "docs/USERLAND.md").read_text(encoding="utf-8"))
+        finally:
+            server.shutdown()
+            thread.join(timeout=3)
+            server.server_close()
 
     @unittest.skipIf(os.name == "nt", "Linux bind error regression")
     def test_busy_port_explains_recovery_before_guest_start(self):

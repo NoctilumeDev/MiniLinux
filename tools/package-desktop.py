@@ -25,6 +25,8 @@ def package(output, iso, extractor, extractor_source, limine_license):
     (root / "runtime/images").mkdir(parents=True)
     (root / "runtime/extractor").mkdir()
     (root / "tools").mkdir()
+    (root / "docs").mkdir()
+    shutil.copy2(PROJECT / "docs/USERLAND.md", root / "docs/USERLAND.md")
     shutil.copytree(PROJECT / "web", root / "web")
     for name in ("qemu_host.py", "lab_guest.py", "lab-server.py", "desktop-launch.py", "prepare-desktop.ps1"):
         shutil.copy2(PROJECT / "tools" / name, root / "tools" / name)

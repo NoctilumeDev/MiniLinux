@@ -4,7 +4,7 @@ MiniLinux 客体是单核 x86_64、BIOS CD、TCG。Linux 宿主不需要 KVM、�
 
 ## 只想玩：下载免编译包
 
-1. 下载 [Linux x86_64 LAB](https://github.com/NoctilumeDev/MiniLinux/releases/download/lab-linux-preview-20261018/MiniLinux-LAB-Linux-x86_64.tar.gz)。
+1. 下载 [Linux x86_64 LAB](https://github.com/NoctilumeDev/MiniLinux/releases/download/lab-linux-preview-20261018.1/MiniLinux-LAB-Linux-x86_64.tar.gz)。
 2. 准备运行工具。Ubuntu 22.04 / 24.04 可直接用发行版包，无需自己编译 QEMU：
 
    ```bash
@@ -47,6 +47,8 @@ MiniLinux 客体是单核 x86_64、BIOS CD、TCG。Linux 宿主不需要 KVM、�
 
    `setup` 先检查工具，再用当前 `python3` 创建 `.tools/linux/venv`，安装 `pycdlib==1.20.0`、准备固定 Limine 12.9.0，并运行 doctor。它不 sudo、不改系统 Python、全局 PATH 或代理；重复执行复用私有环境。Python 只要求 3.10+，实际解释器路径与版本以终端和 doctor 输出为准，不强制使用另一个系统 Python。
 
+   首次 `setup` 需要从 Python 包索引（默认 PyPI）取得 pycdlib，并从 GitHub 下载 Limine。已有 Limine 文件通过校验后不重复下载；未指定离线来源时，pip 仍可能查询包索引。免编译试玩不需要这两次下载。
+
 3. 启动真实 LAB：
 
    ```bash
@@ -77,9 +79,15 @@ MiniLinux 客体是单核 x86_64、BIOS CD、TCG。Linux 宿主不需要 KVM、�
 
 同机、同一 QEMU 6.2 与同一份映像的 [对照实验](https://github.com/NoctilumeDev/MiniLinux/actions/runs/39111827674)：原 CPU 超时、tick=0；显式 PIC CPU 完成十条 LAB 命令，trace 最大 tick=565、506 次调度。[原始小包](evidence/cpu-profile-experiment-20261018.zip)保留两组记录。
 
-最终入口的 [Ubuntu 22.04 / 24.04 完整验证](https://github.com/NoctilumeDev/MiniLinux/actions/runs/39112894107)源码为 `2d20501`：分别使用发行版 QEMU 6.2 / 8.2.2、LLVM 14 / 18.1.3，均通过原有检查与 10 项宿主回归。体验包还在全新解压目录、只含 Python/QEMU/shell 工具的 PATH 下核对 cat、双 counter、fault、页回收、Ctrl+C 退出及端口/QEMU 回收。[22.04 原始记录](evidence/linux-onboarding-20261018-ubuntu22.zip)与[24.04 原始记录](evidence/linux-onboarding-20261018-ubuntu24.zip)保留；发布包绑定这个受测源码，后续证据/文档整理没有重打包或替换其字节。这不是任意后续提交的自动通过声明。验证工作流保留为手动入口，避免单纯文档或证据整理反复启动客体。
+最初的 [Ubuntu 22.04 / 24.04 完整验证](https://github.com/NoctilumeDev/MiniLinux/actions/runs/39112894107)源码为 `2d20501`：分别使用发行版 QEMU 6.2 / 8.2.2、LLVM 14 / 18.1.3，均通过原有检查与 10 项宿主回归。体验包还在全新解压目录、只含 Python/QEMU/shell 工具的 PATH 下核对 cat、双 counter、fault、页回收、Ctrl+C 退出及端口/QEMU 回收。[22.04 原始记录](evidence/linux-onboarding-20261018-ubuntu22.zip)与[24.04 原始记录](evidence/linux-onboarding-20261018-ubuntu24.zip)保留；旧发布包绑定这个受测源码，后续证据/文档整理没有重打包或替换其字节。该轮没有验证源码 `lab` 打印的网址，也没请求包内 `/api/manual`，不能据此宣称默认源码上手完整通过。验证工作流保留为手动入口，避免单纯文档或证据整理反复启动客体。
 
 本机 Windows QEMU 11.1 的新 CPU 配置也完成了双 counter、时钟、fault 与页回收检查；使用的是固定工具中的既有 LAB 映像，只算宿主配置回归。Linux CI 的包测试通过 HTTP 操作，不冒充浏览器视觉体验。原 Windows/GDB 现场篡改、坏 ISO 等资格继续单列。
+
+## 首次上手反馈与入口修复
+
+外部首次用户在 Ubuntu 22.04 / QEMU 6.2 上完成免编译试玩，随后发现 `1dea0ff` 的源码入口打印 `http://127.0.0.1:0/`，以及旧体验包遗漏手册导致 `/api/manual` 断开响应。保留其交付的原始 [端口 0 启动日志](evidence/linux-source-port0-20261018.log)与[手册缺失异常](evidence/linux-package-manual-20261018.log)，不把绕到真实端口后的成功当作默认入口成功。
+
+修复后，源码入口显示绑定后的实际端口；Linux 和后续 Windows 打包都只额外带上必要的 `docs/USERLAND.md`。手册意外缺失时接口返回 JSON 404，服务继续运行。修订 Linux 包另用 `lab-linux-preview-20261018.1`，旧标签与旧包保留。回归增加直接运行源码 `lab`、访问其打印网址，以及对全新解压包请求手册；两条路径还核对双 counter、fault 后 shell、页回收及 Ctrl+C 清理。
 
 ## 云主机与排错
 
@@ -103,6 +111,15 @@ ssh -N -L 8088:127.0.0.1:8088 user@host
 ```bash
 .tools/linux/venv/bin/python -B tools/linux.py prepare --limine-zip /path/to/limine-binary-v12.9.0.zip
 ```
+
+需要离线 `setup` 时，先在可联网机器准备 `pycdlib==1.20.0` 的 wheel 和同一份 Limine ZIP，复制到目标机。将下面路径换成实际目录；这只为本条命令选择本地 wheel，不修改全局 pip 配置：
+
+```bash
+PIP_NO_INDEX=1 PIP_FIND_LINKS=/path/to/wheels \
+  python3 -B tools/linux.py setup --limine-zip /path/to/limine-binary-v12.9.0.zip
+```
+
+系统 Python/venv、LLVM、QEMU 与固件仍须预先准备；wheel 不齐时会失败，不会自动退回联网。使用单位内网包索引时也可在当前命令设置 `PIP_INDEX_URL`。
 
 复验记录 HEAD、工作区状态、doctor、第一处失败和入口退出码。Bash 使用 `set -o pipefail` 防止 tee 掩盖失败；若需要精确的入口码，在管道后立刻保存 `${PIPESTATUS[0]}`，不要拿末尾 echo 的 0 代替。`build/lab-console.log`、`lab-trace.log`、`lab-qemu.log` 在下一客体启动时会覆盖，需要保留时先复制，再运行另一个入口。
 

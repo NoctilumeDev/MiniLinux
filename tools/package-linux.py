@@ -30,6 +30,8 @@ def package(output, iso, limine_license):
         image.close()
     (root / "runtime/images").mkdir(parents=True)
     (root / "tools").mkdir()
+    (root / "docs").mkdir()
+    shutil.copy2(PROJECT / "docs/USERLAND.md", root / "docs/USERLAND.md")
     shutil.copytree(PROJECT / "web", root / "web")
     for name in ("qemu_host.py", "lab_guest.py", "lab-server.py", "desktop-launch.py"):
         shutil.copy2(PROJECT / "tools" / name, root / "tools" / name)
@@ -48,6 +50,7 @@ def package(output, iso, limine_license):
     (root / "READ-ME.txt").write_text(
         "MiniLinux / Linux x86_64 LAB preview\n\n"
         "1. Ubuntu/Debian 先准备运行工具（已有则不需重复安装）：\n"
+        "   sudo apt-get update\n"
         "   sudo apt-get install --no-install-recommends python3 qemu-system-x86 seabios\n"
         "   需要 Python 3.10+、QEMU 6.2+；不需要 Clang、LLD、GDB、pip 或 venv。\n"
         "2. 解压整个档案，进入 MiniLinux-LAB，运行：sh Start.sh\n"

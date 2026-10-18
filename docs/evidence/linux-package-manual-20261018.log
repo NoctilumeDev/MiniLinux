@@ -1,0 +1,54 @@
+qemu=/usr/bin/qemu-system-x86_64
+QEMU emulator version 6.2.0 (Debian 1:6.2+dfsg-2ubuntu6.31)
+Copyright (c) 2003-2021 Fabrice Bellard and the QEMU Project developers
+cpu=qemu64,-apic; one CPU, legacy PIC/PIT. Version prerequisite met; this does not verify guest execution. Use run/check to test this machine.
+MiniLinux LAB: http://127.0.0.1:42443/
+Real QEMU guest. Leave this window open. Ctrl+C closes LAB and QEMU.
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 57960)
+Traceback (most recent call last):
+  File "/opt/python3.12/lib/python3.12/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+  File "/opt/python3.12/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/opt/python3.12/lib/python3.12/socketserver.py", line 766, in __init__
+    self.handle()
+  File "/opt/python3.12/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/opt/python3.12/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/user/Doubao/chats/38447955050894850/minilinux-repro/trial/MiniLinux-LAB/tools/lab-server.py", line 71, in do_GET
+    self.response(200, {"text": (PROJECT / "docs/USERLAND.md").read_text(encoding="utf-8")})
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/python3.12/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/python3.12/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/user/Doubao/chats/38447955050894850/minilinux-repro/trial/MiniLinux-LAB/docs/USERLAND.md'
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 51122)
+Traceback (most recent call last):
+  File "/opt/python3.12/lib/python3.12/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+  File "/opt/python3.12/lib/python3.12/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/opt/python3.12/lib/python3.12/socketserver.py", line 766, in __init__
+    self.handle()
+  File "/opt/python3.12/lib/python3.12/http/server.py", line 436, in handle
+    self.handle_one_request()
+  File "/opt/python3.12/lib/python3.12/http/server.py", line 424, in handle_one_request
+    method()
+  File "/home/user/Doubao/chats/38447955050894850/minilinux-repro/trial/MiniLinux-LAB/tools/lab-server.py", line 71, in do_GET
+    self.response(200, {"text": (PROJECT / "docs/USERLAND.md").read_text(encoding="utf-8")})
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/python3.12/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/python3.12/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/user/Doubao/chats/38447955050894850/minilinux-repro/trial/MiniLinux-LAB/docs/USERLAND.md'
+----------------------------------------

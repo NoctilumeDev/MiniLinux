@@ -59,6 +59,7 @@ jobs:
           .tools/linux/venv/bin/python -B tools/linux.py run --stage M0 | tee build/onboarding-logs/m0.log
           .tools/linux/venv/bin/python -B tools/linux.py check | tee build/onboarding-logs/check.log
           python3 -B tools/test-linux-host.py 2>&1 | tee build/onboarding-logs/host-tests.log
+          .tools/linux/venv/bin/python -B tools/test-linux-package.py --tool-root .tools/linux | tee build/onboarding-logs/source-entry.log
       - name: Package and try a fresh extraction without compiler tools
         run: |
           .tools/linux/venv/bin/python -B tools/package-linux.py --output build/linux-package --iso .tools/linux/images/minilinux-lab.iso --limine-license .tools/linux/limine-12.9.0/limine-binary/LICENSE

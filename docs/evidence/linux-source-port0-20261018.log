@@ -1,0 +1,9 @@
+qemu=/usr/bin/qemu-system-x86_64
+QEMU emulator version 6.2.0 (Debian 1:6.2+dfsg-2ubuntu6.31)
+Copyright (c) 2003-2021 Fabrice Bellard and the QEMU Project developers
+cpu=qemu64,-apic; one CPU, legacy PIC/PIT. Version prerequisite met; this does not verify guest execution. Use run/check to test this machine.
+Built LAB fault=1 attack=0: /home/user/Doubao/chats/38447955050894850/minilinux-repro/dev/MiniLinux/build/kernel.elf sha256=a92f3bfadc4b66acbf9aecf095086cd61566e5af2eaa766513964c6ca3818d7e
+/home/user/Doubao/chats/38447955050894850/minilinux-repro/dev/MiniLinux/.tools/linux/images/minilinux-lab.iso
+ISO payload matches this build.
+MiniLinux laboratory: http://127.0.0.1:0/
+One real QEMU guest. Ctrl+C stops the bridge and its guest.
