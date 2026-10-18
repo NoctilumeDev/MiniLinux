@@ -7,6 +7,7 @@ import importlib.metadata
 import io
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -70,16 +71,40 @@ def prepare(root, archive):
     print(f"Limine 12.9.0 prepared at {root}")
 
 
+def check_qemu(root):
+    executable = qemu_command(root)[0]
+    print("qemu=" + str(Path(executable).resolve()), flush=True)
+    try:
+        result = subprocess.run([executable, "--version"], check=True, text=True,
+                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=5)
+    except subprocess.TimeoutExpired as exc:
+        raise RuntimeError("QEMU --version timed out after 5 seconds; no guest started") from exc
+    print(result.stdout.strip(), flush=True)
+    match = re.search(r"^QEMU emulator version (\d+)\.(\d+)\.(\d+)(?:\s|[-(]|$)",
+                      result.stdout, re.MULTILINE)
+    if not match:
+        raise RuntimeError("Cannot identify the QEMU version; see docs/LINUX.md")
+    version = tuple(int(part) for part in match.groups())
+    # Conservative prerequisite based on the upstream PIC/APIC fix, not a test result.
+    if version < (9, 0, 0):
+        raise RuntimeError("This Linux entry requires QEMU >= 9.0.0. QEMU 6.2 timed out "
+                           "with no observed timer ticks; select a newer QEMU on PATH. "
+                           "See docs/LINUX.md; no guest started")
+    print("QEMU version prerequisite met; this does not verify guest execution. "
+          "The retained Linux run used one QEMU 9.2.2 binary; run/check test this machine.",
+          flush=True)
+
+
 def doctor(root, llvm_bin):
     print("source=" + subprocess.check_output(
         ["git", "rev-parse", "HEAD"], cwd=PROJECT, text=True).strip())
     dirty = subprocess.check_output(["git", "status", "--porcelain"], cwd=PROJECT, text=True)
     print(f"working-tree-dirty={bool(dirty)}; host={sys.platform}; Python={sys.version.split()[0]}")
+    check_qemu(root)
     for name in ("clang", "ld.lld", "llvm-objcopy", "llvm-readelf", "llvm-nm"):
         executable = tool(name, llvm_bin)
         print(executable, flush=True)
         run([executable, "--version"])
-    run([qemu_command(root)[0], "--version"])
     version = importlib.metadata.version("pycdlib")
     if version != "1.20.0":
         raise RuntimeError(f"Expected pycdlib 1.20.0, found {version}")
@@ -282,6 +307,8 @@ def main():
     elif args.command == "doctor": doctor(root, args.llvm_bin)
     elif args.command == "check": check(root, args.llvm_bin)
     else:
+        if args.command in ("run", "lab"):
+            check_qemu(root)
         build(PROJECT, args.llvm_bin, args.stage, args.fault, args.attack)
         image(PROJECT, root, args.stage)
         if args.command == "run":

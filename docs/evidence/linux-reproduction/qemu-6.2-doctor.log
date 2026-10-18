@@ -1,0 +1,34 @@
+source=4eac29a6dc0ebf3802becb1fc291f085d2301290
+working-tree-dirty=False; host=linux; Python=3.12.11
+/usr/bin/clang
+Ubuntu clang version 14.0.0-1ubuntu1.1
+Target: x86_64-pc-linux-gnu
+Thread model: posix
+InstalledDir: /usr/bin
+/usr/bin/ld.lld
+Ubuntu LLD 14.0.0 (compatible with GNU linkers)
+/usr/bin/llvm-objcopy
+llvm-objcopy, compatible with GNU objcopy
+Ubuntu LLVM version 14.0.0
+  
+  Optimized build.
+  Default target: x86_64-pc-linux-gnu
+  Host CPU: sapphirerapids
+/usr/bin/llvm-readelf
+Ubuntu LLVM version 14.0.0
+  
+  Optimized build.
+  Default target: x86_64-pc-linux-gnu
+  Host CPU: sapphirerapids
+/usr/bin/llvm-nm
+llvm-nm, compatible with GNU nm
+Ubuntu LLVM version 14.0.0
+  
+  Optimized build.
+  Default target: x86_64-pc-linux-gnu
+  Host CPU: sapphirerapids
+QEMU emulator version 6.2.0 (Debian 1:6.2+dfsg-2ubuntu6.31)
+Copyright (c) 2003-2021 Fabrice Bellard and the QEMU Project developers
+pycdlib=1.20.0
+/home/user/Doubao/chats/38447846951805954/repro-4eac29a/MiniLinux/.tools/linux/limine-12.9.0/limine-binary/limine-bios-cd.bin sha256=0a0f509cd2e8b0f7ea4cfca6eac5b88a4ac477cd102cc90fb7e2c21ba80b2a22
+/home/user/Doubao/chats/38447846951805954/repro-4eac29a/MiniLinux/.tools/linux/limine-12.9.0/limine-binary/limine-bios.sys sha256=8e432db7b4721f906c9136b3854d3d9fec7b337d6f6d049c0f2a1ba8ea591507

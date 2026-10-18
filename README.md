@@ -6,7 +6,7 @@ Linux-inspired, independently implemented. 本项目没有使用 Linux 内核源
 
 **[在线实录交互回放](https://noctilumedev.github.io/MiniLinux/)** · **[下载 Windows 实时 LAB ZIP](https://github.com/NoctilumeDev/MiniLinux/releases/download/lab-preview-20261002.2/MiniLinux-LAB-Windows-x64.zip)** · **[顺着程序读代码](docs/WALKTHROUGH.md)**
 
-Linux 宿主可按 [源码复现入口](docs/LINUX.md) 准备工具、构建并运行同一个 QEMU 客体；这一版 Linux 全流程仍待实跑复验，Windows ZIP 的支持平台不变。
+Linux 宿主可按 [源码复现入口](docs/LINUX.md) 构建并运行真实客体。`4eac29a` 已在一份 Linux / QEMU 9.2.2 环境通过官方检查及 LAB HTTP 操作；QEMU 6.2 曾在双 counter 命令超时。当前入口要求 QEMU ≥ 9.0，并在启动前检查；版本达标仍需实跑确认。Linux 目前走源码路径，Windows ZIP 的支持平台不变。
 
 **当前主线：M0–M6、用户态 init/shell、实时 LAB 与体验工具已合入 `main`。** 可以先在线试玩、下载运行，或直接克隆主线读代码。
 
