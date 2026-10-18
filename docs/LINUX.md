@@ -75,7 +75,9 @@ MiniLinux 客体是单核 x86_64、BIOS CD、TCG。Linux 宿主不需要 KVM、�
 
 现在两个入口都显式使用 `-cpu qemu64,-apic`、`-smp 1`：虚拟 CPU 从启动时就不暴露 LAPIC，与这份 PIC/PIT 教学内核的目标一致。**没有修改内核中断、调度、隔离机制或原客体测试判据。** 版本检查仍拒绝低于 6.2、无法识别、查询失败或超过 5 秒的 QEMU；版本达标只允许继续运行，不代替实跑。
 
-同机、同一 QEMU 6.2 与同一份映像的 [对照实验](https://github.com/NoctilumeDev/MiniLinux/actions/runs/39111827674)：原 CPU 超时、tick=0；显式 PIC CPU 完成十条 LAB 命令，trace 最大 tick=565、506 次调度。[原始小包](evidence/cpu-profile-experiment-20261018.zip)保留两组记录。随后 [Ubuntu 22.04 / 24.04 完整验证](https://github.com/NoctilumeDev/MiniLinux/actions/runs/39112350202)通过原有检查，并在全新解压目录用只含 Python、QEMU 和 shell 工具的 PATH 启动体验包，核对 cat、双 counter、fault、页回收、Ctrl+C 退出及端口/QEMU 回收。该次源码为 `340db3e`；它不是任意后续提交的自动通过声明。
+同机、同一 QEMU 6.2 与同一份映像的 [对照实验](https://github.com/NoctilumeDev/MiniLinux/actions/runs/39111827674)：原 CPU 超时、tick=0；显式 PIC CPU 完成十条 LAB 命令，trace 最大 tick=565、506 次调度。[原始小包](evidence/cpu-profile-experiment-20261018.zip)保留两组记录。
+
+最终入口的 [Ubuntu 22.04 / 24.04 完整验证](https://github.com/NoctilumeDev/MiniLinux/actions/runs/39112894107)源码为 `2d20501`：分别使用发行版 QEMU 6.2 / 8.2.2、LLVM 14 / 18.1.3，均通过原有检查与 10 项宿主回归。体验包还在全新解压目录、只含 Python/QEMU/shell 工具的 PATH 下核对 cat、双 counter、fault、页回收、Ctrl+C 退出及端口/QEMU 回收。[22.04 原始记录](evidence/linux-onboarding-20261018-ubuntu22.zip)与[24.04 原始记录](evidence/linux-onboarding-20261018-ubuntu24.zip)保留；发布包绑定这个受测源码，后续证据/文档整理没有重打包或替换其字节。这不是任意后续提交的自动通过声明。验证工作流保留为手动入口，避免单纯文档或证据整理反复启动客体。
 
 本机 Windows QEMU 11.1 的新 CPU 配置也完成了双 counter、时钟、fault 与页回收检查；使用的是固定工具中的既有 LAB 映像，只算宿主配置回归。Linux CI 的包测试通过 HTTP 操作，不冒充浏览器视觉体验。原 Windows/GDB 现场篡改、坏 ISO 等资格继续单列。
 

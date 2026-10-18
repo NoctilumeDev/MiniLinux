@@ -1,7 +1,5 @@
 name: Linux onboarding check
 on:
-  push:
-    branches: [feat/linux-onboarding-20261018]
   workflow_dispatch:
 permissions:
   contents: read
