@@ -1,5 +1,6 @@
 """Loopback-only HTTP bridge to one real guest; no frameworks or third-party packages."""
 import argparse
+import errno
 import json
 import mimetypes
 import secrets
@@ -106,7 +107,14 @@ def main():
     parser.add_argument("--memory", type=int, choices=(64, 256), default=64)
     parser.add_argument("--tool-root", type=Path, default=Path("D:/DevTools/MiniLinux"))
     args = parser.parse_args()
-    server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
+    if not 0 <= args.port <= 65535: parser.error("--port must be between 0 and 65535")
+    try:
+        server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
+    except OSError as exc:
+        if exc.errno == errno.EADDRINUSE:
+            raise SystemExit(f"Port {args.port} is already in use; no guest started. "
+                             "Retry with --port 0 to choose a free loopback port.") from None
+        raise
     server.lab = Laboratory(args.tool_root, args.memory)
     try:
         server.lab.restart()

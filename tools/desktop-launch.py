@@ -1,6 +1,9 @@
 """Portable LAB launcher: bundled Python + QEMU, loopback UI, standard library only."""
 import argparse
+import hashlib
+import json
 import runpy
+import subprocess
 import sys
 import webbrowser
 from http.server import ThreadingHTTPServer
@@ -14,6 +17,14 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--no-browser", action="store_true")
     args = parser.parse_args()
+    if sys.platform.startswith("linux"):
+        if sys.version_info < (3, 10): raise SystemExit("Use Python 3.10 or newer; see READ-ME.txt")
+        from qemu_host import check_qemu
+        manifest = json.loads((PROJECT / "package.json").read_text(encoding="utf-8"))
+        iso = PROJECT / "runtime/images/minilinux-lab.iso"
+        if hashlib.sha256(iso.read_bytes()).hexdigest() != manifest["iso_sha256"]:
+            raise SystemExit("LAB image differs from package.json; unpack the original package again.")
+        check_qemu(PROJECT / "runtime")
     module = runpy.run_path(str(PROJECT / "tools/lab-server.py"))
     server = ThreadingHTTPServer(("127.0.0.1", 0), module["Handler"])
     server.lab = module["Laboratory"](PROJECT / "runtime", 64)
@@ -32,4 +43,6 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try: main()
+    except (OSError, RuntimeError, ValueError, subprocess.SubprocessError) as exc:
+        raise SystemExit(f"LAB could not start: {exc}\nSee READ-ME.txt.") from None

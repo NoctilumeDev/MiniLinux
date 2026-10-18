@@ -7,7 +7,10 @@ permissions:
   contents: read
 jobs:
   linux:
-    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     env:
       PYTHONDONTWRITEBYTECODE: "1"
@@ -17,14 +20,12 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends python3-venv clang lld llvm qemu-system-x86 seabios
-          python3 -m venv .tools/linux/venv
-          .tools/linux/venv/bin/python -m pip install pycdlib==1.20.0
-          mkdir -p logs/baseline logs/candidate
-          { git rev-parse HEAD; uname -a; qemu-system-x86_64 --version; clang --version; } > logs/environment.txt
+          python3 -B tools/linux.py setup
+          mkdir -p build/onboarding-logs/baseline build/onboarding-logs/candidate
+          { git rev-parse HEAD; uname -a; qemu-system-x86_64 --version; clang --version; } > build/onboarding-logs/environment.txt
       - name: Build one guest for the CPU comparison
         run: |
-          .tools/linux/venv/bin/python -B tools/linux.py prepare | tee logs/prepare.log
-          .tools/linux/venv/bin/python -B tools/linux.py build | tee logs/build.log
+          .tools/linux/venv/bin/python -B tools/linux.py build | tee build/onboarding-logs/build.log
       - name: Original CPU profile observation
         run: |
           .tools/linux/venv/bin/python -B - <<'PY'
@@ -43,20 +44,35 @@ jobs:
               except TimeoutError as exc:
                   outcome = str(exc)
               snapshot = guest.snapshot()
-              Path('logs/baseline/observation.json').write_text(json.dumps({'outcome': outcome, 'snapshot': snapshot}, indent=2))
+              Path('build/onboarding-logs/baseline/observation.json').write_text(json.dumps({'outcome': outcome, 'snapshot': snapshot}, indent=2))
               print(outcome, 'ticks=', snapshot['ticks'])
           finally:
               guest.close()
               for name in ('lab-console.log', 'lab-trace.log', 'lab-qemu.log'):
-                  if (Path('build')/name).exists(): shutil.copyfile(Path('build')/name, Path('logs/baseline')/name)
+                  if (Path('build')/name).exists(): shutil.copyfile(Path('build')/name, Path('build/onboarding-logs/baseline')/name)
           PY
       - name: Explicit PIC CPU profile experiment
         run: |
-          .tools/linux/venv/bin/python -B tools/lab_guest.py --tool-root .tools/linux | tee logs/candidate/run.log
-          cp build/lab-{console,trace,qemu}.log logs/candidate/
+          .tools/linux/venv/bin/python -B tools/lab_guest.py --tool-root .tools/linux | tee build/onboarding-logs/candidate/run.log
+          cp build/lab-{console,trace,qemu}.log build/onboarding-logs/candidate/
+      - name: Official source path and unchanged guest checks
+        run: |
+          .tools/linux/venv/bin/python -B tools/linux.py doctor | tee build/onboarding-logs/doctor.log
+          .tools/linux/venv/bin/python -B tools/linux.py run --stage M0 | tee build/onboarding-logs/m0.log
+          .tools/linux/venv/bin/python -B tools/linux.py check | tee build/onboarding-logs/check.log
+          python3 -B tools/test-linux-host.py 2>&1 | tee build/onboarding-logs/host-tests.log
+      - name: Package and try a fresh extraction without compiler tools
+        run: |
+          .tools/linux/venv/bin/python -B tools/package-linux.py --output build/linux-package --iso .tools/linux/images/minilinux-lab.iso --limine-license .tools/linux/limine-12.9.0/limine-binary/LICENSE
+          python3 -B tools/test-linux-package.py build/linux-package/MiniLinux-LAB-Linux-x86_64.tar.gz | tee build/onboarding-logs/package.log
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: MiniLinux-LAB-Linux-x86_64-${{ matrix.os }}
+          path: build/linux-package/MiniLinux-LAB-Linux-x86_64.tar.gz
+          retention-days: 7
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
-          name: linux-onboarding-observations
-          path: logs/
+          name: linux-onboarding-observations-${{ matrix.os }}
+          path: build/onboarding-logs/
           retention-days: 7
