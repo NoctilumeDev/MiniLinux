@@ -28,7 +28,15 @@ function manual(topic = "help") {
   $("manual").replaceChildren(fragment);
   $("manual").parentElement.scrollTop = 0;
 }
-function error(message = "") { $("error").hidden = !message; $("error").textContent = message; }
+function error(message = "", summary = "操作未完成") {
+  const notice = $("error"), title = $("error-summary"), detail = $("error-detail");
+  if (detail.textContent !== message || title.textContent !== summary) {
+    notice.open = false;
+    title.textContent = message ? summary : "";
+    detail.textContent = message;
+  }
+  notice.hidden = !message;
+}
 async function post(path, body) {
   return laboratory.post(path, body);
 }
@@ -211,7 +219,7 @@ function render() {
     document.querySelector(".terminal-note").textContent = state.status === "running" ? "实时 QEMU。命令在用户态执行；counter 结束后可查看最近快照。↑ 回忆上一条命令。" : "客体已停止；观察窗保留末次记录。点 restart guest 从启动重新运行。";
   }
   renderInspector(); renderEvents();
-  if (state.error) error(state.error);
+  if (state.error) error(state.error, "客体运行异常");
 }
 async function poll() {
   try {
@@ -236,7 +244,8 @@ async function poll() {
   } catch (exc) {
     connectionFailed = true;
     $("connection").textContent = "DISCONNECTED"; $("connection").className = "disconnected";
-    $("command").disabled = true; error(`${laboratory.mode === "replay" ? "Cannot load recorded replay" : "Cannot reach the laboratory bridge"}: ${exc.message}`);
+    $("command").disabled = true;
+    error(exc.message, laboratory.mode === "replay" ? "回放加载失败" : "连接中断，客体当前状态未知");
     document.querySelector("#command-form button").disabled = true; $("restart").disabled = true;
     document.querySelectorAll("[data-command]").forEach(button => { button.disabled = true; });
     $("stop").disabled = true;
@@ -247,10 +256,10 @@ async function poll() {
 }
 async function command(value) {
   if (connectionFailed || requestBusy || !state || (state.status !== "running" && !(laboratory.mode === "replay" && state.status === "paused"))) return;
-  if (!/^[\x20-\x7e\t]*$/.test(value)) { error("The teaching shell accepts ASCII commands."); return; }
+  if (!/^[\x20-\x7e\t]*$/.test(value)) { error("The teaching shell accepts ASCII commands.", "命令未发送：请使用 ASCII 字符"); return; }
   requestBusy = true;
   try { error(); await post("/api/input", {text: value + "\r"}); lastCommand = value; manual(value.trim().split(/\s+/)[0]); $("command").value = ""; }
-  catch (exc) { error(exc.message); }
+  catch (exc) { error(exc.message, laboratory.mode === "replay" ? "无法切换回放片段" : "命令发送失败"); }
   finally { requestBusy = false; $("command").focus(); }
 }
 $("command-form").onsubmit = event => { event.preventDefault(); command($("command").value); };
@@ -264,12 +273,12 @@ $("pause-trace").onclick = () => { paused = !paused; $("pause-trace").textConten
 $("restart").onclick = async () => {
   $("restart").disabled = true; $("command").disabled = true; $("connection").textContent = "RESTARTING";
   try { await post("/api/restart", {}); error(); }
-  catch (exc) { error(exc.message); }
+  catch (exc) { error(exc.message, laboratory.mode === "replay" ? "重置回放失败" : "重启失败"); }
   finally { $("restart").disabled = false; }
 };
 $("stop").onclick = async () => {
   try { await post("/api/stop", {}); error(); }
-  catch (exc) { error(exc.message); }
+  catch (exc) { error(exc.message, laboratory.mode === "replay" ? "暂停或继续回放失败" : "停止失败"); }
 };
 const panels = {console: "console-panel", process: "process-panel", memory: "memory-panel", syscall: "syscall-panel", trace: "trace-panel", fault: "trace-panel", manual: "manual-panel"};
 document.querySelectorAll("[data-view]").forEach(button => {

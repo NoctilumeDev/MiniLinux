@@ -15,7 +15,7 @@ button, a { color: inherit; }
 button { cursor: pointer; border: 0; background: transparent; padding: 4px 6px; }
 button:hover { background: #deded5; }
 button:disabled { cursor: wait; opacity: .5; }
-button:focus-visible, a:focus-visible, input:focus-visible, pre:focus-visible, [tabindex]:focus-visible {
+button:focus-visible, a:focus-visible, input:focus-visible, pre:focus-visible, summary:focus-visible, [tabindex]:focus-visible {
   outline: 2px solid #668852;
   outline-offset: 3px;
 }
@@ -118,7 +118,10 @@ tbody tr.selected button { text-decoration: underline; text-underline-offset: 3p
 .help-content button span { color: var(--muted); font-size: 11px; }
 footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 9px 14px; border-top: 2px solid var(--ink); font-size: 12px; }
 footer button { font-size: 11px; }
-#error { padding: 10px; margin-top: 8px; background: #f4e3de; border: 1px solid var(--red); color: var(--red); }
+#error { background: #f4e3de; border-bottom: 1px solid var(--red); color: var(--red); }
+#error summary { padding: 6px 14px; cursor: pointer; font-size: 12px; line-height: 1.4; overflow-wrap: anywhere; }
+.error-hint { margin-left: 12px; font-size: 11px; }
+#error-detail { max-height: min(120px, 18dvh); overflow: auto; padding: 0 14px 8px; font-size: 12px; line-height: 1.45; }
 dialog { max-width: 580px; background: var(--sheet); border: 2px solid var(--ink); padding: 24px; }
 dialog::backdrop { background: #0008; }
 dialog h2 { font: 32px Georgia, serif; margin-bottom: 12px; }
@@ -128,7 +131,7 @@ dialog button { border: 1px solid var(--ink); padding: 6px 15px; }
 /* Desktop is one viewport. The records scroll, the page does not. */
 @media (min-width: 1000px) {
   body { display: flex; flex-direction: column; height: 100dvh; overflow: hidden; }
-  .masthead, nav, .connection, footer { flex-shrink: 0; }
+  .masthead, nav, .status-area, footer { flex-shrink: 0; }
   .masthead { min-height: 78px; padding: 10px 20px; gap: 28px; }
   .identity h1 { font-size: 46px; }
   .identity img { width: 45px; height: 54px; }
@@ -161,7 +164,6 @@ dialog button { border: 1px solid var(--ink); padding: 6px 15px; }
   .help-content button { padding: 3px 0; }
   .help-content button span { display: none; }
   .help-content button[data-command="run fault"] span { display: block; }
-  #error { position: fixed; left: 12px; right: 12px; bottom: 36px; max-height: 100px; overflow: auto; z-index: 2; }
 }
 @media (min-width: 1000px) and (max-width: 1199px) {
   .motto, .words { display: none; }
