@@ -31,7 +31,13 @@
       <a href="https://github.com/NoctilumeDev/MiniLinux" target="_blank" rel="noreferrer">SOURCE</a>
     </div>
   </nav>
-  <div class="connection"><span id="connection" role="status">CONNECTING</span><span id="coordinates">Waiting for the guest…</span><button id="stop">stop guest</button><button id="restart">restart guest</button></div>
+  <section class="status-area" aria-label="Laboratory connection">
+    <div class="connection"><span id="connection" role="status">CONNECTING</span><span id="coordinates">Waiting for the guest…</span><button id="stop">stop guest</button><button id="restart">restart guest</button></div>
+    <details id="error" hidden>
+      <summary><span id="error-summary" role="alert"></span><span class="error-hint">详情</span></summary>
+      <pre id="error-detail" tabindex="0" aria-label="Error details"></pre>
+    </details>
+  </section>
   <main>
     <div class="workspace">
       <section class="panel terminal-panel" id="console-panel" aria-labelledby="console-title">
@@ -88,7 +94,6 @@
         </div>
       </section>
     </div>
-    <p id="error" role="alert" hidden></p>
   </main>
   <footer><span>MiniLinux / LAB · x86_64 · mechanism laboratory</span><span id="footer-state">One guest. Real mechanisms.</span><button id="about">about / credits</button></footer>
   <dialog id="about-dialog"><h2>MiniLinux</h2><p>A teaching kernel, written primarily in C. Linux-inspired, independently implemented.</p><p>The browser forwards commands to a real user-mode shell in QEMU. Observations come from its second serial port. Displays describe the latest observed event; they are not an instantaneous CPU probe.</p><p>Tux: original illustration by Larry Ewing using GIMP; vector redraw by Garrett LeSage, refinement by IFo Hancroft. <a href="assets/TUX-README.md">Asset credits and license</a>.</p><button id="close-about">close</button></dialog>
