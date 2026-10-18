@@ -17,7 +17,7 @@
 ```bash
 sudo apt-get update
 sudo apt-get install git python3 python3-venv clang lld llvm qemu-system-x86 seabios
-git clone --branch feat/linux-reproduction-20261007 https://github.com/NoctilumeDev/MiniLinux.git
+git clone https://github.com/NoctilumeDev/MiniLinux.git
 cd MiniLinux
 mkdir -p .tools/linux
 python3 -m venv .tools/linux/venv
