@@ -4,7 +4,7 @@
 
 Linux-inspired, independently implemented. 本项目没有使用 Linux 内核源码，不是 Linux 发行版、fork 或兼容实现。核心机制自己写，教学之外复用工具；代码以普通循环、数组和 switch 为主，少量汇编处理 CPU 入口。
 
-**[在线实录交互回放](https://noctilumedev.github.io/MiniLinux/)** · **[Windows 实时 LAB](https://github.com/NoctilumeDev/MiniLinux/releases/download/lab-preview-20261002.2/MiniLinux-LAB-Windows-x64.zip)** · **[Linux 免编译 LAB](https://github.com/NoctilumeDev/MiniLinux/releases/download/lab-linux-preview-20261018/MiniLinux-LAB-Linux-x86_64.tar.gz)** · **[顺着程序读代码](docs/WALKTHROUGH.md)**
+**[在线实录交互回放](https://noctilumedev.github.io/MiniLinux/)** · **[Windows 实时 LAB](https://github.com/NoctilumeDev/MiniLinux/releases/download/lab-preview-20261002.2/MiniLinux-LAB-Windows-x64.zip)** · **[Linux 免编译 LAB](https://github.com/NoctilumeDev/MiniLinux/releases/download/lab-linux-preview-20261018.1/MiniLinux-LAB-Linux-x86_64.tar.gz)** · **[顺着程序读代码](docs/WALKTHROUGH.md)**
 
 Linux 现在分为 [免编译试玩与源码开发](docs/LINUX.md)：试玩包已有启动映像，只需发行版的 Python 3.10+、QEMU 6.2+ 和 SeaBIOS；开发入口用 `setup` 准备私有 venv 与启动文件。两条路径统一指定单核 PIC/PIT 虚拟硬件，不再要求新人先编译 QEMU 9。
 
@@ -23,7 +23,14 @@ Linux 现在分为 [免编译试玩与源码开发](docs/LINUX.md)：试玩包�
 
 想输入命令、实时运行客体，就下载 Windows 包（[版本说明](https://github.com/NoctilumeDev/MiniLinux/releases/tag/lab-preview-20261002.2)）。Windows 10/11 x64 下解压整个 ZIP，打开 `Start.cmd`；首次联网下载约 220 MB 的官方 Python/QEMU 档案，只解包到包内 `runtime`，后续使用缓存。无需编译器、GDB、WSL 或预装 Python/QEMU。启动窗口保持打开，Ctrl+C 关闭桥接和它自己的 QEMU。中文开始、代理与重试说明见包内 `READ-ME.txt`。不想自动打开默认浏览器时，运行 `Start.cmd --no-browser`，手动打开它打印的网址。
 
-Linux x86_64 用户下载上面的免编译包，解压后运行 `sh Start.sh`，打开终端显示的网址。Ubuntu/Debian 首次只需 `sudo apt-get install --no-install-recommends python3 qemu-system-x86 seabios`（已有可跳过）；不需要 Clang、LLD、pip 或 venv。包内已带 ISO，启动不下载东西；自动选择空闲回环端口，不自动弹浏览器，Ctrl+C 关闭 LAB 与其 QEMU。源码开发、云主机端口转发及已测环境见 [Linux 上手说明](docs/LINUX.md)。
+Linux x86_64 用户下载上面的免编译包，解压后运行 `sh Start.sh`，打开终端显示的网址。Ubuntu/Debian 首次准备运行工具（已有可跳过）：
+
+```bash
+sudo apt-get update
+sudo apt-get install --no-install-recommends python3 qemu-system-x86 seabios
+```
+
+不需要 Clang、LLD、pip 或 venv。包内已带 ISO，启动不下载东西；自动选择空闲回环端口，不自动弹浏览器，Ctrl+C 关闭 LAB 与其 QEMU。源码开发、云主机端口转发及已测环境见 [Linux 上手说明](docs/LINUX.md)。
 
 counter 结束后可以查看最近的双实例快照：观察窗固定同一帧，客体与日志继续运行。日志的滚动条在左，详情的滚动条在右，中间竖线分区，各自滚动。stop 保留末次记录；断连时提示重开 LAB 并使用新网址，避免把旧记录看作当前状态。
 

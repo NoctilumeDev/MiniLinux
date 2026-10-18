@@ -79,7 +79,7 @@ def setup(root, llvm_bin, archive):
     environment = root / "venv"
     run([sys.executable, "-m", "venv", environment])
     python = environment / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
-    run([python, "-m", "pip", "install", "pycdlib==1.20.0"])
+    run([python, "-m", "pip", "install", "--disable-pip-version-check", "pycdlib==1.20.0"])
     assets = root / "limine-12.9.0/limine-binary"
     cached = (assets / "LICENSE").is_file() and all(
         (assets / name).is_file() and hashlib.sha256((assets / name).read_bytes()).hexdigest() == digest

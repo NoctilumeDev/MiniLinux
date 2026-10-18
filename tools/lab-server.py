@@ -68,7 +68,12 @@ class Handler(BaseHTTPRequestHandler):
             self.response(200, state)
             return
         if url.path == "/api/manual":
-            self.response(200, {"text": (PROJECT / "docs/USERLAND.md").read_text(encoding="utf-8")})
+            try:
+                text = (PROJECT / "docs/USERLAND.md").read_text(encoding="utf-8")
+            except FileNotFoundError:
+                self.response(404, {"error": "Manual is missing from this laboratory; unpack the original package again."})
+                return
+            self.response(200, {"text": text})
             return
         relative = "index.html" if url.path == "/" else url.path.lstrip("/")
         path = (WEB / relative).resolve()
@@ -123,7 +128,7 @@ def main():
     server.lab = Laboratory(args.tool_root, args.memory)
     try:
         server.lab.restart()
-        print(f"MiniLinux laboratory: http://127.0.0.1:{args.port}/", flush=True)
+        print(f"MiniLinux laboratory: http://127.0.0.1:{server.server_port}/", flush=True)
         print("One real QEMU guest. Ctrl+C stops the bridge and its guest.", flush=True)
         server.serve_forever(poll_interval=0.25)
     except KeyboardInterrupt: pass
