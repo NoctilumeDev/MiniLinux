@@ -6,7 +6,6 @@ import runpy
 import subprocess
 import sys
 import webbrowser
-from http.server import ThreadingHTTPServer
 from pathlib import Path
 
 PROJECT = Path(__file__).resolve().parents[1]
@@ -16,6 +15,7 @@ sys.path.insert(0, str(PROJECT / "tools"))
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--no-browser", action="store_true")
+    parser.add_argument("--port", type=int, default=0, help="0 chooses a free loopback port")
     args = parser.parse_args()
     if sys.platform.startswith("linux"):
         if sys.version_info < (3, 10): raise SystemExit("Use Python 3.10 or newer; see READ-ME.txt")
@@ -26,7 +26,7 @@ def main():
             raise SystemExit("LAB image differs from package.json; unpack the original package again.")
         check_qemu(PROJECT / "runtime")
     module = runpy.run_path(str(PROJECT / "tools/lab-server.py"))
-    server = ThreadingHTTPServer(("127.0.0.1", 0), module["Handler"])
+    server = module["create_server"](args.port)
     server.lab = module["Laboratory"](PROJECT / "runtime", 64)
     try:
         server.lab.restart()

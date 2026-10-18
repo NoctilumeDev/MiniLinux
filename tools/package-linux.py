@@ -48,7 +48,7 @@ def package(output, iso, limine_license):
     (root / "READ-ME.txt").write_text(
         "MiniLinux / Linux x86_64 LAB preview\n\n"
         "1. Ubuntu/Debian 先准备运行工具（已有则不需重复安装）：\n"
-        "   sudo apt-get install python3 qemu-system-x86 seabios\n"
+        "   sudo apt-get install --no-install-recommends python3 qemu-system-x86 seabios\n"
         "   需要 Python 3.10+、QEMU 6.2+；不需要 Clang、LLD、GDB、pip 或 venv。\n"
         "2. 解压整个档案，进入 MiniLinux-LAB，运行：sh Start.sh\n"
         "3. 手动打开终端显示的本次 http://127.0.0.1:端口/ 网址。\n"

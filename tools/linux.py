@@ -80,7 +80,12 @@ def setup(root, llvm_bin, archive):
     run([sys.executable, "-m", "venv", environment])
     python = environment / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
     run([python, "-m", "pip", "install", "pycdlib==1.20.0"])
-    prepare(root, archive)
+    assets = root / "limine-12.9.0/limine-binary"
+    cached = (assets / "LICENSE").is_file() and all(
+        (assets / name).is_file() and hashlib.sha256((assets / name).read_bytes()).hexdigest() == digest
+        for name, digest in LIMINE_FILES.items())
+    if archive or not cached: prepare(root, archive)
+    else: print("Reusing verified Limine BIOS assets.", flush=True)
     args = [python, "-B", PROJECT / "tools/linux.py", "doctor", "--tool-root", root]
     if llvm_bin: args += ["--llvm-bin", llvm_bin]
     run(args)
