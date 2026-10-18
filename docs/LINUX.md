@@ -89,6 +89,10 @@ MiniLinux 客体是单核 x86_64、BIOS CD、TCG。Linux 宿主不需要 KVM、�
 
 修复后，源码入口显示绑定后的实际端口；Linux 和后续 Windows 打包都只额外带上必要的 `docs/USERLAND.md`。手册意外缺失时接口返回 JSON 404，服务继续运行。修订 Linux 包另用 `lab-linux-preview-20261018.1`，旧标签与旧包保留。回归增加直接运行源码 `lab`、访问其打印网址，以及对全新解压包请求手册；两条路径还核对双 counter、fault 后 shell、页回收及 Ctrl+C 清理。
 
+修复源码 `207ece0` 的 [Ubuntu 22.04 / 24.04 实跑](https://github.com/NoctilumeDev/MiniLinux/actions/runs/39116887023)均通过：各 36 个串口案例、原用户态/桥接/边界检查、11 项宿主测试，以及新增的源码默认入口与全新解压包检查。[22.04 原始记录](evidence/linux-entry-fix-20261018-ubuntu22.zip)与[24.04 原始记录](evidence/linux-entry-fix-20261018-ubuntu24.zip)保留。此次新增的是 HTTP/客体验证，未新增 Linux 浏览器视觉资格；外部用户交付的浏览器观察仍按其原版本单列。
+
+修订发布包取自上述 22.04 成功任务，声明源码 `207ece02bac24b4a1d44c9a12cfec2a23ab9036f`，tar.gz 为 276715 字节，SHA256 为 `e7d13d77cd7bc885482d46fca3c1807c811002e87c3aba0e788f80569f5c8a8f`。后续证据与文档整理不替换受测包字节。Windows 本轮只更新后续打包所带的手册，未重新发布旧 Windows 体验包。
+
 ## 云主机与排错
 
 服务器始终只绑定回环地址，不开放公网监听。云主机的 `127.0.0.1` 不是自己电脑的地址。可先固定远端端口：
